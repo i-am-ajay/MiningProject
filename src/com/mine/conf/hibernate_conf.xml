@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xsi:schemaLocation="http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+	<tx:annotation-driven/>
+	
+	<!-- Set a JNDI datasource -->
+	<jee:jndi-lookup jndi-name="java:/comp/env/jdbc/MiningConf" 
+		expected-type="javax.sql.DataSource" id="miningDataSource">
+	</jee:jndi-lookup>
+	
+	<!-- Configure Session Factory for feedback database-->
+	<bean id="mine_connection" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<property name="dataSource" ref="miningDataSource" />
+		<property name="packagesToScan">
+			<list>
+				<value>com.mine.component.master</value>
+				<value>com.mine.component.transaction</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL8Dialect</prop>
+				<!-- <prop key="hibernate.hbm2ddl.auto">create</prop> -->
+				<!--  <prop key="hibernate.show_sql">true</prop> -->
+			</props>
+		</property>
+	</bean>
+	
+	<!-- Transaction Manager -->
+	<bean id="txMineData" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+		<property name="sessionFactory" ref="mine_connection" />
+		<qualifier value="mine_conn" />
+	</bean>
+</beans>
