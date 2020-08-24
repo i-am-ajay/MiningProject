@@ -4,6 +4,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import com.mine.component.master.Vehicle;
 
@@ -12,6 +14,8 @@ public class SupplyDetails {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
+	@ManyToOne
+	@JoinColumn(name="vehicle_id")
 	private Vehicle vehicle;
 	private String driverName;
 	private String driverNumber;
@@ -21,6 +25,7 @@ public class SupplyDetails {
 	private boolean driverReturn;
 	private double discount;
 	private double rate;
+	
 	public Vehicle getVehicle() {
 		return vehicle;
 	}

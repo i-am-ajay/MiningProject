@@ -2,7 +2,9 @@ package com.mine.component.master;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -31,11 +33,11 @@ public class Company {
 	private LocalDate endDate;
 	private int endedBy;
 	
-	@OneToMany(mappedBy="vehicle_id")
+	@OneToMany(mappedBy="companyId")
 	private List<Vehicle> vehicle = new ArrayList<>();
 	
-	@OneToMany(mappedBy="client_id")
-	private List<Client> clientList = new ArrayList<>();
+	@OneToMany(mappedBy="company")
+	private Set<Client> clientList = new HashSet<>();
 
 	public String getName() {
 		return name;
@@ -77,11 +79,11 @@ public class Company {
 		this.vehicle = vehicle;
 	}
 
-	public List<Client> getClientList() {
+	public Set<Client> getClientList() {
 		return clientList;
 	}
 
-	public void setClientList(List<Client> clientList) {
+	public void setClientList(Set<Client> clientList) {
 		this.clientList = clientList;
 	}
 

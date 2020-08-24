@@ -36,13 +36,13 @@ public class MineDAO {
 	@Transactional
 	public void saveInCashBook(Client client, double amount) {
 		Session session = factory.getCurrentSession();
-		session.save();
+		//session.save();
 		session.flush();
 	}
 	
 	public void saveInSalesBook(Client client, double amount) {
 		Session session = factory.getCurrentSession();
-		session.disableFetchProfile(name);;
+		//session.disableFetchProfile(name);;
 		session.flush();
 	}
 }
