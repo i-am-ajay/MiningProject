@@ -9,6 +9,7 @@
 <title>Patient Analysis</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/static_resources/css/style.css" >
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/static_resources/css/style.css" >
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
 </head>
@@ -43,7 +44,11 @@
 					    		<div>
 					      			<label class="font-weight-bold">Client Type</label>
 					      		</div>
-					      		<f:select class="form-control form-control-sm" id="type" placeholder="Enter Client Type" path="clientType"/>
+					      		<select class="form-control form-control-sm" id="type" placeholder="Enter Client Type" name="client_type">
+					      			<c:forEach var="item" items="${lookup}">
+					      				<option value="${item.key}">${item.value}</option>
+					      			</c:forEach>
+					      		</select>
 					    	</div>
 			  			</div>
 			  		</div>

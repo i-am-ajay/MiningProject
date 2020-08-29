@@ -7,6 +7,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
+
 @Entity
 public class GeneralData {
 	@Id
@@ -17,7 +21,7 @@ public class GeneralData {
 	private LocalDate createdOn;
 	private int createdBy;
 	private LocalDate endDate;
-	private int endedBy;
+	private Integer endedBy;
 	public String getCategory() {
 		return category;
 	}

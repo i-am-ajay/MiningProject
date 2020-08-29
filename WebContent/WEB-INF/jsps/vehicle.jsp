@@ -15,8 +15,8 @@
 </head>
 <body class=mt-1>
 	<div class="container p-2 m-auto">
-		<h4 class="border-bottom border-danger m-3 pb-2 display-4" id="form_title">Company Creation</h4>
-		<f:form method="POST" modelAttribute="company" action="company_saved">
+		<h4 class="border-bottom border-danger m-3 pb-2 display-4" id="form_title">Vehicle Creation</h4>
+		<f:form method="POST" modelAttribute="vehicle" action="save_vehicle">
 		   <!-- Patient Vitals -->
 		   <!--  <h4 class="border-bottom m-3 text-muted pb-2" id="form_title">Patient Report Card</h4>-->
 		   <!-- Card Vitals -->
@@ -25,26 +25,45 @@
 		   <div class="card text-dark bg-light px-3 mb-3 w-50 mx-auto" >
   				<div class="card-body">
   					<div class="row">
-  						<div class="col-md-6">
+  						<div class="col">
 					    	<div class="form-group">
-					      		<label class="font-weight-bold">Company Name</label>
-					      		<f:input class="form-control form-control-sm" id="name" placeholder="Enter Name" path="name"/>
+					      		<label class="font-weight-bold">Vehicle No</label>
+					      		<f:input id="vehicle_no" class="form-control form-control-sm" placeholder="Enter Vehicle No" path="vehicleNo" />
 					    	</div>
 					    	<div class="form-group">
-					      		<label for="testDate" class="font-weight-bold">Company Contact</label>
-					      		<f:input class="form-control form-control-sm" id="phone" placeholder="Contact Number" path="companyContact"/>
+					      		<label class="font-weight-bold">Vehicle Type</label>
+					      		<select class="form-control form-control-sm" id="type" placeholder="Enter Vehicle Type" name="vehicle_type">
+					      			<c:forEach var="item" items="${vehicle_lookup}">
+					      				<option value="${item.key }">${item.value}</option>
+					      			</c:forEach>
+					      		</select>
+					    	</div>
+					    	<div class="form-group">
+					      		<label class="font-weight-bold">Tyre Type</label>
+					      		<select class="form-control form-control-sm" id="type" placeholder="Enter Tyre Type" name="tyre_type" >
+					      			<c:forEach var="item" items="${tyre_lookup}">
+					      				<option value="${item.key}">${item.value}</option>
+					      			</c:forEach>
+					      		</select>
+					    	</div>
+					    	<div class="">
+					    		<div><label class="font-weight-bold">Vehicle Belongs To</label></div>
+					    		<div class="form-check form-check-inline">
+					    			<f:radiobutton class="form-check-input" value="self" path="belongsTo"/><label class="form-check-label">Self</label></div>
+					    		<div class="form-check form-check-inline">
+					    			<f:radiobutton class="form-check-input" value="owner" path="belongsTo"/><label class="form-check-label">Owner</label></div>
+					    		<div class="form-check form-check-inline">
+					    			<f:radiobutton class="form-check-input" value="contractor" path="belongsTo"/><label class="form-check-label">Contractor</label></div>
 					    	</div>
 					    	<div class="form-group">
 					    		<div>
-					      			<label class="font-weight-bold">Company Address</label>
+					      			<label class="font-weight-bold">Vehicle Owner/Contractor</label>
 					      		</div>
-					      		<f:input class="form-control form-control-sm" id="address" placeholder="Enter Address" path="location"/>
-					    	</div>
-					    	<div class="form-group">
-					    		<div>
-					      			<label class="font-weight-bold">Company Email</label>
-					      		</div>
-					      		<f:input class="form-control form-control-sm" id="email" placeholder="Enter Email" path="companyEmail"/>
+					      		<select class="form-control form-control-sm" id="type" placeholder="Enter Client Type" name="client_type">
+					      			<c:forEach var="item" items="${lookup}">
+					      				<option value="${item.key}">${item.value}</option>
+					      			</c:forEach>
+					      		</select>
 					    	</div>
 			  			</div>
 			  		</div>
@@ -53,7 +72,7 @@
 		</div>
 	</div>
 			    
-	<input type="submit" class="btn btn-small btn-secondary btn-block w-50 mx-auto" value="Save Company"/>
+	<input type="submit" class="btn btn-small btn-secondary btn-block w-50 mx-auto" value="Save Client"/>
 	<input type="hidden" id="role" value="${role}" />
 	</f:form>
 	</div>
@@ -71,63 +90,6 @@
 				$("#phone").attr("required","true");
 				$("#address").attr("required","true");
 			});
-				/* // disable oxygen device.
-				let oValue = $("#oSupplementation").val().toLowerCase();
-				if(oValue === "nil"){
-					$("#o2Device").attr("disabled",true);
-					$("#o2Device").val(null);
-				}
-				$("#oSupplementation").change(
-					e =>{
-						if($("#oSupplementation").val().toLowerCase() === "nil"){
-							$("#o2Device").attr("disabled",true);
-							$("#o2Device").val(null);
-						}
-						else{
-							$("#o2Device").attr("disabled",false);
-							$("#o2Device").val("Nasal Prongs");
-						}
-					}
-				);
-
-				// ventilator optio
-				if( $('input[name="ventilationNeeded"]:checked').val() === 'false'){
-					$("#ventilatorMode").attr("disabled",true);
-					$("#ventilatorMode").val(null);
-				}
-				$('input[name="ventilationNeeded"]').change(
-					e =>{
-						if( $('input[name="ventilationNeeded"]:checked').val() === 'false'){
-							$("#ventilatorMode").attr("disabled",true);
-							$("#ventilatorMode").val(null);
-						}
-						else{
-							$("#ventilatorMode").attr("disabled",false);
-							$("#ventilatorMode").val("NIV");
-						}
-					}
-				);			
-			// ventilator optio
-			if( $('input[name="changeInTreatment"]:checked').val() === 'false'){
-				$("#reason").attr("disabled",true);
-				$("#reason").attr("placeholder",null);
-			}
-			$('input[name="changeInTreatment"]').change(
-				e =>{
-					if( $('input[name="changeInTreatment"]:checked').val() === 'false'){
-						$("#reason").attr("disabled",true);
-						$("#reason").attr("placeholder",null);
-					}
-					else{
-						$("#reason").attr("disabled",false);
-						$("#reason").attr("placeholder","Reason of Change");
-						
-					}
-				}
-			);
-		}
-			
-		) */
 		$(document).ready(e => {
 			$("#home_icon").hover( e => {
 				$("#home_icon").css({"cursor":"pointer"})
@@ -191,7 +153,6 @@
 				}
 			});
 		});
-	
 	</script>
 </body>
 </html>
