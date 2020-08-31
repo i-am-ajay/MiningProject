@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.mine.component.master.Client;
 import com.mine.component.master.Company;
 import com.mine.component.master.GeneralData;
+import com.mine.component.master.Rate;
 import com.mine.component.master.Vehicle;
 import com.mine.dao.MineDAO;
 
@@ -37,5 +38,9 @@ public class MiningService {
 	
 	public void saveVehicle(Vehicle vehicle, int client, int company) {
 		dao.saveVehicle(vehicle, client, company);
+	}
+	
+	public void saveRate(Rate rate, int companyId) {
+		dao.addRate(rate, companyId);
 	}
 }

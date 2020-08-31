@@ -3,6 +3,8 @@ package com.mine.dao;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mine.component.master.Client;
 import com.mine.component.master.Company;
 import com.mine.component.master.GeneralData;
+import com.mine.component.master.Rate;
 import com.mine.component.master.Vehicle;
 import com.mine.component.transaction.SupplyDetails;
 
@@ -102,5 +105,45 @@ public class MineDAO {
 		CriteriaQuery<Client> criteria = builder.createQuery(Client.class);
 		Root<Client> from = criteria.from(Client.class);
 		criteria.where(builder.and(builder.equal(from.get("company"),company),builder.isNull(from.get("endDate"))));
+	}
+	
+	@Transactional
+	public void addRate(Rate rate, int companyId) {
+		if(rate.getRate() != getRate(rate.getTyreType(), rate.getMaterialType(), rate.getTruckType(),rate.getQuantity(), companyId)) {
+			Session session = factory.getCurrentSession();
+			Company company = session.load(Company.class, companyId);
+			rate.setCompany(company);
+			session.save(rate);
+		}
+	}
+	
+	@Transactional
+	public double  getRate(String tyreType, String materialType, String truckType, String quantity, int companyId) {
+		double rate = 0.0;
+		Session session = factory.getCurrentSession();
+		Company company = session.load(Company.class, companyId);
+		
+		CriteriaBuilder builder = session.getCriteriaBuilder();
+		CriteriaQuery<Rate> criteria = builder.createQuery(Rate.class);
+		Root<Rate> from = criteria.from(Rate.class);
+		criteria.where(builder.and(
+				builder.equal(from.get("tyreType"), tyreType),
+				builder.equal(from.get("materialType"), materialType),
+				builder.equal(from.get("truckType"), truckType),
+				builder.equal(from.get("quantity"), quantity),
+				builder.isNull(from.get("endDate")),
+				builder.equal(from.get("company"), company)
+		));
+		
+		TypedQuery<Rate> rateQuery = session.createQuery(criteria);
+		Rate rateObj = null;
+		try {
+			rateObj = rateQuery.getSingleResult();
+			rate = rateObj.getRate();
+		}
+		catch(NoResultException | NonUniqueResultException | IllegalStateException ex) {
+			
+		}
+		return rate;
 	}
 }
