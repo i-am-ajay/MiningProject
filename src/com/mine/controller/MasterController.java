@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.mine.component.master.Client;
 import com.mine.component.master.Company;
+import com.mine.component.master.Rate;
 import com.mine.component.master.Vehicle;
 import com.mine.service.MiningService;
 
@@ -110,5 +111,19 @@ public class MasterController {
 		}
 		object.put("vehicleStatus", vehicleStatus);
 		return object.toString();
+	}
+
+	public String addRate(Model model) {
+		Rate rate = new Rate();
+		model.addAttribute("rate", rate);
+		model.addAttribute("tyre_lookup", service.getLookupMap("tyreType"));
+		model.addAttribute("material_lookup", service.getLookupMap("materialType"));
+		model.addAttribute("quantity_lookup", service.getLookupMap("quantity"));
+		model.addAttribute("vehicle_lookup",service.getLookupMap("vehicleType"));
+		return "add_rate";
+	}
+	
+	public String saveRate(Model model) {
+		return null;
 	}
 }

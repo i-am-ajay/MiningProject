@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 
 @Entity
@@ -23,6 +24,9 @@ public class Rate {
 	private String truckType;
 	
 	private Double rate;
+	
+	@ManyToOne
+	private Company company;
 	
 	private LocalDate createdBy;
 	
@@ -107,6 +111,24 @@ public class Rate {
 	public int getRateId() {
 		return rateId;
 	}
-	
-	
+
+	public void setRate(double rate) {
+		this.rate = rate;
+	}
+
+	public void setCreatedById(int createdById) {
+		this.createdById = createdById;
+	}
+
+	public void setEndedById(int endedById) {
+		this.endedById = endedById;
+	}
+
+	public Company getCompany() {
+		return company;
+	}
+
+	public void setCompany(Company company) {
+		this.company = company;
+	}
 }
