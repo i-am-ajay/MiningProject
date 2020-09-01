@@ -2,10 +2,12 @@ package com.mine.component.master;
 
 import java.time.LocalDate;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 
@@ -26,9 +28,10 @@ public class Rate {
 	private Double rate;
 	
 	@ManyToOne
+	@JoinColumn(name="company_id")
 	private Company company;
 	
-	private LocalDate createdBy;
+	private LocalDate createdDate;
 	
 	private LocalDate endDate;
 	
@@ -76,12 +79,12 @@ public class Rate {
 		this.rate = rate;
 	}
 
-	public LocalDate getCreatedBy() {
-		return createdBy;
+	public LocalDate getCreatedDate() {
+		return createdDate;
 	}
 
-	public void setCreatedBy(LocalDate createdBy) {
-		this.createdBy = createdBy;
+	public void setCreatedDate(LocalDate createdBy) {
+		this.createdDate = createdBy;
 	}
 
 	public LocalDate getEndDate() {

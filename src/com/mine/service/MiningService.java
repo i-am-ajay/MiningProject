@@ -12,6 +12,7 @@ import com.mine.component.master.Company;
 import com.mine.component.master.GeneralData;
 import com.mine.component.master.Rate;
 import com.mine.component.master.Vehicle;
+import com.mine.component.transaction.SupplyDetails;
 import com.mine.dao.MineDAO;
 
 @Service
@@ -53,7 +54,12 @@ public class MiningService {
 		return dao.vehicleExists(vehicleNo);
 		
 	}
-	public void saveRate(Rate rate, int companyId) {
-		dao.addRate(rate, companyId);
+	public boolean saveRate(Rate rate, int companyId) {
+		return dao.addRate(rate, companyId);
+		
+	}
+	
+	public void saveSupplyDetails(SupplyDetails supplyDetails, String vehicleId) {
+		dao.addSales(supplyDetails, vehicleId);
 	}
 }

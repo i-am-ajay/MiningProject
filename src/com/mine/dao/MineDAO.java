@@ -162,13 +162,20 @@ public class MineDAO {
 	}
 	
 	@Transactional
-	public void addRate(Rate rate, int companyId) {
+	public boolean addRate(Rate rate, int companyId) {
+		boolean rateSaved = false;
 		if(rate.getRate() != getRate(rate.getTyreType(), rate.getMaterialType(), rate.getTruckType(),rate.getQuantity(), companyId)) {
 			Session session = factory.getCurrentSession();
-			Company company = session.load(Company.class, companyId);
+			Company company = session.get(Company.class, companyId);
 			rate.setCompany(company);
+			rate.setCreatedById(1);
 			session.save(rate);
+			rateSaved = true;
 		}
+		else {
+			rateSaved = false;
+		}
+		return rateSaved;
 	}
 	
 	@Transactional
@@ -199,5 +206,13 @@ public class MineDAO {
 			
 		}
 		return rate;
+	}
+	
+	@Transactional
+	public void addSales(SupplyDetails details, String vehicleId) {
+		Session session = factory.getCurrentSession();
+		Vehicle vehicle = session.get(Vehicle.class, vehicleId);
+		details.setVehicle(vehicle);
+		session.save(details);
 	}
 }

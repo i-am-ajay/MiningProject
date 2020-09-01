@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Add Rate</title>
+<title>Supply and Sales</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/static_resources/css/style.css" >
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/static_resources/css/style.css" >
@@ -14,62 +14,83 @@
 
 </head>
 <body class=mt-1>
-	<div class="container p-2 m-auto">
-		<h4 class="border-bottom border-danger m-3 pb-2 display-4" id="form_title">Add New Rate</h4>
-		<f:form method="POST" modelAttribute="rate" action="save_rate">
+	<div class="px-2 pb-2 m-auto">
+		<h4 class="border-bottom border-danger mt-1 mx-3 mb-3 pb-2 display-5" id="form_title">Supply And Sales</h4>
+		<f:form method="POST" modelAttribute="supply" action="save_supply">
 		   <!-- Patient Vitals -->
 		   <!--  <h4 class="border-bottom m-3 text-muted pb-2" id="form_title">Patient Report Card</h4>-->
 		   <!-- Card Vitals -->
-		   <div class="row pt-2">
+		   <div class="row pt-1">
 		   <div class="col">
-		   <div class="card text-dark bg-light px-3 mb-1 w-50 mx-auto" >
+		   <div class="text-dark bg-light px-3 mb-3 mx-auto" style="{transform:scale(0.8);}">
   				<div class="card-body">
   					<div class="row">
-  						<div class="col">
+  						<div class="col-2">
+					    	<div class="form-group">
+					      		<label class="font-weight-bold">Driver Name</label>
+					      		<f:input id="driver_name" class="form-control form-control-sm" placeholder="Enter Driver Name" path="driverName" />
+					    	</div>
+					    </div>
+					    <div class="col-2">
+					    	<div class="form-group">
+					      		<label class="font-weight-bold">Driver Number</label>
+					      		<f:input id="driver_number" class="form-control form-control-sm" placeholder="Enter Driver Number" path="driverNumber" />
+					    	</div>
+					    </div>
+  						<div class="col-2">
+					    	<div class="form-group">
+					      		<label class="font-weight-bold">Vehicle Number</label>
+					      		<f:input id="vehicle_no" class="form-control form-control-sm" placeholder="Enter Vehicle No" path="vehicle.vehicleNo" />
+					    	</div>
+					    </div>
+					    <div class="col-2">
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Vehicle Type</label>
-					      		<f:select class="form-control form-control-sm" id="type" placeholder="Enter Vehicle Type" path="truckType">
-					      			<c:forEach var="item" items="${vehicle_lookup}">
-					      				<f:option value="${item.value}">${item.value}</f:option>
-					      			</c:forEach>
-					      		</f:select>
+					      		<f:input id="vehicle_type" class="form-control form-control-sm" placeholder="Tyre Type" path="vehicle.vehicleType" />
 					    	</div>
+					    </div>
+					    <div class="col-2">
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Tyre Type</label>
-					      		<f:select class="form-control form-control-sm" id="type" placeholder="Enter Tyre Type" path="tyreType" >
-					      			<c:forEach var="item" items="${tyre_lookup}">
-					      				<f:option value="${item.value}">${item.value}</f:option>
-					      			</c:forEach>
-					      		</f:select>
+					      		<f:input id="tyre_type" class="form-control form-control-sm" placeholder="Tyre Type" path="vehicle.tyreType" />
 					    	</div>
+					    </div>
+					     <div class="col-2">
 					    	<div class="form-group">
-					      		<label class="font-weight-bold">Material Type</label>
-					      		<f:select class="form-control form-control-sm" id="type" placeholder="Enter Tyre Type" path="materialType" >
+					      		<label class="font-weight-bold">Material</label>
+					      		<f:select class="form-control form-control-sm" id="type" placeholder="Enter Tyre Type" path="material" >
 					      			<c:forEach var="item" items="${material_lookup}">
 					      				<f:option value="${item.value}">${item.value}</f:option>
 					      			</c:forEach>
 					      		</f:select>
 					    	</div>
+					    </div>
+				 	</div>
+				    <div class="row">
+					    <div class="col-2">
 					    	<div class="form-group">
-					      		<label class="font-weight-bold">Quantity</label>
-					      		<f:select class="form-control form-control-sm" id="type" placeholder="Enter Tyre Type" path="quantity" >
-					      			<c:forEach var="item" items="${quantity_lookup}">
-					      				<f:option value="${item.value}">${item.value}</f:option>
-					      			</c:forEach>
-					      		</f:select>
+					      		<label class="font-weight-bold">Payment</label>
+					      		<f:input id="tyre_type" class="form-control form-control-sm" placeholder="Vehicle Type" path="tyreType" />
 					    	</div>
-					    	<div class="form-group">
-					    		<label class="font-weight-bold">Rate</label>
-					      		<f:input id="rate" class="form-control form-control-sm" placeholder="Enter Rate" path="rate" />
-					    	</div>
-			  			</div>
+					    </div>
+				  	<div class="col-2">
+					    <label class="font-weight-bold">Rate</label>
+					     <f:input id="rate" class="form-control form-control-sm" placeholder="Rate" path="rate" />
+			  		</div>
+			  		<div class="col-2">
+					    <label class="font-weight-bold">Discount</label>
+					     <f:input id="discount" class="form-control form-control-sm" placeholder="Discount" path="discount" />
+			  		</div>
+			  		<div class="col-2"></div>
+			  		<div class="col-4">
+			  		<label class="font-weight-bold"></label>
+					    <input type="submit" class="btn btn-small btn-secondary btn-block mx-auto" value="Save Client"/>
 			  		</div>
 			  	</div>
 			</div>
 		</div>
 	</div>
 			    
-	<input type="submit" class="btn btn-small btn-secondary btn-block w-50 mx-auto" value="Save Client"/>
 	<input type="hidden" id="role" value="${role}" />
 	</f:form>
 	</div>
@@ -83,6 +104,7 @@
 	<script>
 		$(document).ready(
 			function(){
+				$("#vehicle_no").attr("required","true");
 				$("#name").attr("required","true");
 				$("#phone").attr("required","true");
 				$("#address").attr("required","true");
@@ -109,46 +131,50 @@
 			}
 		});
 		// on registration focus out get employee details through ajax call 
-		$("#registration").focusout( e =>{
+		// check if vehicle already exists
+		$('#vehicle_no').focusout(function(){
 			$.ajax({
 				type: "POST",
-				url : "${home}patient_details",
-				data : {"reg_no":$("#registration").val()},
+				url : "${home}check_vehicle_duplicacy",
+				data : {"vehicle_no":this.value},
 				success: function(result, status, xhr){
 					if(result != null && result != ""){
 						let json = JSON.parse(result);
-						console.log(json.name)
-						$("#name").attr("disabled","true");
-						$("#phone").attr("disabled","true");
-						$("#fgender").attr("disabled","true");
-						$("#mgender").attr("disabled","true");
-
-						$("#name").val(json.name);
-						$("#phone").val(json.phone);
-						$("#reg_no").val(json.reg_no);
-						let gender = json.gender;
-						if(gender == 'm'){
-							$("#mgender").prop("checked",true);
-							
+						if(json['vehicleStatus'] == "1"){
+							$("#vehicle_no").val(null);
+							alert("Vehicle already registered.");
 						}
-						else{
-							$("#fgender").prop("checked",true);
-						}
-					}
-					else{
-						$("#name").attr("disabled",false);
-						$("#phone").attr("disabled",false);
-						$("#fgender").attr("disabled",false);
-						$("#mgender").attr("disabled",false);
 					}
 				},
 				error : function(result,status,xhr){
-					$("#name").attr("disabled","false");
-					$("#phone").attr("disabled","false");
-					$("#fgender").attr("disabled","false");
-					$("#mgender").attr("disabled","false");
+					console.log("error");
 				}
 			});
+
+		});
+		
+		$('input[type="radio"][name="belongsTo"]').change( function(){
+				$("#client").attr("disabled",false);
+				$.ajax({
+					type: "POST",
+					url : "${home}client_list",
+					data : {"client_id":this.value},
+					success: function(result, status, xhr){
+						if(result != null && result != ""){
+							$("#client").empty();
+							let json = JSON.parse(result);
+							let array = Object.keys(json);
+							array.forEach(e=>{
+								$("#client")
+								.append("<option value="+e+">"+json[e]+"</option>");
+							});
+							
+						}
+					},
+					error : function(result,status,xhr){
+						console.log("error");
+					}
+				});
 		});
 	</script>
 </body>

@@ -112,7 +112,8 @@ public class MasterController {
 		object.put("vehicleStatus", vehicleStatus);
 		return object.toString();
 	}
-
+	
+	@RequestMapping("add_rate")
 	public String addRate(Model model) {
 		Rate rate = new Rate();
 		model.addAttribute("rate", rate);
@@ -123,7 +124,21 @@ public class MasterController {
 		return "add_rate";
 	}
 	
-	public String saveRate(Model model) {
-		return null;
+	@RequestMapping("save_rate")
+	public String saveRate(@ModelAttribute("rate") Rate rate, BindingResult result) {
+		String page = null;
+		if(result.hasErrors()) {
+			
+		}
+		else {
+			boolean rateSaved = service.saveRate(rate, 1);
+			if(rateSaved) {
+				page = "rate saved";
+			}
+			else {
+				page = "redirect:add_rate";
+			}
+		}
+		return "end";
 	}
 }
