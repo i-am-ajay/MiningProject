@@ -19,7 +19,7 @@ public class GeneralData {
 	private String category;
 	private String description;
 	private LocalDate createdOn;
-	private int createdBy;
+	private Integer createdBy;
 	private LocalDate endDate;
 	private Integer endedBy;
 	public String getCategory() {

@@ -29,9 +29,9 @@ public class Company {
 	private String companyEmail;
 	
 	private LocalDate creationDate;
-	private int createdBy;
+	private Integer createdBy;
 	private LocalDate endDate;
-	private int endedBy;
+	private Integer endedBy;
 	
 	@OneToMany(mappedBy="companyId")
 	private List<Vehicle> vehicle = new ArrayList<>();

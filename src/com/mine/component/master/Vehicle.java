@@ -19,8 +19,6 @@ public class Vehicle {
 	
 	private int tyreType; // 10,12,14,16,18,20,22
 	
-	private String belongsTo;
-	
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="client_id")
 	private Client clientId;
@@ -33,9 +31,9 @@ public class Vehicle {
 	
 	private LocalDate endDate;
 	
-	private int createdById;
+	private Integer createdById;
 	
-	private int endedById;
+	private Integer endedById;
 
 	public String getVehicleNo() {
 		return vehicleNo;
@@ -108,14 +106,4 @@ public class Vehicle {
 	public void setEndedById(int endedById) {
 		this.endedById = endedById;
 	}
-
-	public String getBelongsTo() {
-		return belongsTo;
-	}
-
-	public void setBelongsTo(String belongsTo){
-		this.belongsTo = belongsTo;
-	}
-	
-	
 }

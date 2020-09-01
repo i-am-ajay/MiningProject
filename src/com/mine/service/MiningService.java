@@ -27,6 +27,15 @@ public class MiningService {
 		return map;
 	}
 	
+	public Map<Integer,String> getClientList(Company company, int clientTypeId){
+		List<Client> clientList = dao.getClientList(company, clientTypeId);
+		Map<Integer,String> map = new HashMap<>();
+		for(Client client : clientList) {
+			map.put(client.getClientId(), client.getName());
+		}
+		return map;
+	}
+	
 	public void saveClient(Client client, int lookupId) {
 		dao.saveClient(client, lookupId);
 	}
@@ -37,5 +46,9 @@ public class MiningService {
 	
 	public void saveVehicle(Vehicle vehicle, int client, int company) {
 		dao.saveVehicle(vehicle, client, company);
+	}
+	
+	public boolean isVehicleRegistered(String vehicleNo) {
+		return dao.vehicleExists(vehicleNo);
 	}
 }

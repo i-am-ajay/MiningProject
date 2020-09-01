@@ -1,11 +1,14 @@
 package com.mine.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.hibernate.Session;
@@ -17,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mine.component.master.Client;
 import com.mine.component.master.Company;
 import com.mine.component.master.GeneralData;
+import com.mine.component.master.Rate;
 import com.mine.component.master.Vehicle;
 import com.mine.component.transaction.SupplyDetails;
 
@@ -85,22 +89,73 @@ public class MineDAO {
 		session.save(company);
 	}
 	
+	@Transactional
 	public void saveVehicle(Vehicle vehicle, int clientId, int companyId) {
 		Session session = factory.getCurrentSession();
 		
-		Client client = session.get(Client.class, clientId);
+		Client client = session.load(Client.class, clientId);
+		Company company = session.load(Company.class, companyId);
 		
 		vehicle.setClientId(client);
+		vehicle.setCompanyId(company);
+		vehicle.setCreatedById(1);
 		
 		session.save(vehicle);
 	}
 	
-	public void getClientList(Company company) {
+	@Transactional
+	public List<Client> getClientList(Company company, int clientTypeId) {
 		Session session = factory.getCurrentSession();
+		company = session.get(Company.class, 1);
+		GeneralData clientType = session.get(GeneralData.class, clientTypeId);
 		CriteriaBuilder builder = session.getCriteriaBuilder();
+		
+		List<Predicate> predicateList = new ArrayList<Predicate>();
 		
 		CriteriaQuery<Client> criteria = builder.createQuery(Client.class);
 		Root<Client> from = criteria.from(Client.class);
-		criteria.where(builder.and(builder.equal(from.get("company"),company),builder.isNull(from.get("endDate"))));
+		
+		predicateList.add(builder.equal(from.get("company"),company));
+		predicateList.add(builder.isNull(from.get("endDate")));
+		if(clientType != null) {
+			predicateList.add(builder.equal(from.get("clientType"), clientType));
+		}
+		Predicate[] predicateArray = predicateList.toArray(new Predicate[predicateList.size()]);
+		
+		criteria.where(predicateArray);
+		
+		TypedQuery<Client> clientQuery = session.createQuery(criteria);
+		List<Client> client = clientQuery.getResultList();
+		return client;
+	}
+	
+	@Transactional
+	public boolean vehicleExists(String vehicle_no) {
+		boolean vehicleRegistered = false;
+		Session session = factory.getCurrentSession();
+		Vehicle vehicle = session.get(Vehicle.class, vehicle_no);
+		if(vehicle != null) {
+			vehicleRegistered = true;
+		}
+		return vehicleRegistered;
+	}
+	
+	@Transactional
+	public double getRate(String tyreType, String truckType, String materialType, String qty) {
+		Session session = factory.getCurrentSession();
+		CriteriaBuilder builder = session.getCriteriaBuilder();
+		CriteriaQuery<Rate> criteria = builder.createQuery(Rate.class);
+		Root<Rate> rateRoot = criteria.from(Rate.class);
+		
+		criteria.where(builder.and(builder.equal(rateRoot.get("tyreType"),tyreType), 
+				builder.equal(rateRoot.get("truckType"), truckType)),
+				builder.equal(rateRoot.get("materialType"), materialType),
+				builder.equal(rateRoot.get("qty"), truckType),
+				builder.isNull(rateRoot.get("endDate")));
+		
+		TypedQuery<Rate> query = session.createQuery(criteria);
+		Rate rate = query.getSingleResult();
+		return rate.getRate();
+		
 	}
 }

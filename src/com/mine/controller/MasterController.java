@@ -1,5 +1,8 @@
 package com.mine.controller;
 
+import java.util.Map;
+
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -7,6 +10,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.mine.component.master.Client;
 import com.mine.component.master.Company;
@@ -67,5 +71,44 @@ public class MasterController {
 		model.addAttribute("vehicle_lookup",service.getLookupMap("vehicleType"));
 		model.addAttribute("tyre_lookup", service.getLookupMap("tyreType"));
 		return "vehicle";
+	}
+	
+	@RequestMapping("save_vehicle")
+	public String saveVehicle(@ModelAttribute("vehicle") Vehicle vehicle,BindingResult result, @RequestParam("client_name") int clientId) {
+		if(result.hasErrors()) {
+			System.out.println("Got some errors");
+		}
+		else {
+			service.saveVehicle(vehicle, clientId, 1);
+		}
+		return "end";
+	}
+	
+	// ajax methods
+	
+	@RequestMapping("client_list")
+	@ResponseBody public String getClientList(@RequestParam("client_id") int id) {
+		Map<Integer,String> clientMap = service.getClientList(company, id);
+		String dataString = null;
+		if(clientMap != null && clientMap.size()>0) {
+			JSONObject obj = new JSONObject();
+			for(Integer key : clientMap.keySet()) {
+				obj.put(key.toString(), clientMap.get(key));
+			}
+			dataString = obj.toString();
+		}
+		return dataString;
+	}
+	
+	@RequestMapping("check_vehicle_duplicacy")
+	public @ResponseBody String vehicleDuplicacyCheck(@RequestParam("vehicle_no") String vehicleNo) {
+		boolean vehicleExists = service.isVehicleRegistered(vehicleNo);
+		JSONObject object = new JSONObject();
+		String vehicleStatus = "2";
+		if(vehicleExists) {
+			vehicleStatus = "1";
+		}
+		object.put("vehicleStatus", vehicleStatus);
+		return object.toString();
 	}
 }

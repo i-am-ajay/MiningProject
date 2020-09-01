@@ -32,37 +32,37 @@
 					    	</div>
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Vehicle Type</label>
-					      		<select class="form-control form-control-sm" id="type" placeholder="Enter Vehicle Type" name="vehicle_type">
+					      		<f:select class="form-control form-control-sm" id="type" placeholder="Enter Vehicle Type" path="vehicleType">
 					      			<c:forEach var="item" items="${vehicle_lookup}">
-					      				<option value="${item.key }">${item.value}</option>
+					      				<f:option value="${item.value}">${item.value}</f:option>
 					      			</c:forEach>
-					      		</select>
+					      		</f:select>
 					    	</div>
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Tyre Type</label>
-					      		<select class="form-control form-control-sm" id="type" placeholder="Enter Tyre Type" name="tyre_type" >
+					      		<f:select class="form-control form-control-sm" id="type" placeholder="Enter Tyre Type" path="tyreType" >
 					      			<c:forEach var="item" items="${tyre_lookup}">
-					      				<option value="${item.key}">${item.value}</option>
+					      				<f:option value="${item.value}">${item.value}</f:option>
 					      			</c:forEach>
-					      		</select>
+					      		</f:select>
 					    	</div>
 					    	<div class="">
 					    		<div><label class="font-weight-bold">Vehicle Belongs To</label></div>
 					    		<div class="form-check form-check-inline">
-					    			<f:radiobutton class="form-check-input" value="self" path="belongsTo"/><label class="form-check-label">Self</label></div>
+					    			<input type="radio" class="form-check-input" value="1" id="belongs" name="belongsTo"/><label class="form-check-label">Self</label></div>
 					    		<div class="form-check form-check-inline">
-					    			<f:radiobutton class="form-check-input" value="owner" path="belongsTo"/><label class="form-check-label">Owner</label></div>
+					    			<input type="radio" class="form-check-input" value="2" id="belongs" name="belongsTo"/><label class="form-check-label">Owner</label></div>
 					    		<div class="form-check form-check-inline">
-					    			<f:radiobutton class="form-check-input" value="contractor" path="belongsTo"/><label class="form-check-label">Contractor</label></div>
+					    			<input type="radio" class="form-check-input" value="3" id="belongs" name="belongsTo"/><label class="form-check-label">Contractor</label></div>
 					    	</div>
 					    	<div class="form-group">
 					    		<div>
 					      			<label class="font-weight-bold">Vehicle Owner/Contractor</label>
 					      		</div>
-					      		<select class="form-control form-control-sm" id="type" placeholder="Enter Client Type" name="client_type">
-					      			<c:forEach var="item" items="${lookup}">
+					      		<select class="form-control form-control-sm" id="client" placeholder="Choose Client" name="client_name">
+					      			<%-- <c:forEach var="item" items="${lookup}">
 					      				<option value="${item.key}">${item.value}</option>
-					      			</c:forEach>
+					      			</c:forEach> --%>
 					      		</select>
 					    	</div>
 			  			</div>
@@ -86,6 +86,7 @@
 	<script>
 		$(document).ready(
 			function(){
+				$("#vehicle_no").attr("required","true");
 				$("#name").attr("required","true");
 				$("#phone").attr("required","true");
 				$("#address").attr("required","true");
@@ -112,46 +113,50 @@
 			}
 		});
 		// on registration focus out get employee details through ajax call 
-		$("#registration").focusout( e =>{
+		// check if vehicle already exists
+		$('#vehicle_no').focusout(function(){
 			$.ajax({
 				type: "POST",
-				url : "${home}patient_details",
-				data : {"reg_no":$("#registration").val()},
+				url : "${home}check_vehicle_duplicacy",
+				data : {"vehicle_no":this.value},
 				success: function(result, status, xhr){
 					if(result != null && result != ""){
 						let json = JSON.parse(result);
-						console.log(json.name)
-						$("#name").attr("disabled","true");
-						$("#phone").attr("disabled","true");
-						$("#fgender").attr("disabled","true");
-						$("#mgender").attr("disabled","true");
-
-						$("#name").val(json.name);
-						$("#phone").val(json.phone);
-						$("#reg_no").val(json.reg_no);
-						let gender = json.gender;
-						if(gender == 'm'){
-							$("#mgender").prop("checked",true);
-							
+						if(json['vehicleStatus'] == "1"){
+							$("#vehicle_no").val(null);
+							alert("Vehicle already registered.");
 						}
-						else{
-							$("#fgender").prop("checked",true);
-						}
-					}
-					else{
-						$("#name").attr("disabled",false);
-						$("#phone").attr("disabled",false);
-						$("#fgender").attr("disabled",false);
-						$("#mgender").attr("disabled",false);
 					}
 				},
 				error : function(result,status,xhr){
-					$("#name").attr("disabled","false");
-					$("#phone").attr("disabled","false");
-					$("#fgender").attr("disabled","false");
-					$("#mgender").attr("disabled","false");
+					console.log("error");
 				}
 			});
+
+		});
+		
+		$('input[type="radio"][name="belongsTo"]').change( function(){
+				$("#client").attr("disabled",false);
+				$.ajax({
+					type: "POST",
+					url : "${home}client_list",
+					data : {"client_id":this.value},
+					success: function(result, status, xhr){
+						if(result != null && result != ""){
+							$("#client").empty();
+							let json = JSON.parse(result);
+							let array = Object.keys(json);
+							array.forEach(e=>{
+								$("#client")
+								.append("<option value="+e+">"+json[e]+"</option>");
+							});
+							
+						}
+					},
+					error : function(result,status,xhr){
+						console.log("error");
+					}
+				});
 		});
 	</script>
 </body>

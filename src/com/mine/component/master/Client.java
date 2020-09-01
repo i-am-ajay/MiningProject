@@ -21,9 +21,9 @@ public class Client {
 	private String clientAddress;
 	private String clientContact;
 	private LocalDate creationDate;
-	private int createdBy;
+	private Integer createdBy;
 	private LocalDate endDate;
-	private int endedBy;
+	private Integer endedBy;
 	
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="type_id")
