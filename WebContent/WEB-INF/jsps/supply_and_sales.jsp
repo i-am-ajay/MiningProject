@@ -67,25 +67,45 @@
 					    </div>
 				 	</div>
 				    <div class="row">
-					    <div class="col-2">
-					    	<div class="form-group">
-					      		<label class="font-weight-bold">Payment</label>
-					      		<f:input id="tyre_type" class="form-control form-control-sm" placeholder="Vehicle Type" path="tyreType" />
+				    	<div class="col-2">
+				    		<div class="form-group">
+					      		<label class="font-weight-bold">Quantity</label>
+					      		<f:select class="form-control form-control-sm" id="type" placeholder="Enter Tyre Type" path="quantity" >
+					      			<c:forEach var="item" items="${quantity_lookup}">
+					      				<f:option value="${item.value}">${item.value}</f:option>
+					      			</c:forEach>
+					      		</f:select>
 					    	</div>
 					    </div>
-				  	<div class="col-2">
-					    <label class="font-weight-bold">Rate</label>
-					     <f:input id="rate" class="form-control form-control-sm" placeholder="Rate" path="rate" />
-			  		</div>
-			  		<div class="col-2">
-					    <label class="font-weight-bold">Discount</label>
-					     <f:input id="discount" class="form-control form-control-sm" placeholder="Discount" path="discount" />
-			  		</div>
-			  		<div class="col-2"></div>
-			  		<div class="col-4">
-			  		<label class="font-weight-bold"></label>
-					    <input type="submit" class="btn btn-small btn-secondary btn-block mx-auto" value="Save Client"/>
-			  		</div>
+					    <div class="col-2">
+					    	<div class="form-group">
+					      		<label class="font-weight-bold">Payment Type</label>
+					      		<f:select class="form-control form-control-sm" id="type" placeholder="Choose Payment" path="paymentType" >
+					      			<f:option value="cash">Cash</f:option>
+					      			<f:option value="credit">Credit</f:option>
+					      		</f:select>
+					    	</div>
+					    </div>
+				  		<div class="col-2">
+				  			<div class="form-group">
+					    		<label class="font-weight-bold">Rate</label>
+					     		<f:input id="rate" class="form-control form-control-sm" placeholder="Rate" path="rate" />
+			  				</div>
+			  			</div>
+			  			<div class="col-2">
+			  				<div class="form-group">
+					    		<label class="font-weight-bold">Discount</label>
+					     		<f:input id="discount" class="form-control form-control-sm" placeholder="Discount" path="discount" />
+			  				</div>
+			  			</div>
+			  			<div class="col-1"></div>
+			  			<div class="col-3">
+			  				<div class="form-group">
+			  					<label class=""></label>
+					    		<input type="submit" class="mt-2 btn btn-sm btn-secondary btn-block mx-auto" value="Save Client"/>
+					    	</div>
+					    </div>
+				  </div>
 			  	</div>
 			</div>
 		</div>
@@ -140,10 +160,9 @@
 				success: function(result, status, xhr){
 					if(result != null && result != ""){
 						let json = JSON.parse(result);
-						if(json['vehicleStatus'] == "1"){
-							$("#vehicle_no").val(null);
-							alert("Vehicle already registered.");
-						}
+						$("#vehicle_type").val(json['vehicle_type']));
+						$("#tyre_type").val(json['tyre_type']);
+						$("#discount").val(json['discount']);
 					}
 				},
 				error : function(result,status,xhr){

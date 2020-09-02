@@ -50,6 +50,13 @@
 					      			</c:forEach>
 					      		</select>
 					    	</div>
+					    	
+					    	<div class="form-group">
+					    		<div>
+					      			<label class="font-weight-bold">Client Discount/Commission</label>
+					      		</div>
+					      		<f:input class="form-control form-control-sm" id="address" placeholder="Enter Discount" path="discount"/>
+					    	</div>
 			  			</div>
 			  		</div>
 			  	</div>

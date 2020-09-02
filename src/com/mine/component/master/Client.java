@@ -18,6 +18,8 @@ public class Client {
 	
 	private String name;
 	
+	private double discount;
+	
 	private String clientAddress;
 	private String clientContact;
 	private LocalDate creationDate;
@@ -109,5 +111,11 @@ public class Client {
 		return clientId;
 	}
 	
+	public void setDiscount(double discount) {
+		this.discount = discount;
+	}
 	
+	public double getDiscount() {
+		return discount;
+	}
 }

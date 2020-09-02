@@ -81,7 +81,9 @@ public class MineDAO {
 	public void saveClient(Client client, int lookupId) {
 		Session session = factory.getCurrentSession();
 		GeneralData data = session.get(GeneralData.class, lookupId);
+		Company company = session.get(Company.class, 1);
 		client.setClientType(data);
+		client.setCompany(company);
 		session.save(data);
 	}
 	

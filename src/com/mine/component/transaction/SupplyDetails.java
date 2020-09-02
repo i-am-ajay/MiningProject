@@ -22,7 +22,7 @@ public class SupplyDetails {
 	private Vehicle vehicle;
 	private String driverName;
 	private String driverNumber;
-	private String qunatity;
+	private String quantity;
 	private String material;
 	@Transient
 	private String vehicleType;
@@ -56,11 +56,11 @@ public class SupplyDetails {
 	public void setDriverNumber(String driverNumber) {
 		this.driverNumber = driverNumber;
 	}
-	public String getQunatity() {
-		return qunatity;
+	public String getQuantity() {
+		return quantity;
 	}
-	public void setQunatity(String qunatity) {
-		this.qunatity = qunatity;
+	public void setQuantity(String qunatity) {
+		this.quantity = qunatity;
 	}
 	public String getMaterial() {
 		return material;
@@ -118,9 +118,5 @@ public class SupplyDetails {
 	}
 	public void setTyreType(String tyreType) {
 		this.tyreType = tyreType;
-	}
-	
-	// Transient fields
-	
-	
+	}	
 }

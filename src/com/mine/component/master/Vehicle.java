@@ -19,6 +19,8 @@ public class Vehicle {
 	
 	private int tyreType; // 10,12,14,16,18,20,22
 	
+	private double discount; 
+	
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="client_id")
 	private Client clientId;
@@ -105,5 +107,13 @@ public class Vehicle {
 
 	public void setEndedById(int endedById) {
 		this.endedById = endedById;
+	}
+	
+	public void setDiscount(double discount) {
+		this.discount = discount;
+	}
+	
+	public double getDiscount() {
+		return this.discount;
 	}
 }

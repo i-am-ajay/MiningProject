@@ -59,6 +59,10 @@ public class MiningService {
 		
 	}
 	
+	public Vehicle getVehicle(String vehicleNo) {
+		return dao.getVehicle(vehicleNo);
+	}
+	
 	public void saveSupplyDetails(SupplyDetails supplyDetails, String vehicleId) {
 		dao.addSales(supplyDetails, vehicleId);
 	}
