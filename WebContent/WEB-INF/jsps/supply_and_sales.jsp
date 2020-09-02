@@ -155,12 +155,12 @@
 		$('#vehicle_no').focusout(function(){
 			$.ajax({
 				type: "POST",
-				url : "${home}check_vehicle_duplicacy",
+				url : "${home}fetch_vehicle",
 				data : {"vehicle_no":this.value},
 				success: function(result, status, xhr){
 					if(result != null && result != ""){
 						let json = JSON.parse(result);
-						$("#vehicle_type").val(json['vehicle_type']));
+						$("#vehicle_type").val(json['vehicle_type']);
 						$("#tyre_type").val(json['tyre_type']);
 						$("#discount").val(json['discount']);
 					}
