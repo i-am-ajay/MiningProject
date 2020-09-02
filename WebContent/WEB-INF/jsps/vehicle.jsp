@@ -15,7 +15,7 @@
 </head>
 <body class=mt-1>
 	<div class="container p-2 m-auto">
-		<h4 class="border-bottom border-danger m-3 pb-2 display-4" id="form_title">Vehicle Creation</h4>
+		<h4 class="border-bottom border-danger mx-3 pb-2 display-4" id="form_title">Vehicle Creation</h4>
 		<f:form method="POST" modelAttribute="vehicle" action="save_vehicle">
 		   <!-- Patient Vitals -->
 		   <!--  <h4 class="border-bottom m-3 text-muted pb-2" id="form_title">Patient Report Card</h4>-->
@@ -64,6 +64,12 @@
 					      				<option value="${item.key}">${item.value}</option>
 					      			</c:forEach> --%>
 					      		</select>
+					    	</div>
+					    	<div class="form-group">
+					    		<div>
+					      			<label class="font-weight-bold">Discount</label>
+					      		</div>
+					      		<f:input id="vehicle_no" class="form-control form-control-sm" placeholder="Enter Vehicle No" path="discount" />
 					    	</div>
 			  			</div>
 			  		</div>
@@ -142,8 +148,8 @@
 					url : "${home}client_list",
 					data : {"client_id":this.value},
 					success: function(result, status, xhr){
+						$("#client").empty();
 						if(result != null && result != ""){
-							$("#client").empty();
 							let json = JSON.parse(result);
 							let array = Object.keys(json);
 							array.forEach(e=>{

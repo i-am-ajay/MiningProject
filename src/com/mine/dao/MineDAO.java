@@ -28,7 +28,6 @@ import com.mine.component.transaction.SupplyDetails;
 
 @Repository
 public class MineDAO {
-	
 	@Autowired
 	SessionFactory factory;
 	/**
@@ -90,6 +89,7 @@ public class MineDAO {
 	@Transactional
 	public void saveCompany(Company company) {
 		Session session = factory.getCurrentSession();
+		company.setCreatedBy(1);
 		session.save(company);
 	}
 	
