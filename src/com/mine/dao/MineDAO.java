@@ -1,5 +1,7 @@
 package com.mine.dao;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +18,7 @@ import javax.persistence.criteria.Root;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,8 +38,24 @@ public class MineDAO {
 	 * @param vehicleNo
 	 * @return Vehicle
 	 */
+	@Transactional
 	public Vehicle getVehicle(String vehicleNo) {
-		return null;
+		Session session = factory.getCurrentSession();
+		Vehicle vehicle = session.get(Vehicle.class, vehicleNo);
+		return vehicle;
+	}
+	
+	@Transactional
+	public List<SupplyDetails> getSaleData(int numRecords, LocalDateTime startDate, LocalDateTime endDate){
+		Session session = factory.getCurrentSession();
+		CriteriaBuilder builder = session.getCriteriaBuilder();
+		CriteriaQuery<SupplyDetails> query = builder.createQuery(SupplyDetails.class);
+		Root<SupplyDetails> from = query.from(SupplyDetails.class);
+		query.where(builder.between(from.get("salesDate"), startDate, endDate)).orderBy(builder.asc(from.get("salesDate")));
+		
+		TypedQuery<SupplyDetails> details = session.createQuery(query);
+		details.setMaxResults(10);
+		return details.getResultList();
 	}
 	
 	/**

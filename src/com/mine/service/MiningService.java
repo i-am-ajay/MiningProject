@@ -1,5 +1,6 @@
 package com.mine.service;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,5 +66,14 @@ public class MiningService {
 	
 	public void saveSupplyDetails(SupplyDetails supplyDetails, String vehicleId) {
 		dao.addSales(supplyDetails, vehicleId);
+	}
+	
+	// get data of supply
+	
+	public List<SupplyDetails> getTop10Records(){
+		LocalDateTime startDate = LocalDateTime.now().minusDays(1);
+		LocalDateTime endDate = LocalDateTime.now();
+		return dao.getSaleData(10, startDate, endDate);
+		
 	}
 }

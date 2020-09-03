@@ -31,12 +31,14 @@ public class MainController {
 		model.addAttribute("supply", details);
 		model.addAttribute("material_lookup", service.getLookupMap("materialType"));
 		model.addAttribute("quantity_lookup", service.getLookupMap("quantity"));
+		model.addAttribute("data_list",service.getTop10Records());
 		return "supply_and_sales";
 	}
 	
 	@RequestMapping("fetch_vehicle")
 	public @ResponseBody String fetchVehicleDetails(@RequestParam("vehicle_no") String vehicleNo) {
 		Vehicle vehicle = service.getVehicle(vehicleNo);
+		System.out.println(vehicle);
 		String stringObj = null;
 		if(vehicle != null) {
 			JSONObject object = new JSONObject();

@@ -1,7 +1,9 @@
 package com.mine.component.transaction;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -34,9 +36,10 @@ public class SupplyDetails {
 	private double discount;
 	private double rate;
 	
+	@Column(name="sold_by")
 	private int soldBy;
-	
-	private LocalDate salesDate;
+	@Column(name="sales_date")
+	private LocalDateTime salesDate;
 	
 	public Vehicle getVehicle() {
 		return vehicle;
@@ -101,10 +104,10 @@ public class SupplyDetails {
 	public void setSoldBy(int soldBy) {
 		this.soldBy = soldBy;
 	}
-	public LocalDate getSalesDate() {
+	public LocalDateTime getSalesDate() {
 		return salesDate;
 	}
-	public void setSalesDate(LocalDate salesDate) {
+	public void setSalesDate(LocalDateTime salesDate) {
 		this.salesDate = salesDate;
 	}
 	public String getVehicleType() {

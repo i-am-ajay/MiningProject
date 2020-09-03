@@ -11,7 +11,7 @@
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/static_resources/css/style.css" >
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/static_resources/css/style.css" >
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" />
 </head>
 <body class=mt-1>
 	<div class="px-2 pb-2 m-auto">
@@ -114,6 +114,41 @@
 	<input type="hidden" id="role" value="${role}" />
 	</f:form>
 	</div>
+	<div id="table_section">
+		<table id="data_table" class="display mx-auto" style="width:90%">
+        <thead>
+            <tr>
+                <th>Driver Name</th>
+                <th>Driver Contact</th>
+                <th>Vehicle No</th>
+                <th>Material</th>
+                <th>Quantity</th>
+                <th>Payment Type</th>
+                <th>Rate</th>
+                <th>Discount</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+        	<c:forEach var="item" items="${data_list}">
+	            <tr>
+	                <td>${item.driverName}</td>
+	                <td>${item.driverNumber}</td>
+	                <td>${item.vehicle.vehicleNo}</td>
+	                <td>${item.material }</td>
+	                <td>${item.quantity}</td>
+	                <td>${item.paymentType }</td>
+	                <td>${item.material }</td>
+	                <td>${item.quantity}</td>
+	                <td>${item.paymentType }</td>
+	                <td>${item.rate}</td>
+	                <td>${item.discount}</td>
+	                <td>${item.date}</td>
+	            </tr>
+            </c:forEach>
+        </tbody>
+        </table>
+	</div>
 	<!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
@@ -125,8 +160,8 @@
 		$(document).ready(
 			function(){
 				$("#vehicle_no").attr("required","true");
-				$("#name").attr("required","true");
-				$("#phone").attr("required","true");
+				$("#driver_name").attr("required","true");
+				$("#driver_number").attr("required","true");
 				$("#address").attr("required","true");
 			});
 		$(document).ready(e => {
@@ -153,6 +188,7 @@
 		// on registration focus out get employee details through ajax call 
 		// check if vehicle already exists
 		$('#vehicle_no').focusout(function(){
+			alert('hello');
 			$.ajax({
 				type: "POST",
 				url : "${home}fetch_vehicle",
@@ -195,6 +231,15 @@
 					}
 				});
 		});
+
+	// data table script
+		$(document).ready(function() {
+    	$('#data_table').DataTable( {
+        	"scrollY":        "200px",
+        	"scrollCollapse": true,
+        	"paging":         false
+    	} );
+	} );
 	</script>
 </body>
 </html>
