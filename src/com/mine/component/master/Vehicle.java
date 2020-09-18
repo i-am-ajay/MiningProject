@@ -2,6 +2,7 @@ package com.mine.component.master;
 
 import java.time.LocalDate;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -19,6 +20,7 @@ public class Vehicle {
 	
 	private int tyreType; // 10,12,14,16,18,20,22
 	
+	@Column(columnDefinition="double(10,2) default 0.0")
 	private double discount; 
 	
 	@ManyToOne(fetch=FetchType.EAGER)

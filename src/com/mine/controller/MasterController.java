@@ -42,7 +42,7 @@ public class MasterController {
 			System.out.println(id);
 			service.saveClient(client, id);
 		}
-		return "client_saved";
+		return "end";
 	}
 	
 	@RequestMapping("company_creation")
@@ -60,13 +60,14 @@ public class MasterController {
 		else {
 			service.saveCompany(company);
 		}
-		return "company_saved";
+		return "end";
 	}
 	
 	@RequestMapping("create_vehicle")
 	public String createVehicle(Model model) {
 		Vehicle vehicle = new Vehicle();
 		vehicle.setCompanyId(company);
+		vehicle.setDiscount(0.0);
 		model.addAttribute("vehicle",vehicle);
 		model.addAttribute("lookup",service.getLookupMap("clientType"));
 		model.addAttribute("vehicle_lookup",service.getLookupMap("vehicleType"));

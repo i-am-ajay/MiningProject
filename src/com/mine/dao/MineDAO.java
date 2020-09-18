@@ -102,7 +102,9 @@ public class MineDAO {
 		Company company = session.get(Company.class, 1);
 		client.setClientType(data);
 		client.setCompany(company);
-		session.save(data);
+		client.setCreatedBy(1);
+		session.save(client);
+		System.out.println("client data saved");
 	}
 	
 	@Transactional

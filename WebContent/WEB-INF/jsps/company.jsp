@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Patient Analysis</title>
+<title>Create Company</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/static_resources/css/style.css" >
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/static_resources/css/style.css" >
@@ -25,7 +25,7 @@
 		   <div class="card text-dark bg-light px-3 mb-3 w-50 mx-auto" >
   				<div class="card-body">
   					<div class="row">
-  						<div class="col-md-6">
+  						<div class="col">
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Company Name</label>
 					      		<f:input class="form-control form-control-sm" id="name" placeholder="Enter Name" path="name"/>

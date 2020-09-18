@@ -50,4 +50,9 @@ public class MainController {
 		}
 		return stringObj;
 	}
+	
+	@RequestMapping("admin_panel")
+	public String admin() {
+		return "admin_panel";
+	}
 }
