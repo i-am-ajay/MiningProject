@@ -11,7 +11,9 @@ import org.springframework.stereotype.Service;
 import com.mine.component.master.Client;
 import com.mine.component.master.Company;
 import com.mine.component.master.GeneralData;
+import com.mine.component.master.Parameters;
 import com.mine.component.master.Rate;
+import com.mine.component.master.Token;
 import com.mine.component.master.Vehicle;
 import com.mine.component.transaction.SupplyDetails;
 import com.mine.dao.MineDAO;
@@ -64,8 +66,8 @@ public class MiningService {
 		return dao.getVehicle(vehicleNo);
 	}
 	
-	public void saveSupplyDetails(SupplyDetails supplyDetails, String vehicleId) {
-		dao.addSales(supplyDetails, vehicleId);
+	public void saveSupplyDetails(SupplyDetails supplyDetails) {
+		dao.addSales(supplyDetails);
 	}
 	
 	// get data of supply
@@ -73,7 +75,23 @@ public class MiningService {
 	public List<SupplyDetails> getTop10Records(){
 		LocalDateTime startDate = LocalDateTime.now().minusDays(1);
 		LocalDateTime endDate = LocalDateTime.now();
-		return dao.getSaleData(10, startDate, endDate);
+		return dao.getSaleData(8, startDate, endDate);
 		
+	}
+	
+	public double getRate(String tyreType, String materialType, String truckType, String quantity, int companyId) {
+		return dao.getRate(tyreType, truckType, materialType, quantity,companyId);
+	}
+	
+	public Parameters getParameters() {
+		return dao.getParameters();
+	}
+	
+	public Token getToken() {
+		return dao.getToken();
+	}
+	
+	public void updateToken(Token token) {
+		dao.updateToken(token);
 	}
 }

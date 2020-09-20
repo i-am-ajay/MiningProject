@@ -105,7 +105,7 @@
 		});
 		
 		$("#sales").click( e=>{
-			window.location.href ="add_sales";
+			window.location.href ="display_sales_page";
 		});
 
 		$(document).ready( e=>{

@@ -16,7 +16,7 @@
 <body class=mt-1>
 	<div class="px-2 pb-2 m-auto">
 		<h4 class="border-bottom border-danger mt-1 mx-3 mb-3 pb-2 display-5" id="form_title">Supply And Sales</h4>
-		<f:form method="POST" modelAttribute="supply" action="save_supply">
+		<f:form method="POST" modelAttribute="supply" action="save_supply" id="sales_form">
 		   <!-- Patient Vitals -->
 		   <!--  <h4 class="border-bottom m-3 text-muted pb-2" id="form_title">Patient Report Card</h4>-->
 		   <!-- Card Vitals -->
@@ -46,7 +46,7 @@
 					    <div class="col-2">
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Vehicle Type</label>
-					      		<f:input id="vehicle_type" class="form-control form-control-sm" placeholder="Tyre Type" path="vehicle.vehicleType" />
+					      		<f:input id="vehicle_type" class="form-control form-control-sm" placeholder="Vehicle Type" path="vehicle.vehicleType" />
 					    	</div>
 					    </div>
 					    <div class="col-2">
@@ -58,7 +58,7 @@
 					     <div class="col-2">
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Material</label>
-					      		<f:select class="form-control form-control-sm" id="type" placeholder="Enter Tyre Type" path="material" >
+					      		<f:select class="form-control form-control-sm" id="material_type" placeholder="Enter Material Type" path="material" >
 					      			<c:forEach var="item" items="${material_lookup}">
 					      				<f:option value="${item.value}">${item.value}</f:option>
 					      			</c:forEach>
@@ -70,7 +70,7 @@
 				    	<div class="col-2">
 				    		<div class="form-group">
 					      		<label class="font-weight-bold">Quantity</label>
-					      		<f:select class="form-control form-control-sm" id="type" placeholder="Enter Tyre Type" path="quantity" >
+					      		<f:select class="form-control form-control-sm" id="quantity" placeholder="Enter Tyre Type" path="quantity" >
 					      			<c:forEach var="item" items="${quantity_lookup}">
 					      				<f:option value="${item.value}">${item.value}</f:option>
 					      			</c:forEach>
@@ -80,7 +80,7 @@
 					    <div class="col-2">
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Payment Type</label>
-					      		<f:select class="form-control form-control-sm" id="type" placeholder="Choose Payment" path="paymentType" >
+					      		<f:select class="form-control form-control-sm" id="payment_type" placeholder="Choose Payment" path="paymentType" >
 					      			<f:option value="cash">Cash</f:option>
 					      			<f:option value="credit">Credit</f:option>
 					      		</f:select>
@@ -98,13 +98,38 @@
 					     		<f:input id="discount" class="form-control form-control-sm" placeholder="Discount" path="discount" />
 			  				</div>
 			  			</div>
-			  			<div class="col-1"></div>
-			  			<div class="col-3">
+			  			<div class="col-2">
 			  				<div class="form-group">
-			  					<label class=""></label>
-					    		<input type="submit" class="mt-2 btn btn-sm btn-secondary btn-block mx-auto" value="Save Client"/>
-					    	</div>
-					    </div>
+					    		<label class="font-weight-bold">Final Rate</label>
+					     		<f:input id="final_rate" class="form-control form-control-sm" placeholder="Final Rate" path="finalRate"/>
+			  				</div>
+			  			</div>
+			  			<div class="col-2">
+			  				
+			  			</div>
+				  </div>
+				  <div class="row">
+				  	<div class="col-2">
+				  		<div class="form-group">
+		
+					    		<label class="font-weight-bold form-check-label">Non Royalty</label>
+					     		<input type="checkbox" id="nrl" class="form-check-input mx-4 mt-2" value=true/>
+					     		<f:input type="hidden" id ="royalty_save" path="nrl" />
+					     		<input type="hidden" id="royalty" value="${parameter.royalty}" />
+			  			</div>
+				  	</div>
+				  	<div class="col-2">
+				  		<div class="form-group">
+					    		<label class="font-weight-bold form-check-label">Driver Return</label>
+					     		<input type="checkbox" id="driver_return" class="form-check-input mx-4 mt-2" value=true/>
+					     		<f:input type="hidden" id="driver_return_save" path = "driverReturn" />
+					     		<input type="hidden" id="hidden_driver_return" value="${parameter.driverReturn}" />
+			  			</div>
+				  	</div> 
+				  	<div class="col-2"></div>
+				  	<div class="col-4">
+				  		<input type="submit" class="btn btn-sm btn-secondary btn-block mx-auto" value="Save"/> 
+				  	</div>
 				  </div>
 			  	</div>
 			</div>
@@ -115,35 +140,40 @@
 	</f:form>
 	</div>
 	<div id="table_section">
-		<table id="data_table" class="display mx-auto" style="width:90%">
-        <thead>
+		<table id="data_table" class="table table-striped table-sm display mx-auto" style="width:90%">
+        <thead class="thead-dark">
             <tr>
+            	<th>Token No</th>
                 <th>Driver Name</th>
                 <th>Driver Contact</th>
                 <th>Vehicle No</th>
+                <th>Vehicle Type</th>
+                <th>Vehicle Tyre</th>
                 <th>Material</th>
                 <th>Quantity</th>
                 <th>Payment Type</th>
                 <th>Rate</th>
                 <th>Discount</th>
+                <th>Final Rate</th>
                 <th>Date</th>
             </tr>
         </thead>
         <tbody>
         	<c:forEach var="item" items="${data_list}">
 	            <tr>
+	            	<td>${item.token}</td>
 	                <td>${item.driverName}</td>
 	                <td>${item.driverNumber}</td>
 	                <td>${item.vehicle.vehicleNo}</td>
-	                <td>${item.material }</td>
-	                <td>${item.quantity}</td>
-	                <td>${item.paymentType }</td>
+	                <td>${item.vehicle.vehicleType}</td>
+	                <td>${item.vehicle.tyreType}</td>
 	                <td>${item.material }</td>
 	                <td>${item.quantity}</td>
 	                <td>${item.paymentType }</td>
 	                <td>${item.rate}</td>
 	                <td>${item.discount}</td>
-	                <td>${item.date}</td>
+	                <td>${item.finalRate}</td>
+	                <td>${item.salesDate}</td>
 	            </tr>
             </c:forEach>
         </tbody>
@@ -163,6 +193,7 @@
 				$("#driver_name").attr("required","true");
 				$("#driver_number").attr("required","true");
 				$("#address").attr("required","true");
+				$("#final_rate").attr("readonly",true);
 			});
 		$(document).ready(e => {
 			$("#home_icon").hover( e => {
@@ -188,7 +219,6 @@
 		// on registration focus out get employee details through ajax call 
 		// check if vehicle already exists
 		$('#vehicle_no').focusout(function(){
-			alert('hello');
 			$.ajax({
 				type: "POST",
 				url : "${home}fetch_vehicle",
@@ -199,6 +229,13 @@
 						$("#vehicle_type").val(json['vehicle_type']);
 						$("#tyre_type").val(json['tyre_type']);
 						$("#discount").val(json['discount']);
+						
+						$("#vehicle_type").attr("readonly",true);
+						$("#tyre_type").attr("readonly",true);
+
+					}
+					else{
+						alert("This vehicle is not registered.");
 					}
 				},
 				error : function(result,status,xhr){
@@ -240,6 +277,88 @@
         	"paging":         false
     	} );
 	} );
+	
+	// driver return logic. If discount enabled then driver return is 0. If there is no discount driver 
+	// driver return is given.
+	
+	// find rate of vehicle.
+	var driverReturnRemoved = false;
+	
+	$("#driver_return").click(e =>{
+		if($("#driver_return").prop("checked")){
+			driverReturnRemoved = false;
+		}
+		else{
+			driverReturnRemoved = true;
+		}
+		console.log(driverReturnRemoved);
+	});
+	
+	$("#rate").focusout(e =>{
+		// make sure all the required fields are populated. 
+		let vehicleType = $("#vehicle_type").val();
+		let tyreType = $("#tyre_type").val();	
+		if(!(vehicleType) || !(tyreType)){
+			alert("Please select a Vehicle.");
+			return 1; 
+		}
+		if($("#discount").val() != 0){
+			$("#driver_return").attr("disabled",true);
+			$("#driver_return_save").val(0.0);
+		}
+		else{
+			if(driverReturnRemoved){
+				$("#driver_return").prop("checked",false);
+				$("#driver_return").attr("disabled",false);
+				$("#driver_return_save").val(0.0);
+			}
+			else{
+				$("#driver_return").prop("checked",true);
+				$("#driver_return").attr("disabled",false);
+				$("#driver_return_save").val($("#hidden_driver_return").val());
+			}
+		}
+		// fetch rate of vehicle.
+		$.ajax({
+			url : "${home}get_rate",
+			data: {"tyre_type":tyreType,
+					"vehicle_type": vehicleType,
+					"material_type":$("#material_type").val(),
+					"quantity" : $("#quantity").val()
+			},
+			success: function(result, status, xhr){
+				if(result != null || result != ''){
+					result = JSON.parse(result);
+					let rate = result['rate'];
+					let discount = $("#discount").val();
+					// check if nrl is selected.
+					if($("#nrl").prop("checked")){
+						rate = rate - $("#royalty").val();
+						$("#royalty_save").val($("#royalty").val());
+					}
+					else{
+						$("#royalty_save").val(0.0);
+					}
+					
+					$("#rate").val(rate || '0.0');
+					
+					if(rate <= 0){
+						alert("Rate can not be 0 or -ve. Kindly select your parameters again.");
+						$("#sales_form").trigger("reset");
+						return 1;
+					}
+					
+					let finalRate = rate - discount;
+					if(finalRate < 0){
+						alert("Final Rate can't be negative, Kindly select your parameters again.");
+						$("#sales_form").trigger("reset");
+						return 1;
+					}
+					$("#final_rate").val(finalRate);
+				}
+			}
+		});
+	});
 	</script>
 </body>
 </html>

@@ -142,4 +142,10 @@ public class MasterController {
 		}
 		return "end";
 	}
+	
+	// Admin panel control.
+	@RequestMapping("admin_panel")
+	public String admin() {
+		return "admin_panel";
+	}
 }

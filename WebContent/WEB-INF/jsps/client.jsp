@@ -46,7 +46,9 @@
 					      		</div>
 					      		<select class="form-control form-control-sm" id="type" placeholder="Enter Client Type" name="client_type">
 					      			<c:forEach var="item" items="${lookup}">
-					      				<option value="${item.key}">${item.value}</option>
+					      				<c:if test = "${!item.value.equalsIgnoreCase('self')}">
+					      					<option value="${item.key}">${item.value}</option>
+					      				</c:if>
 					      			</c:forEach>
 					      		</select>
 					    	</div>

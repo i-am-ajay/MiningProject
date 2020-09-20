@@ -2,6 +2,7 @@ package com.mine.component.master;
 
 import java.time.LocalDate;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -18,6 +19,9 @@ public class Client {
 	
 	private String name;
 	
+	// For owner it will be discount, for contractor it will be commission and won't be deducted 
+	// from vehicle rate.
+	@Column(columnDefinition="double(10,2) default 0.0")
 	private double discount;
 	
 	private String clientAddress;
@@ -27,7 +31,7 @@ public class Client {
 	private LocalDate endDate;
 	private Integer endedBy;
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="type_id")
 	private GeneralData clientType;
 	

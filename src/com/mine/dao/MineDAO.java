@@ -25,7 +25,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mine.component.master.Client;
 import com.mine.component.master.Company;
 import com.mine.component.master.GeneralData;
+import com.mine.component.master.Parameters;
 import com.mine.component.master.Rate;
+import com.mine.component.master.Token;
 import com.mine.component.master.Vehicle;
 import com.mine.component.transaction.SupplyDetails;
 
@@ -51,7 +53,7 @@ public class MineDAO {
 		CriteriaBuilder builder = session.getCriteriaBuilder();
 		CriteriaQuery<SupplyDetails> query = builder.createQuery(SupplyDetails.class);
 		Root<SupplyDetails> from = query.from(SupplyDetails.class);
-		query.where(builder.between(from.get("salesDate"), startDate, endDate)).orderBy(builder.asc(from.get("salesDate")));
+		query.where(builder.between(from.get("salesDate"), startDate, endDate)).orderBy(builder.desc(from.get("salesDate")));
 		
 		TypedQuery<SupplyDetails> details = session.createQuery(query);
 		details.setMaxResults(10);
@@ -202,7 +204,7 @@ public class MineDAO {
 	}
 	
 	@Transactional
-	public double  getRate(String tyreType, String materialType, String truckType, String quantity, int companyId) {
+	public double  getRate(String tyreType, String truckType,String materialType, String quantity, int companyId) {
 		double rate = 0.0;
 		Session session = factory.getCurrentSession();
 		Company company = session.load(Company.class, companyId);
@@ -218,24 +220,67 @@ public class MineDAO {
 				builder.isNull(from.get("endDate")),
 				builder.equal(from.get("company"), company)
 		));
-		
+		//System.out.println(tyreType+" "+materialType+" "+truckType+" "+quantity+" "+company);
 		TypedQuery<Rate> rateQuery = session.createQuery(criteria);
 		Rate rateObj = null;
 		try {
 			rateObj = rateQuery.getSingleResult();
 			rate = rateObj.getRate();
 		}
+		
 		catch(NoResultException | NonUniqueResultException | IllegalStateException ex) {
-			
+			ex.printStackTrace(); 
 		}
 		return rate;
 	}
 	
+	// DAO for saving sale details in db.
 	@Transactional
-	public void addSales(SupplyDetails details, String vehicleId) {
+	public void addSales(SupplyDetails details) {
 		Session session = factory.getCurrentSession();
-		Vehicle vehicle = session.get(Vehicle.class, vehicleId);
+		Vehicle vehicle = session.get(Vehicle.class, details.getVehicle().getVehicleNo());
 		details.setVehicle(vehicle);
 		session.save(details);
 	}
+	
+	/* pull parameters from the database. In parameter table there will be only single active record. Method
+	 * will pull that record which doesn't have an end date.
+	 */
+	@Transactional
+	public Parameters getParameters() {
+		Session session = factory.getCurrentSession();
+		TypedQuery<Parameters> parameterQuery = session.createQuery("FROM Parameters p WHERE p.endDate is null", Parameters.class);
+		Parameters parameter = null;
+		try {
+			parameter = parameterQuery.getSingleResult();
+			System.out.println(parameter.getRoyalty());
+		}
+		catch(Exception ex) {
+			System.out.println(ex);
+			// write code to check why their are multiple active parameters and disable parameter except latest one.
+		}
+		return parameter;
+	}
+	
+	@Transactional
+	public Token getToken() {
+		Session session = factory.getCurrentSession();
+		TypedQuery<Token> tokenQuery = session.createQuery("from Token", Token.class);
+		Token token = null;
+		try {
+			token = tokenQuery.getSingleResult();
+		}
+		catch(Exception ex) {
+			System.out.println(ex);
+		}
+		return token;
+	}
+	
+	@Transactional
+	public void updateToken(Token token) {
+		Session session = factory.getCurrentSession();
+		session.update(token);
+	}
+	
+	
 }

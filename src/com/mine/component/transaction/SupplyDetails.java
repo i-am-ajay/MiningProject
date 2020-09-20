@@ -12,6 +12,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
+
 import com.mine.component.master.Vehicle;
 
 @Entity
@@ -19,6 +22,9 @@ public class SupplyDetails {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
+	
+	private String token;
+	
 	@ManyToOne
 	@JoinColumn(name="vehicle_id")
 	private Vehicle vehicle;
@@ -32,13 +38,20 @@ public class SupplyDetails {
 	private String tyreType;
 	
 	private String paymentType;
-	private boolean driverReturn;
+	private double driverReturn;
 	private double discount;
 	private double rate;
 	
+	@Column(name="final_rate")
+	private double finalRate;
+	
+	private double nrl;
+	
 	@Column(name="sold_by")
 	private int soldBy;
-	@Column(name="sales_date")
+	
+	@Generated(GenerationTime.INSERT)
+	@Column(name="sales_date", insertable=false, updatable=false)
 	private LocalDateTime salesDate;
 	
 	public Vehicle getVehicle() {
@@ -77,10 +90,10 @@ public class SupplyDetails {
 	public void setPaymentType(String paymentType) {
 		this.paymentType = paymentType;
 	}
-	public boolean isDriverReturn() {
+	public double getDriverReturn() {
 		return driverReturn;
 	}
-	public void setDriverReturn(boolean driverReturn) {
+	public void setDriverReturn(double driverReturn) {
 		this.driverReturn = driverReturn;
 	}
 	public double getDiscount() {
@@ -121,5 +134,23 @@ public class SupplyDetails {
 	}
 	public void setTyreType(String tyreType) {
 		this.tyreType = tyreType;
+	}
+	public double getFinalRate() {
+		return finalRate;
+	}
+	public void setFinalRate(double finalRate) {
+		this.finalRate = finalRate;
+	}
+	public double getNrl() {
+		return nrl;
+	}
+	public void setNrl(double nrl) {
+		this.nrl = nrl;
+	}
+	public String getToken() {
+		return token;
+	}
+	public void setToken(String token) {
+		this.token = token;
 	}	
 }
