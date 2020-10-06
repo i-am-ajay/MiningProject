@@ -140,7 +140,7 @@
 	</f:form>
 	</div>
 	<div id="table_section">
-		<table id="data_table" class="table table-striped table-sm display mx-auto" style="width:90%">
+		<table id="data_table" class="table table-striped table-sm display mx-auto" style="width:95%; font-size:15px;">
         <thead class="thead-dark">
             <tr>
             	<th>Token No</th>
@@ -155,6 +155,8 @@
                 <th>Rate</th>
                 <th>Discount</th>
                 <th>Final Rate</th>
+                <th>NRL</th>
+                <th>Driver Return</th>
                 <th>Date</th>
             </tr>
         </thead>
@@ -173,6 +175,8 @@
 	                <td>${item.rate}</td>
 	                <td>${item.discount}</td>
 	                <td>${item.finalRate}</td>
+	                <td>${item.nrl}</td>
+	                <td>${item.driverReturn}</td>
 	                <td>${item.salesDate}</td>
 	            </tr>
             </c:forEach>

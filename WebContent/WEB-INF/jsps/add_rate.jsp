@@ -69,7 +69,7 @@
 		</div>
 	</div>
 			    
-	<input type="submit" class="btn btn-small btn-secondary btn-block w-50 mx-auto" value="Save Client"/>
+	<input type="submit" class="btn btn-small btn-secondary btn-block w-50 mx-auto" value="Save Rate"/>
 	<input type="hidden" id="role" value="${role}" />
 	</f:form>
 	</div>

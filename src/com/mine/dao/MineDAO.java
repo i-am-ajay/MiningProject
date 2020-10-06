@@ -29,6 +29,8 @@ import com.mine.component.master.Parameters;
 import com.mine.component.master.Rate;
 import com.mine.component.master.Token;
 import com.mine.component.master.Vehicle;
+import com.mine.component.transaction.CashBookRecord;
+import com.mine.component.transaction.CreditRecord;
 import com.mine.component.transaction.SupplyDetails;
 
 @Repository
@@ -238,7 +240,26 @@ public class MineDAO {
 	@Transactional
 	public void addSales(SupplyDetails details) {
 		Session session = factory.getCurrentSession();
+		// save sales record in Cash or credit table.
 		Vehicle vehicle = session.get(Vehicle.class, details.getVehicle().getVehicleNo());
+		if(details.getPaymentType().equalsIgnoreCase("cash")) {
+			CashBookRecord cashRecord = new CashBookRecord();
+			cashRecord.setAmount(details.getFinalRate());
+			cashRecord.setClient(vehicle.getClientId());
+			cashRecord.setVehicle(vehicle);
+			cashRecord.setSales(details);
+			cashRecord.setStatus(true);
+			session.save(cashRecord);
+		}
+		else {
+			CreditRecord creditRecord = new CreditRecord();
+			creditRecord.setAmount(details.getFinalRate());
+			creditRecord.setClient(vehicle.getClientId());
+			creditRecord.setVehicle(vehicle);
+			creditRecord.setSales(details);
+			creditRecord.setStatus(true);
+			session.save(creditRecord);
+		}
 		details.setVehicle(vehicle);
 		session.save(details);
 	}

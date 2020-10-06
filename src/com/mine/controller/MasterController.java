@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -42,7 +43,7 @@ public class MasterController {
 			System.out.println(id);
 			service.saveClient(client, id);
 		}
-		return "end";
+		return "redirect:client_creation";
 	}
 	
 	@RequestMapping("company_creation")
@@ -60,7 +61,7 @@ public class MasterController {
 		else {
 			service.saveCompany(company);
 		}
-		return "end";
+		return "redirect:company_creation";
 	}
 	
 	@RequestMapping("create_vehicle")
@@ -83,7 +84,7 @@ public class MasterController {
 		else {
 			service.saveVehicle(vehicle, clientId, 1);
 		}
-		return "end";
+		return "redirect:create_vehicle";
 	}
 	
 	// ajax methods
@@ -140,12 +141,18 @@ public class MasterController {
 				page = "redirect:add_rate";
 			}
 		}
-		return "end";
+		return "redirect:add_rate";
 	}
 	
 	// Admin panel control.
 	@RequestMapping("admin_panel")
 	public String admin() {
 		return "admin_panel";
+	}
+	
+	@ExceptionHandler(Exception.class)
+	public String handleAnyError() {
+			String page = "redirect:admin_panel";
+		return page;
 	}
 }
