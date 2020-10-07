@@ -21,12 +21,24 @@ import com.mine.service.MiningService;
 
 @Controller
 public class MasterController {
+	// --------------------- Autowired Fields Section ------------------------------------
 	@Autowired
 	MiningService service;
+	
+	// --------------------- End Autowired Fields ----------------------------------------
+	
+	// --------------------- Control Instance Fields -------------------------------------
 	Company company = new Company();
+	int userId = 1;
+	
+	// --------------------- End Control Fields ------------------------------------------
+	
+	
+	
+	// --------------------- Client Controls ---------------------------------------------
 	// Creates a new Client
 	@RequestMapping("client_creation")
-	public String createClient(Model model) {
+	public String createClient(Model model, @ModelAttribute("status") String status) {
 		Client client = new Client();
 		client.setCompany(company);
 		model.addAttribute("client",client);
@@ -40,55 +52,12 @@ public class MasterController {
 			System.out.println(result.toString());
 		}
 		else {
-			System.out.println(id);
-			service.saveClient(client, id);
+			model.addAttribute("status",service.saveClient(client, id, userId));
 		}
 		return "redirect:client_creation";
 	}
 	
-	@RequestMapping("company_creation")
-	public String companyCreation(Model model) {
-		Company company = new Company();
-		model.addAttribute("company",company);
-		return "company";
-	}
-	
-	@RequestMapping("company_saved")
-	public String saveCompany(@ModelAttribute Company company, BindingResult companyResult) {
-		if(companyResult.hasErrors()) {
-			
-		}
-		else {
-			service.saveCompany(company);
-		}
-		return "redirect:company_creation";
-	}
-	
-	@RequestMapping("create_vehicle")
-	public String createVehicle(Model model) {
-		Vehicle vehicle = new Vehicle();
-		vehicle.setCompanyId(company);
-		vehicle.setDiscount(0.0);
-		model.addAttribute("vehicle",vehicle);
-		model.addAttribute("lookup",service.getLookupMap("clientType"));
-		model.addAttribute("vehicle_lookup",service.getLookupMap("vehicleType"));
-		model.addAttribute("tyre_lookup", service.getLookupMap("tyreType"));
-		return "vehicle";
-	}
-	
-	@RequestMapping("save_vehicle")
-	public String saveVehicle(@ModelAttribute("vehicle") Vehicle vehicle,BindingResult result, @RequestParam("client_name") int clientId) {
-		if(result.hasErrors()) {
-			System.out.println("Got some errors");
-		}
-		else {
-			service.saveVehicle(vehicle, clientId, 1);
-		}
-		return "redirect:create_vehicle";
-	}
-	
-	// ajax methods
-	
+	// Ajax method to get list of clients to populate in client drop down.
 	@RequestMapping("client_list")
 	@ResponseBody public String getClientList(@RequestParam("client_id") int id) {
 		Map<Integer,String> clientMap = service.getClientList(company, id);
@@ -103,6 +72,56 @@ public class MasterController {
 		return dataString;
 	}
 	
+	// ------------------------------------ End Client Controls ------------------------------
+	
+	
+	// ------------------------------------ Company Controls -----------------------------
+	@RequestMapping("company_creation")
+	public String companyCreation(Model model, @ModelAttribute("status") String status) {
+		Company company = new Company();
+		model.addAttribute("company",company);
+		return "company";
+	}
+	
+	@RequestMapping("company_saved")
+	public String saveCompany(Model model,@ModelAttribute Company company, BindingResult companyResult) {
+		if(companyResult.hasErrors()) {
+			
+		}
+		else {
+			model.addAttribute("status",service.saveCompany(company,userId));
+		}
+		return "redirect:company_creation";
+	}
+	// --------------------------------- End Company Controls ----------------------------
+	
+	
+	
+	// -------------------------------- Vehicle Controls --------------------------------
+	@RequestMapping("create_vehicle")
+	public String createVehicle(Model model, @ModelAttribute("status") String status) {
+		Vehicle vehicle = new Vehicle();
+		vehicle.setCompanyId(company);
+		vehicle.setDiscount(0.0);
+		model.addAttribute("vehicle",vehicle);
+		model.addAttribute("lookup",service.getLookupMap("clientType"));
+		model.addAttribute("vehicle_lookup",service.getLookupMap("vehicleType"));
+		model.addAttribute("tyre_lookup", service.getLookupMap("tyreType"));
+		return "vehicle";
+	}
+	
+	@RequestMapping("save_vehicle")
+	public String saveVehicle(Model model, @ModelAttribute("vehicle") Vehicle vehicle,BindingResult result, @RequestParam("client_name") int clientId) {
+		if(result.hasErrors()) {
+			System.out.println("Got some errors");
+		}
+		else {
+			model.addAttribute("status",service.saveVehicle(vehicle, clientId, 1, userId));
+		}
+		return "redirect:create_vehicle";
+	}
+	
+	// Ajax method to check for vehicle duplicay on entering vehicle number.
 	@RequestMapping("check_vehicle_duplicacy")
 	public @ResponseBody String vehicleDuplicacyCheck(@RequestParam("vehicle_no") String vehicleNo) {
 		boolean vehicleExists = service.isVehicleRegistered(vehicleNo);
@@ -114,9 +133,12 @@ public class MasterController {
 		object.put("vehicleStatus", vehicleStatus);
 		return object.toString();
 	}
+	// ----------------------------------- End Vehicle Controls ---------------------------------
 	
+	
+	// ----------------------------------- Rate Controls ----------------------------------------
 	@RequestMapping("add_rate")
-	public String addRate(Model model) {
+	public String addRate(Model model, @ModelAttribute("status") String status) {
 		Rate rate = new Rate();
 		model.addAttribute("rate", rate);
 		model.addAttribute("tyre_lookup", service.getLookupMap("tyreType"));
@@ -127,32 +149,27 @@ public class MasterController {
 	}
 	
 	@RequestMapping("save_rate")
-	public String saveRate(@ModelAttribute("rate") Rate rate, BindingResult result) {
+	public String saveRate(Model model, @ModelAttribute("rate") Rate rate, BindingResult result) {
 		String page = null;
 		if(result.hasErrors()) {
 			
 		}
 		else {
-			boolean rateSaved = service.saveRate(rate, 1);
-			if(rateSaved) {
-				page = "rate saved";
-			}
-			else {
-				page = "redirect:add_rate";
-			}
+			model.addAttribute("status", service.saveRate(rate, 1,userId));
+			
 		}
 		return "redirect:add_rate";
 	}
-	
+	// ------------------------------------- End Rate Controls ---------------------------------
 	// Admin panel control.
 	@RequestMapping("admin_panel")
 	public String admin() {
 		return "admin_panel";
 	}
 	
-	@ExceptionHandler(Exception.class)
+	/*@ExceptionHandler(Exception.class)
 	public String handleAnyError() {
 			String page = "redirect:admin_panel";
 		return page;
-	}
+	}*/
 }

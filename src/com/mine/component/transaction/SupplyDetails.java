@@ -15,6 +15,7 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
 
+import com.mine.component.master.User;
 import com.mine.component.master.Vehicle;
 
 @Entity
@@ -47,12 +48,13 @@ public class SupplyDetails {
 	
 	private double nrl;
 	
-	@Column(name="sold_by")
-	private int soldBy;
-	
 	@Generated(GenerationTime.INSERT)
 	@Column(name="sales_date", insertable=false, updatable=false)
 	private LocalDateTime salesDate;
+	
+	@JoinColumn(name="sold_by")
+	@ManyToOne
+	private User user;
 	
 	public Vehicle getVehicle() {
 		return vehicle;
@@ -111,12 +113,7 @@ public class SupplyDetails {
 	public void setRate(double rate) {
 		this.rate = rate;
 	}
-	public int getSoldBy() {
-		return soldBy;
-	}
-	public void setSoldBy(int soldBy) {
-		this.soldBy = soldBy;
-	}
+	
 	public LocalDateTime getSalesDate() {
 		return salesDate;
 	}
@@ -152,5 +149,11 @@ public class SupplyDetails {
 	}
 	public void setToken(String token) {
 		this.token = token;
+	}
+	public User getUser() {
+		return user;
+	}
+	public void setUser(User user) {
+		this.user = user;
 	}	
 }

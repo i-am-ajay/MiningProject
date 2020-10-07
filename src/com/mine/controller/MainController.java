@@ -23,6 +23,8 @@ public class MainController {
 	
 	int companyId = 1;
 	
+	int userId = 1;
+	
 	@RequestMapping({"/","home"})
 	public String home(Model model) {
 		System.out.print("hello");
@@ -94,7 +96,8 @@ public class MainController {
 	
 	// Sales page 4th control (To save sales data )
 	@RequestMapping("save_supply")
-	public String saveSales(Model model,@ModelAttribute("supply") SupplyDetails details, BindingResult result) {
+	public String saveSales(Model model,@ModelAttribute("supply") SupplyDetails details, 
+			BindingResult result) {
 		String page = null;
 		if(result.hasErrors()) {
 			System.out.println(result.toString());
@@ -102,7 +105,7 @@ public class MainController {
 		String token = TokenManager.giveToken(service);
 		System.out.println(token);
 		details.setToken(token);
-		service.saveSupplyDetails(details);
+		service.saveSupplyDetails(details, userId);
 		page = "redirect:display_sales_page";
 		return page;
 	}

@@ -16,6 +16,26 @@
 <body class=mt-1>
 	<div class="container p-2 m-auto">
 		<h4 class="border-bottom border-danger m-3 pb-2 display-4" id="form_title">Add New Rate</h4>
+		
+		<!-- Success msg -->
+		<c:if test="${status.equalsIgnoreCase('success')}">
+			<div class="alert alert-success alert-dismissible fade show w-50 mx-auto" role="alert"><small>Rate Added Successfully.</small><button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    			<span aria-hidden="true">&times;</span>
+  			</button></div>
+		</c:if>
+		<c:if test="${status.equalsIgnoreCase('exists')}">
+			<div class="alert alert-danger alert-dismissible fade show w-50 mx-auto" role="alert"><small>Rate already exists.</small><button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    			<span aria-hidden="true">&times;</span>
+  				</button>
+  			</div>
+		</c:if>
+		<c:if test="${status.equalsIgnoreCase('fails')}">
+			<div class="alert alert-danger alert-dismissible fade show w-50 mx-auto" role="alert"><small>There is some error in Rate creation.</small><button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    			<span aria-hidden="true">&times;</span>
+  				</button>
+  			</div>
+		</c:if>
+		
 		<f:form method="POST" modelAttribute="rate" action="save_rate">
 		   <!-- Patient Vitals -->
 		   <!--  <h4 class="border-bottom m-3 text-muted pb-2" id="form_title">Patient Report Card</h4>-->

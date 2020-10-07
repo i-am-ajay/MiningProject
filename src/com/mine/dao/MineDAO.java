@@ -28,6 +28,7 @@ import com.mine.component.master.GeneralData;
 import com.mine.component.master.Parameters;
 import com.mine.component.master.Rate;
 import com.mine.component.master.Token;
+import com.mine.component.master.User;
 import com.mine.component.master.Vehicle;
 import com.mine.component.transaction.CashBookRecord;
 import com.mine.component.transaction.CreditRecord;
@@ -37,6 +38,29 @@ import com.mine.component.transaction.SupplyDetails;
 public class MineDAO {
 	@Autowired
 	SessionFactory factory;
+	
+	// ------------------------- Vehicle Related DAO Methods -------------------------------------
+	@Transactional
+	public String saveVehicle(Vehicle vehicle, int clientId, int companyId, int createdBy) {
+		if(vehicleExists(vehicle.getVehicleNo())) {
+			return "exists";
+		}
+		
+		String status = "fails";
+		Session session = factory.getCurrentSession();
+		Client client = session.load(Client.class, clientId);
+		Company company = session.load(Company.class, companyId);
+		
+		vehicle.setClientId(client);
+		vehicle.setCompanyId(company);
+		vehicle.setCreatedById(createdBy);
+		
+		session.save(vehicle);
+		status = "success";
+		return status;
+	}
+	
+	
 	/**
 	 * This method will get a vehcile from database based on vehicle id
 	 * @param vehicleNo
@@ -50,86 +74,89 @@ public class MineDAO {
 	}
 	
 	@Transactional
-	public List<SupplyDetails> getSaleData(int numRecords, LocalDateTime startDate, LocalDateTime endDate){
+	public boolean vehicleExists(String vehicle_no) {
+		boolean vehicleRegistered = false;
 		Session session = factory.getCurrentSession();
-		CriteriaBuilder builder = session.getCriteriaBuilder();
-		CriteriaQuery<SupplyDetails> query = builder.createQuery(SupplyDetails.class);
-		Root<SupplyDetails> from = query.from(SupplyDetails.class);
-		query.where(builder.between(from.get("salesDate"), startDate, endDate)).orderBy(builder.desc(from.get("salesDate")));
+		Vehicle vehicle = session.get(Vehicle.class, vehicle_no);
+		if(vehicle != null) {
+			vehicleRegistered = true;
+		}
+		return vehicleRegistered;
+	}
+	
+	// ------------------------------- End Vehicle DAO Methods ----------------------------------
+	
+	
+	
+	// ------------------------------ Company Related DAO Methods -------------------------------
+	@Transactional
+	public String saveCompany(Company company,int user) {
+		Session session = factory.getCurrentSession();
 		
-		TypedQuery<SupplyDetails> details = session.createQuery(query);
-		details.setMaxResults(10);
-		return details.getResultList();
+		// Check if company already exists
+		if(companyExists(session, company)) {
+			return "exists";
+		}
+		String status = "fails";
+		company.setCreatedBy(user);
+		session.save(company);
+		status = "success";
+		return status;
 	}
 	
-	/**
-	 * To save details in to the database.
-	 * @param details
-	 */
-	@Transactional
-	public void saveSupplyDetails(SupplyDetails details) {
-		Session session = factory.getCurrentSession();
-		session.save(details);
-		session.flush();
-	}
-	
-	@Transactional
-	public void saveInCashBook(Client client, double amount) {
-		Session session = factory.getCurrentSession();
-		//session.save();
-		session.flush();
-	}
-	
-	public void saveInSalesBook(Client client, double amount) {
-		Session session = factory.getCurrentSession();
-		//session.disableFetchProfile(name);;
-		session.flush();
-	}
-	
-	@Transactional
-	public List<GeneralData> getLookupMap(String category){
-		Session session = factory.getCurrentSession();
+	public boolean companyExists(Session session, Company company) {
+		boolean status = false;
 		CriteriaBuilder builder = session.getCriteriaBuilder();
-		CriteriaQuery<GeneralData> criteria = builder.createQuery(GeneralData.class);
-		Root<GeneralData> from = criteria.from(GeneralData.class);
-		criteria.where(builder.and(builder.equal(from.get("category"),category),builder.isNull(from.get("endDate"))));
+		CriteriaQuery<Company> criteria = builder.createQuery(Company.class);
+		Root<Company> from = criteria.from(Company.class);
+		criteria.where(builder.and(builder.equal(from.get("name"),company.getName()),
+				builder.isNull(from.get("endDate"))));
 		
-		TypedQuery<GeneralData> query = session.createQuery(criteria);
-		List<GeneralData> objectList = query.getResultList();
-		return objectList;
+		TypedQuery<Company> query = session.createQuery(criteria);
+		List<Company> companyList = query.getResultList();
+		if(companyList != null && companyList.size() > 0) {
+			status = true;
+		}
+		return status;
 	}
 	
+	//------------------------------- End Company DAO Methods -----------------------------------
+	
+	
+	
+	// ------------------------------- Client Related DAO Methods
+	
 	@Transactional
-	public void saveClient(Client client, int lookupId) {
+	public String saveClient(Client client, int lookupId, int createdBy) {
 		Session session = factory.getCurrentSession();
+		if(clientExists(session, client)) {
+			return "exists";
+		}
+		String status = "fails";
 		GeneralData data = session.get(GeneralData.class, lookupId);
 		Company company = session.get(Company.class, 1);
 		client.setClientType(data);
 		client.setCompany(company);
-		client.setCreatedBy(1);
+		client.setCreatedBy(createdBy);
 		session.save(client);
-		System.out.println("client data saved");
+		status = "success";
+		return status;
 	}
 	
-	@Transactional
-	public void saveCompany(Company company) {
-		Session session = factory.getCurrentSession();
-		company.setCreatedBy(1);
-		session.save(company);
-	}
-	
-	@Transactional
-	public void saveVehicle(Vehicle vehicle, int clientId, int companyId) {
-		Session session = factory.getCurrentSession();
+	public boolean clientExists(Session session, Client client){
+		boolean status = false;
+		CriteriaBuilder builder = session.getCriteriaBuilder();
+		CriteriaQuery<Client> criteria = builder.createQuery(Client.class);
+		Root<Client> from = criteria.from(Client.class);
+		criteria.where(builder.and(builder.equal(from.get("name"),client.getName()),
+				builder.isNull(from.get("endDate"))));
 		
-		Client client = session.load(Client.class, clientId);
-		Company company = session.load(Company.class, companyId);
-		
-		vehicle.setClientId(client);
-		vehicle.setCompanyId(company);
-		vehicle.setCreatedById(1);
-		
-		session.save(vehicle);
+		TypedQuery<Client> query = session.createQuery(criteria);
+		List<Client> clientList = query.getResultList();
+		if(clientList != null && clientList.size() > 0) {
+			status = true;
+		}
+		return status;
 	}
 	
 	@Transactional
@@ -157,51 +184,28 @@ public class MineDAO {
 		List<Client> client = clientQuery.getResultList();
 		return client;
 	}
+	// ------------------------------ End Client DAO Methods ---------------------------------
 	
+	
+	
+	
+	
+	
+	
+	// ------------------------------- Rate DAO Methods --------------------------------------
 	@Transactional
-	public boolean vehicleExists(String vehicle_no) {
-		boolean vehicleRegistered = false;
+	public String addRate(Rate rate, int companyId, int user) {
+		if(getRate(rate.getTyreType(),rate.getTruckType(), rate.getMaterialType(), rate.getQuantity(), companyId) != 0.0d) {
+			System.out.println("System.");
+			return "exists";
+		}
+		String rateSaved = "fails";
 		Session session = factory.getCurrentSession();
-		Vehicle vehicle = session.get(Vehicle.class, vehicle_no);
-		if(vehicle != null) {
-			vehicleRegistered = true;
-		}
-		return vehicleRegistered;
-	}
-	
-	@Transactional
-	public double getRate(String tyreType, String truckType, String materialType, String qty) {
-		Session session = factory.getCurrentSession();
-		CriteriaBuilder builder = session.getCriteriaBuilder();
-		CriteriaQuery<Rate> criteria = builder.createQuery(Rate.class);
-		Root<Rate> rateRoot = criteria.from(Rate.class);
-		
-		criteria.where(builder.and(builder.equal(rateRoot.get("tyreType"),tyreType), 
-				builder.equal(rateRoot.get("truckType"), truckType)),
-				builder.equal(rateRoot.get("materialType"), materialType),
-				builder.equal(rateRoot.get("qty"), truckType),
-				builder.isNull(rateRoot.get("endDate")));
-		
-		TypedQuery<Rate> query = session.createQuery(criteria);
-		Rate rate = query.getSingleResult();
-		return rate.getRate();
-		
-	}
-	
-	@Transactional
-	public boolean addRate(Rate rate, int companyId) {
-		boolean rateSaved = false;
-		if(rate.getRate() != getRate(rate.getTyreType(), rate.getMaterialType(), rate.getTruckType(),rate.getQuantity(), companyId)) {
-			Session session = factory.getCurrentSession();
-			Company company = session.get(Company.class, companyId);
-			rate.setCompany(company);
-			rate.setCreatedById(1);
-			session.save(rate);
-			rateSaved = true;
-		}
-		else {
-			rateSaved = false;
-		}
+		Company company = session.get(Company.class, companyId);
+		rate.setCompany(company);
+		rate.setCreatedById(user);
+		session.save(rate);
+		rateSaved = "success";
 		return rateSaved;
 	}
 	
@@ -236,11 +240,34 @@ public class MineDAO {
 		return rate;
 	}
 	
-	// DAO for saving sale details in db.
+	/*@Transactional
+	public double getRate(String tyreType, String truckType, String materialType, String qty) {
+		Session session = factory.getCurrentSession();
+		CriteriaBuilder builder = session.getCriteriaBuilder();
+		CriteriaQuery<Rate> criteria = builder.createQuery(Rate.class);
+		Root<Rate> rateRoot = criteria.from(Rate.class);
+		
+		criteria.where(builder.and(builder.equal(rateRoot.get("tyreType"),tyreType), 
+				builder.equal(rateRoot.get("truckType"), truckType)),
+				builder.equal(rateRoot.get("materialType"), materialType),
+				builder.equal(rateRoot.get("qty"), truckType),
+				builder.isNull(rateRoot.get("endDate")));
+		
+		TypedQuery<Rate> query = session.createQuery(criteria);
+		Rate rate = query.getSingleResult();
+		return rate.getRate();
+		
+	}*/
+	// ----------------------------- End Rate DAO Methods -----------------------------------------
+	
+	
+	
+	// ----------------------------- Sales Related DAO Methods ------------------------------------
 	@Transactional
-	public void addSales(SupplyDetails details) {
+	public void addSales(SupplyDetails details, int userId) {
 		Session session = factory.getCurrentSession();
 		// save sales record in Cash or credit table.
+		User user = session.get(User.class, userId);
 		Vehicle vehicle = session.get(Vehicle.class, details.getVehicle().getVehicleNo());
 		if(details.getPaymentType().equalsIgnoreCase("cash")) {
 			CashBookRecord cashRecord = new CashBookRecord();
@@ -261,9 +288,36 @@ public class MineDAO {
 			session.save(creditRecord);
 		}
 		details.setVehicle(vehicle);
+		details.setUser(user);
 		session.save(details);
 	}
 	
+	// Non Used method.
+	/*@Transactional
+	public void saveSupplyDetails(SupplyDetails details) {
+		Session session = factory.getCurrentSession();
+		session.save(details);
+		session.flush();
+	}*/
+	
+	@Transactional
+	public List<SupplyDetails> getSaleData(int numRecords, LocalDateTime startDate, LocalDateTime endDate){
+		Session session = factory.getCurrentSession();
+		CriteriaBuilder builder = session.getCriteriaBuilder();
+		CriteriaQuery<SupplyDetails> query = builder.createQuery(SupplyDetails.class);
+		Root<SupplyDetails> from = query.from(SupplyDetails.class);
+		query.where(builder.between(from.get("salesDate"), startDate, endDate)).orderBy(builder.desc(from.get("salesDate")));
+		
+		TypedQuery<SupplyDetails> details = session.createQuery(query);
+		details.setMaxResults(10);
+		return details.getResultList();
+	}
+	// ---------------------------- End Sales DAO Methods ----------------------------------------
+	
+	
+	
+	
+	// ---------------------------- Misc DAO Methods ---------------------------------------------
 	/* pull parameters from the database. In parameter table there will be only single active record. Method
 	 * will pull that record which doesn't have an end date.
 	 */
@@ -284,6 +338,25 @@ public class MineDAO {
 	}
 	
 	@Transactional
+	public List<GeneralData> getLookupMap(String category){
+		Session session = factory.getCurrentSession();
+		CriteriaBuilder builder = session.getCriteriaBuilder();
+		CriteriaQuery<GeneralData> criteria = builder.createQuery(GeneralData.class);
+		Root<GeneralData> from = criteria.from(GeneralData.class);
+		criteria.where(builder.and(builder.equal(from.get("category"),category),builder.isNull(from.get("endDate"))));
+		
+		TypedQuery<GeneralData> query = session.createQuery(criteria);
+		List<GeneralData> objectList = query.getResultList();
+		return objectList;
+	}
+	
+	// ----------------------------------------- End Misc DAO Methods ------------------------------
+	
+	
+	
+	
+	// ----------------------------------------- Token DAO Methods ---------------------------------
+	@Transactional
 	public Token getToken() {
 		Session session = factory.getCurrentSession();
 		TypedQuery<Token> tokenQuery = session.createQuery("from Token", Token.class);
@@ -303,5 +376,5 @@ public class MineDAO {
 		session.update(token);
 	}
 	
-	
+	// ------------------------------------- End Token DAO Methods ------------------------------------
 }

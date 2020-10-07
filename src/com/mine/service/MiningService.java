@@ -14,6 +14,7 @@ import com.mine.component.master.GeneralData;
 import com.mine.component.master.Parameters;
 import com.mine.component.master.Rate;
 import com.mine.component.master.Token;
+import com.mine.component.master.User;
 import com.mine.component.master.Vehicle;
 import com.mine.component.transaction.SupplyDetails;
 import com.mine.dao.MineDAO;
@@ -41,24 +42,24 @@ public class MiningService {
 		return map;
 	}
 	
-	public void saveClient(Client client, int lookupId) {
-		dao.saveClient(client, lookupId);
+	public String saveClient(Client client, int lookupId, int user) {
+		return dao.saveClient(client, lookupId, user);
 	}
 	
-	public void saveCompany(Company company) {
-		dao.saveCompany(company);
+	public String saveCompany(Company company,int user) {
+		return dao.saveCompany(company,user);
 	}
 	
-	public void saveVehicle(Vehicle vehicle, int client, int company) {
-		dao.saveVehicle(vehicle, client, company);
+	public String saveVehicle(Vehicle vehicle, int client, int company, int user) {
+		return dao.saveVehicle(vehicle, client, company, user);
 	}
 	
 	public boolean isVehicleRegistered(String vehicleNo) {
 		return dao.vehicleExists(vehicleNo);
 		
 	}
-	public boolean saveRate(Rate rate, int companyId) {
-		return dao.addRate(rate, companyId);
+	public String saveRate(Rate rate, int companyId, int user) {
+		return dao.addRate(rate, companyId, user);
 		
 	}
 	
@@ -66,8 +67,8 @@ public class MiningService {
 		return dao.getVehicle(vehicleNo);
 	}
 	
-	public void saveSupplyDetails(SupplyDetails supplyDetails) {
-		dao.addSales(supplyDetails);
+	public void saveSupplyDetails(SupplyDetails supplyDetails, int user) {
+		dao.addSales(supplyDetails, user);
 	}
 	
 	// get data of supply
