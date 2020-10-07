@@ -124,11 +124,17 @@ public class MasterController {
 	// Ajax method to check for vehicle duplicay on entering vehicle number.
 	@RequestMapping("check_vehicle_duplicacy")
 	public @ResponseBody String vehicleDuplicacyCheck(@RequestParam("vehicle_no") String vehicleNo) {
-		boolean vehicleExists = service.isVehicleRegistered(vehicleNo);
+		//boolean vehicleExists = service.isVehicleRegistered(vehicleNo);
+		Vehicle vehicle = service.getVehicle(vehicleNo);
 		JSONObject object = new JSONObject();
 		String vehicleStatus = "2";
-		if(vehicleExists) {
-			vehicleStatus = "1";
+		if(vehicle != null) {
+			object.put("vehicle_no", vehicle.getVehicleNo());
+			object.put("vehicle_type", vehicle.getVehicleType());
+			object.put("tyre_type", vehicle.getTyreType());
+			object.put("belongs_to", vehicle.getClientId().getClientType().getId());
+			object.put("client", vehicle.get);
+			object.put("vehicle_type", vehicle.getVehicleType());
 		}
 		object.put("vehicleStatus", vehicleStatus);
 		return object.toString();
