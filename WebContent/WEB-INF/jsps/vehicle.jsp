@@ -36,6 +36,13 @@
   			</div>
 		</c:if>
 		
+		<c:if test="${status.equalsIgnoreCase('updated')}">
+			<div class="alert alert-success alert-dismissible fade show w-50 mx-auto" role="alert"><small>Vehicle Details Updated</small><button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    			<span aria-hidden="true">&times;</span>
+  				</button>
+  			</div>
+		</c:if>
+		
 		<f:form method="POST" modelAttribute="vehicle" action="save_vehicle">
 		   <!-- Patient Vitals -->
 		   <!--  <h4 class="border-bottom m-3 text-muted pb-2" id="form_title">Patient Report Card</h4>-->
@@ -60,7 +67,7 @@
 					    	</div>
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Tyre Type</label>
-					      		<f:select class="form-control form-control-sm" id="type" placeholder="Enter Tyre Type" path="tyreType" >
+					      		<f:select class="form-control form-control-sm" id="tyre_type" placeholder="Enter Tyre Type" path="tyreType" >
 					      			<c:forEach var="item" items="${tyre_lookup}">
 					      				<f:option value="${item.value}">${item.value}</f:option>
 					      			</c:forEach>
@@ -69,27 +76,24 @@
 					    	<div class="">
 					    		<div><label class="font-weight-bold">Vehicle Belongs To</label></div>
 					    		<div class="form-check form-check-inline">
-					    			<input type="radio" class="form-check-input" value="1" id="belongs" name="belongsTo"/><label class="form-check-label">Self</label></div>
+					    			<input type="radio" class="form-check-input belong" value="1" id="sbelongs" name="belongsTo"/><label class="form-check-label">Self</label></div>
 					    		<div class="form-check form-check-inline">
-					    			<input type="radio" class="form-check-input" value="2" id="belongs" name="belongsTo"/><label class="form-check-label">Owner</label></div>
+					    			<input type="radio" class="form-check-input belong" value="2" id="obelongs" name="belongsTo"/><label class="form-check-label">Owner</label></div>
 					    		<div class="form-check form-check-inline">
-					    			<input type="radio" class="form-check-input" value="3" id="belongs" name="belongsTo"/><label class="form-check-label">Contractor</label></div>
+					    			<input type="radio" class="form-check-input belong" value="3" id="cbelongs" name="belongsTo"/><label class="form-check-label">Contractor</label></div>
 					    	</div>
 					    	<div class="form-group">
 					    		<div>
 					      			<label class="font-weight-bold">Vehicle Owner/Contractor</label>
 					      		</div>
-					      		<select class="form-control form-control-sm" id="client" placeholder="Choose Client" name="client_name">
-					      			<%-- <c:forEach var="item" items="${lookup}">
-					      				<option value="${item.key}">${item.value}</option>
-					      			</c:forEach> --%>
+					      		<select id="client" class="form-control form-control-sm" name="client_name">
 					      		</select>
 					    	</div>
 					    	<div class="form-group">
 					    		<div>
 					      			<label class="font-weight-bold">Discount</label>
 					      		</div>
-					      		<f:input id="vehicle_no" class="form-control form-control-sm" placeholder="Enter Vehicle No" path="discount" />
+					      		<f:input id="discount" class="form-control form-control-sm" placeholder="Enter Discount Amount" path="discount" />
 					    	</div>
 			  			</div>
 			  		</div>
@@ -98,7 +102,7 @@
 		</div>
 	</div>
 			    
-	<input type="submit" class="btn btn-small btn-secondary btn-block w-50 mx-auto" value="Save Client"/>
+	<input type="submit" class="btn btn-small btn-secondary btn-block w-50 mx-auto" value="Save/Update Vehicle"/>
 	<input type="hidden" id="role" value="${role}" />
 	</f:form>
 	</div>
@@ -113,9 +117,8 @@
 		$(document).ready(
 			function(){
 				$("#vehicle_no").attr("required","true");
-				$("#name").attr("required","true");
-				$("#phone").attr("required","true");
-				$("#address").attr("required","true");
+				$("#type").attr("required","true");
+				$(".belong").attr("required","true");
 			});
 		$(document).ready(e => {
 			$("#home_icon").hover( e => {
@@ -128,18 +131,8 @@
 			$("#logout").hide();
 			}
 		);
-		
-		// Changes the page heading for mobile screen and tablets.
-		$(document).ready( e => {
-			const screenSize = window.screen.width;
-			if(screenSize < 1000){
-				$("#middle_col").replaceWith("<div id='middle_col' class='col-8'><h6 class='text-center display-5'>Sir Ganga Ram Hospital</h6><p class='text-center'>Patient Health Report Card</p></div>");
-				$("#form_title").removeClass("m-3");	
-				//$("#farewell_note").removeClass("display-4").addClass("display-5");
-			}
-		});
-		// on registration focus out get employee details through ajax call 
-		// check if vehicle already exists
+	
+		// check if vehicle already exists if exists pull the values.
 		$('#vehicle_no').focusout(function(){
 			$.ajax({
 				type: "POST",
@@ -148,10 +141,37 @@
 				success: function(result, status, xhr){
 					if(result != null && result != ""){
 						let json = JSON.parse(result);
-						if(json['vehicleStatus'] == "1"){
+						/* if(json['vehicleStatus'] == "1"){
 							$("#vehicle_no").val(null);
-							alert("Vehicle already registered.");
+							//alert("Vehicle already registered.");
+						} */
+
+						$('vehicle_no').val(json['vehicle_no']);
+						$('#vehicle_no').prop('readOnly',true);
+						$('#discount').val(json['discount']);
+
+						// set belongs to checkbox.
+						let belongsTo = json['belongs_to'];
+						if(belongsTo == 1){
+							$("#sbelongs").prop("checked",true);
 						}
+						else if(belongsTo == 2){
+							$("#obelongs").prop("checked",true);
+						}
+						else if(belongsTo == 3){
+							$("#cbelongs").prop("checked",true);
+						}
+
+						// set tyre type select box
+						$('#tyre_type').find('option[value="'+json["tyre_type"]+'"]').attr("selected",'selected');
+
+						// set gadi type select box
+						$('#type').find('option[value="'+json["vehicle_type"]+'"]').attr("selected",'selected');
+
+						getClientList(json['client']);
+						console.log(json['client']);
+						$('#client').find('option[value='+json["client"]+']').attr("selected",'selected');
+						// set owner / contractor
 					}
 				},
 				error : function(result,status,xhr){
@@ -161,29 +181,36 @@
 
 		});
 		
-		$('input[type="radio"][name="belongsTo"]').change( function(){
-				$("#client").attr("disabled",false);
-				$.ajax({
-					type: "POST",
-					url : "${home}client_list",
-					data : {"client_id":this.value},
-					success: function(result, status, xhr){
-						$("#client").empty();
-						if(result != null && result != ""){
-							let json = JSON.parse(result);
-							let array = Object.keys(json);
-							array.forEach(e=>{
+		$('input[type="radio"][name="belongsTo"]').change(getClientList);
+
+		function getClientList(val){
+			$("#client").attr("disabled",false);
+			$.ajax({
+				type: "POST",
+				url : "${home}client_list",
+				data : {"client_id":this.value ? this.value : $("input[name='belongsTo']:checked").val()},
+				success: function(result, status, xhr){
+					$("#client").empty();
+					let client_id = null;
+					if(result != null && result != ""){
+						let json = JSON.parse(result);
+						let array = Object.keys(json);
+						array.forEach(e=>{
+							if(val == e){
 								$("#client")
-								.append("<option value="+e+">"+json[e]+"</option>");
-							});
-							
-						}
-					},
-					error : function(result,status,xhr){
-						console.log("error");
+								.append("<option value="+e+" selected>"+json[e]+"</option>");
+							}
+							$("#client")
+							.append("<option value="+e+">"+json[e]+"</option>");
+						});
+						
 					}
-				});
-		});
+				},
+				error : function(result,status,xhr){
+					console.log("error");
+				}
+			});
+		}
 	</script>
 </body>
 </html>

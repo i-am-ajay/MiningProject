@@ -41,22 +41,35 @@ public class MineDAO {
 	
 	// ------------------------- Vehicle Related DAO Methods -------------------------------------
 	@Transactional
-	public String saveVehicle(Vehicle vehicle, int clientId, int companyId, int createdBy) {
+	public String saveVehicle(Vehicle vehicle, int clientId, int companyId, int createdBy, String role) {
+		Session session = null;
+		Client client = null;
+		Company company = null;
+		String status = "fail";
+		boolean exists = false;
+		
 		if(vehicleExists(vehicle.getVehicleNo())) {
-			return "exists";
+			exists = true;
+			if(role.equalsIgnoreCase("user")) {
+				return "exists";
+			}
+				status = "updated";
 		}
 		
-		String status = "fails";
-		Session session = factory.getCurrentSession();
-		Client client = session.load(Client.class, clientId);
-		Company company = session.load(Company.class, companyId);
-		
+		session = factory.getCurrentSession();
+		client = session.load(Client.class, clientId);
+		company = session.load(Company.class, companyId);
 		vehicle.setClientId(client);
 		vehicle.setCompanyId(company);
 		vehicle.setCreatedById(createdBy);
-		
-		session.save(vehicle);
-		status = "success";
+		if(exists){
+			session.merge(vehicle);
+		}
+		else {
+			session.saveOrUpdate(vehicle);
+		}
+		if(!status.equalsIgnoreCase("updated"))
+			status = "success";
 		return status;
 	}
 	
@@ -90,34 +103,54 @@ public class MineDAO {
 	
 	// ------------------------------ Company Related DAO Methods -------------------------------
 	@Transactional
-	public String saveCompany(Company company,int user) {
+	public String saveCompany(Company company,int user, String role) {
 		Session session = factory.getCurrentSession();
-		
-		// Check if company already exists
-		if(companyExists(session, company)) {
-			return "exists";
-		}
 		String status = "fails";
+		boolean exists = false;
+		// Check if company already exist
+		if(companyExists(company)) {
+			exists = true;
+			if(role.equalsIgnoreCase("user")) {
+				return "exists";
+			}
+				status = "updated";
+		}
 		company.setCreatedBy(user);
-		session.save(company);
-		status = "success";
+		if(exists = true) {
+			session.merge(company);
+		}
+		else {
+			session.save(company);
+		}
+		if(!status.equalsIgnoreCase("updated"))
+			status = "success";
 		return status;
 	}
 	
-	public boolean companyExists(Session session, Company company) {
+	public boolean companyExists(Company company) {
 		boolean status = false;
+		if(getCompany(company.getName()) != null) {
+			status = true;
+		}
+		return status;
+	}
+	
+	@Transactional
+	public Company getCompany(String name) {
+		Company company = null;
+		Session session = factory.getCurrentSession();
 		CriteriaBuilder builder = session.getCriteriaBuilder();
 		CriteriaQuery<Company> criteria = builder.createQuery(Company.class);
 		Root<Company> from = criteria.from(Company.class);
-		criteria.where(builder.and(builder.equal(from.get("name"),company.getName()),
+		criteria.where(builder.and(builder.equal(from.get("name"),name),
 				builder.isNull(from.get("endDate"))));
 		
 		TypedQuery<Company> query = session.createQuery(criteria);
 		List<Company> companyList = query.getResultList();
 		if(companyList != null && companyList.size() > 0) {
-			status = true;
+			company = companyList.get(0);
 		}
-		return status;
+		return company;
 	}
 	
 	//------------------------------- End Company DAO Methods -----------------------------------
@@ -127,12 +160,18 @@ public class MineDAO {
 	// ------------------------------- Client Related DAO Methods
 	
 	@Transactional
-	public String saveClient(Client client, int lookupId, int createdBy) {
+	public String saveClient(Client client, int lookupId, int createdBy, String role) {
 		Session session = factory.getCurrentSession();
-		if(clientExists(session, client)) {
-			return "exists";
-		}
+		boolean exists = false;
 		String status = "fails";
+		
+		if(clientExists(session, client)) {
+			exists = true;
+			if(role.equalsIgnoreCase("user"))
+				return "exists";
+			else
+				status = "updated";
+		}
 		GeneralData data = session.get(GeneralData.class, lookupId);
 		Company company = session.get(Company.class, 1);
 		client.setClientType(data);

@@ -34,6 +34,14 @@
   				</button>
   			</div>
 		</c:if>
+		
+		<c:if test="${status.equalsIgnoreCase('updated')}">
+			<div class="alert alert-danger alert-dismissible fade show w-50 mx-auto" role="alert"><small>There is some error in company creation.</small><button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    			<span aria-hidden="true">&times;</span>
+  				</button>
+  			</div>
+		</c:if>
+		
 		<f:form method="POST" modelAttribute="company" action="company_saved">
 		   <!-- Patient Vitals -->
 		   <!--  <h4 class="border-bottom m-3 text-muted pb-2" id="form_title">Patient Report Card</h4>-->
@@ -86,66 +94,8 @@
 		$(document).ready(
 			function(){
 				$("#name").attr("required","true");
-				$("#phone").attr("required","true");
-				$("#address").attr("required","true");
 			});
-				/* // disable oxygen device.
-				let oValue = $("#oSupplementation").val().toLowerCase();
-				if(oValue === "nil"){
-					$("#o2Device").attr("disabled",true);
-					$("#o2Device").val(null);
-				}
-				$("#oSupplementation").change(
-					e =>{
-						if($("#oSupplementation").val().toLowerCase() === "nil"){
-							$("#o2Device").attr("disabled",true);
-							$("#o2Device").val(null);
-						}
-						else{
-							$("#o2Device").attr("disabled",false);
-							$("#o2Device").val("Nasal Prongs");
-						}
-					}
-				);
 
-				// ventilator optio
-				if( $('input[name="ventilationNeeded"]:checked').val() === 'false'){
-					$("#ventilatorMode").attr("disabled",true);
-					$("#ventilatorMode").val(null);
-				}
-				$('input[name="ventilationNeeded"]').change(
-					e =>{
-						if( $('input[name="ventilationNeeded"]:checked').val() === 'false'){
-							$("#ventilatorMode").attr("disabled",true);
-							$("#ventilatorMode").val(null);
-						}
-						else{
-							$("#ventilatorMode").attr("disabled",false);
-							$("#ventilatorMode").val("NIV");
-						}
-					}
-				);			
-			// ventilator optio
-			if( $('input[name="changeInTreatment"]:checked').val() === 'false'){
-				$("#reason").attr("disabled",true);
-				$("#reason").attr("placeholder",null);
-			}
-			$('input[name="changeInTreatment"]').change(
-				e =>{
-					if( $('input[name="changeInTreatment"]:checked').val() === 'false'){
-						$("#reason").attr("disabled",true);
-						$("#reason").attr("placeholder",null);
-					}
-					else{
-						$("#reason").attr("disabled",false);
-						$("#reason").attr("placeholder","Reason of Change");
-						
-					}
-				}
-			);
-		}
-			
-		) */
 		$(document).ready(e => {
 			$("#home_icon").hover( e => {
 				$("#home_icon").css({"cursor":"pointer"})
@@ -158,54 +108,22 @@
 			}
 		);
 		
-		// Changes the page heading for mobile screen and tablets.
-		$(document).ready( e => {
-			const screenSize = window.screen.width;
-			if(screenSize < 1000){
-				$("#middle_col").replaceWith("<div id='middle_col' class='col-8'><h6 class='text-center display-5'>Sir Ganga Ram Hospital</h6><p class='text-center'>Patient Health Report Card</p></div>");
-				$("#form_title").removeClass("m-3");	
-				//$("#farewell_note").removeClass("display-4").addClass("display-5");
-			}
-		});
 		// on registration focus out get employee details through ajax call 
 		$("#registration").focusout( e =>{
 			$.ajax({
 				type: "POST",
-				url : "${home}patient_details",
-				data : {"reg_no":$("#registration").val()},
+				url : "${home}get_company",
+				data : {"name":$("#name").val()},
 				success: function(result, status, xhr){
 					if(result != null && result != ""){
 						let json = JSON.parse(result);
-						console.log(json.name)
-						$("#name").attr("disabled","true");
-						$("#phone").attr("disabled","true");
-						$("#fgender").attr("disabled","true");
-						$("#mgender").attr("disabled","true");
-
 						$("#name").val(json.name);
-						$("#phone").val(json.phone);
-						$("#reg_no").val(json.reg_no);
-						let gender = json.gender;
-						if(gender == 'm'){
-							$("#mgender").prop("checked",true);
-							
-						}
-						else{
-							$("#fgender").prop("checked",true);
-						}
-					}
-					else{
-						$("#name").attr("disabled",false);
-						$("#phone").attr("disabled",false);
-						$("#fgender").attr("disabled",false);
-						$("#mgender").attr("disabled",false);
-					}
+						$("#phone").val(json.contact);
+						$("#address").val(json.address);
+						$("#email").val(json.email);
+						
 				},
 				error : function(result,status,xhr){
-					$("#name").attr("disabled","false");
-					$("#phone").attr("disabled","false");
-					$("#fgender").attr("disabled","false");
-					$("#mgender").attr("disabled","false");
 				}
 			});
 		});

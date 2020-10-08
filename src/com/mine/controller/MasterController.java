@@ -89,9 +89,25 @@ public class MasterController {
 			
 		}
 		else {
-			model.addAttribute("status",service.saveCompany(company,userId));
+			model.addAttribute("status",service.saveCompany(company,userId,"user"));
 		}
 		return "redirect:company_creation";
+	}
+	
+	@RequestMapping("get_company")
+	public @ResponseBody String getCompany(String companyName) {
+		Company company = service.getCompany(companyName);
+		JSONObject object = null;
+		String result = null;
+		if(company != null) {
+			object = new JSONObject();
+			object.put("name",company.getName());
+			object.put("contact", company.getCompanyContact());
+			object.put("email", company.getCompanyEmail());
+			object.put("address", company.getLocation());
+			result = object.toString();
+		}
+		return result;
 	}
 	// --------------------------------- End Company Controls ----------------------------
 	
@@ -116,7 +132,7 @@ public class MasterController {
 			System.out.println("Got some errors");
 		}
 		else {
-			model.addAttribute("status",service.saveVehicle(vehicle, clientId, 1, userId));
+			model.addAttribute("status",service.saveVehicle(vehicle, clientId, 1, userId,"admin"));
 		}
 		return "redirect:create_vehicle";
 	}
@@ -126,18 +142,19 @@ public class MasterController {
 	public @ResponseBody String vehicleDuplicacyCheck(@RequestParam("vehicle_no") String vehicleNo) {
 		//boolean vehicleExists = service.isVehicleRegistered(vehicleNo);
 		Vehicle vehicle = service.getVehicle(vehicleNo);
-		JSONObject object = new JSONObject();
-		String vehicleStatus = "2";
+		JSONObject object = null;
+		String result = null;
 		if(vehicle != null) {
+			object = new JSONObject();
 			object.put("vehicle_no", vehicle.getVehicleNo());
 			object.put("vehicle_type", vehicle.getVehicleType());
 			object.put("tyre_type", vehicle.getTyreType());
 			object.put("belongs_to", vehicle.getClientId().getClientType().getId());
-			object.put("client", vehicle.get);
-			object.put("vehicle_type", vehicle.getVehicleType());
+			object.put("client", vehicle.getClientId().getClientId());
+			object.put("discount", vehicle.getDiscount() != 0.0 ? vehicle.getDiscount() : vehicle.getClientId().getDiscount());
+			result = object.toString();
 		}
-		object.put("vehicleStatus", vehicleStatus);
-		return object.toString();
+		return result;
 	}
 	// ----------------------------------- End Vehicle Controls ---------------------------------
 	

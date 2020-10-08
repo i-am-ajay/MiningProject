@@ -24,14 +24,7 @@ public class MiningService {
 	@Autowired
 	private MineDAO dao;
 	
-	public Map<Integer,String> getLookupMap(String category){
-		List<GeneralData> objList = dao.getLookupMap(category);
-		Map<Integer,String> map = new HashMap<>();
-		for(GeneralData obj : objList) {
-			map.put(obj.getId(), obj.getDescription());
-		}
-		return map;
-	}
+	// -------------------------------- Client Service ----------------------------------------
 	
 	public Map<Integer,String> getClientList(Company company, int clientTypeId){
 		List<Client> clientList = dao.getClientList(company, clientTypeId);
@@ -46,26 +39,54 @@ public class MiningService {
 		return dao.saveClient(client, lookupId, user);
 	}
 	
-	public String saveCompany(Company company,int user) {
-		return dao.saveCompany(company,user);
+	// ------------------------------- Client Service End ---------------------------------------
+	
+	
+	
+	
+	// ------------------------------- Company Service -----------------------------------------
+	
+	public String saveCompany(Company company,int user, String role) {
+		return dao.saveCompany(company,user, role);
 	}
 	
-	public String saveVehicle(Vehicle vehicle, int client, int company, int user) {
-		return dao.saveVehicle(vehicle, client, company, user);
+	public Company getCompany(String companyName) {
+		return dao.getCompany(companyName);
+	}
+	// ------------------------------- End Company Serivce --------------------------------------
+	
+	
+	
+	// -------------------------- Vehicle Service -----------------------------
+	public String saveVehicle(Vehicle vehicle, int client, int company, int user,String role) {
+		return dao.saveVehicle(vehicle, client, company, user,role);
 	}
 	
 	public boolean isVehicleRegistered(String vehicleNo) {
-		return dao.vehicleExists(vehicleNo);
-		
-	}
-	public String saveRate(Rate rate, int companyId, int user) {
-		return dao.addRate(rate, companyId, user);
-		
+		return dao.vehicleExists(vehicleNo);	
 	}
 	
 	public Vehicle getVehicle(String vehicleNo) {
 		return dao.getVehicle(vehicleNo);
 	}
+	
+	//--------------------------- End Vehicle Service -------------------------------
+	
+	// ------------------------------ Rate Service ----------------------------------
+	public String saveRate(Rate rate, int companyId, int user) {
+		return dao.addRate(rate, companyId, user);
+		
+	}
+	
+	public double getRate(String tyreType, String materialType, String truckType, String quantity, int companyId) {
+		return dao.getRate(tyreType, truckType, materialType, quantity,companyId);
+	}
+	
+	// ------------------------------ End Rate Service --------------------------------
+	
+	
+	
+	// ------------------------------ Supply Service ----------------------------------
 	
 	public void saveSupplyDetails(SupplyDetails supplyDetails, int user) {
 		dao.addSales(supplyDetails, user);
@@ -80,14 +101,10 @@ public class MiningService {
 		
 	}
 	
-	public double getRate(String tyreType, String materialType, String truckType, String quantity, int companyId) {
-		return dao.getRate(tyreType, truckType, materialType, quantity,companyId);
-	}
+	// ----------------------------- End Supply Service ------------------------------------
 	
-	public Parameters getParameters() {
-		return dao.getParameters();
-	}
 	
+	// ----------------------------- Token Service -----------------------------------------
 	public Token getToken() {
 		return dao.getToken();
 	}
@@ -95,4 +112,23 @@ public class MiningService {
 	public void updateToken(Token token) {
 		dao.updateToken(token);
 	}
+	
+	// ---------------------------- End Token Service ------------------------------------
+	
+	
+	// ----------------------------- Misc Service ----------------------------------------
+	public Map<Integer,String> getLookupMap(String category){
+		List<GeneralData> objList = dao.getLookupMap(category);
+		Map<Integer,String> map = new HashMap<>();
+		for(GeneralData obj : objList) {
+			map.put(obj.getId(), obj.getDescription());
+		}
+		return map;
+	}
+	
+	public Parameters getParameters() {
+		return dao.getParameters();
+	}
+	
+	// ---------------------------- End Misc Service -------------------------------------
 }
