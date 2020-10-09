@@ -35,8 +35,12 @@ public class MiningService {
 		return map;
 	}
 	
-	public String saveClient(Client client, int lookupId, int user) {
-		return dao.saveClient(client, lookupId, user);
+	public Client getClient(String clientName) {
+		return dao.clientExists(clientName);
+	}
+	
+	public String saveClient(Client client, int lookupId,int company, int user, String role) {
+		return dao.saveClient(client, lookupId,company, user, role);
 	}
 	
 	// ------------------------------- Client Service End ---------------------------------------
@@ -45,7 +49,13 @@ public class MiningService {
 	
 	
 	// ------------------------------- Company Service -----------------------------------------
-	
+	/**
+	 *  Update of save company. 
+	 * @param company
+	 * @param user
+	 * @param role - role will decide if user may update company or not
+	 * @return String that tells if company created successfully, updated, already exists or failed.
+	 */
 	public String saveCompany(Company company,int user, String role) {
 		return dao.saveCompany(company,user, role);
 	}

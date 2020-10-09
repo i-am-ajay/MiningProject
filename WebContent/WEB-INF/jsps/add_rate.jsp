@@ -80,7 +80,7 @@
 					    	</div>
 					    	<div class="form-group">
 					    		<label class="font-weight-bold">Rate</label>
-					      		<f:input id="rate" class="form-control form-control-sm" placeholder="Enter Rate" path="rate" />
+					      		<f:input id="rate_id" class="form-control form-control-sm" placeholder="Enter Rate" path="rate" />
 					    	</div>
 			  			</div>
 			  		</div>
@@ -103,9 +103,7 @@
 	<script>
 		$(document).ready(
 			function(){
-				$("#name").attr("required","true");
-				$("#phone").attr("required","true");
-				$("#address").attr("required","true");
+				$("#rate_id").attr("required",true);
 			});
 		$(document).ready(e => {
 			$("#home_icon").hover( e => {
@@ -118,58 +116,6 @@
 			$("#logout").hide();
 			}
 		);
-		
-		// Changes the page heading for mobile screen and tablets.
-		$(document).ready( e => {
-			const screenSize = window.screen.width;
-			if(screenSize < 1000){
-				$("#middle_col").replaceWith("<div id='middle_col' class='col-8'><h6 class='text-center display-5'>Sir Ganga Ram Hospital</h6><p class='text-center'>Patient Health Report Card</p></div>");
-				$("#form_title").removeClass("m-3");	
-				//$("#farewell_note").removeClass("display-4").addClass("display-5");
-			}
-		});
-		// on registration focus out get employee details through ajax call 
-		$("#registration").focusout( e =>{
-			$.ajax({
-				type: "POST",
-				url : "${home}patient_details",
-				data : {"reg_no":$("#registration").val()},
-				success: function(result, status, xhr){
-					if(result != null && result != ""){
-						let json = JSON.parse(result);
-						console.log(json.name)
-						$("#name").attr("disabled","true");
-						$("#phone").attr("disabled","true");
-						$("#fgender").attr("disabled","true");
-						$("#mgender").attr("disabled","true");
-
-						$("#name").val(json.name);
-						$("#phone").val(json.phone);
-						$("#reg_no").val(json.reg_no);
-						let gender = json.gender;
-						if(gender == 'm'){
-							$("#mgender").prop("checked",true);
-							
-						}
-						else{
-							$("#fgender").prop("checked",true);
-						}
-					}
-					else{
-						$("#name").attr("disabled",false);
-						$("#phone").attr("disabled",false);
-						$("#fgender").attr("disabled",false);
-						$("#mgender").attr("disabled",false);
-					}
-				},
-				error : function(result,status,xhr){
-					$("#name").attr("disabled","false");
-					$("#phone").attr("disabled","false");
-					$("#fgender").attr("disabled","false");
-					$("#mgender").attr("disabled","false");
-				}
-			});
-		});
 	</script>
 </body>
 </html>

@@ -104,24 +104,35 @@ public class MineDAO {
 	// ------------------------------ Company Related DAO Methods -------------------------------
 	@Transactional
 	public String saveCompany(Company company,int user, String role) {
+		/**
+		 * Checks if client already exists.
+		 * If client exists and role is 'user' then change status to exits and return.
+		 * If client exists and role is admin and then change status to updated and set exists flag. This flag
+		   marks that company object is already in session.
+		 * If company object exists in session then merge the company object. Else save company object.
+		 */
 		Session session = factory.getCurrentSession();
 		String status = "fails";
 		boolean exists = false;
+		
+		Company existingCompany = this.getCompany(company.getName());
 		// Check if company already exist
-		if(companyExists(company)) {
+		if(existingCompany != null) {
 			exists = true;
 			if(role.equalsIgnoreCase("user")) {
 				return "exists";
-			}
-				status = "updated";
+			}	
+			existingCompany.setCompanyContact(company.getCompanyContact());
+			existingCompany.setCompanyEmail(company.getCompanyEmail());
+			existingCompany.setLocation(company.getLocation());
+			existingCompany.setCreatedBy(user);
+			existingCompany.setName(company.getName());
+			company = existingCompany;
+			status = "updated";
 		}
 		company.setCreatedBy(user);
-		if(exists = true) {
-			session.merge(company);
-		}
-		else {
-			session.save(company);
-		}
+		company.setCreationDate(LocalDate.now());
+		session.saveOrUpdate(company);
 		if(!status.equalsIgnoreCase("updated"))
 			status = "success";
 		return status;
@@ -144,6 +155,7 @@ public class MineDAO {
 		Root<Company> from = criteria.from(Company.class);
 		criteria.where(builder.and(builder.equal(from.get("name"),name),
 				builder.isNull(from.get("endDate"))));
+		criteria.orderBy(builder.asc(from.get("creationDate")));
 		
 		TypedQuery<Company> query = session.createQuery(criteria);
 		List<Company> companyList = query.getResultList();
@@ -158,44 +170,71 @@ public class MineDAO {
 	
 	
 	// ------------------------------- Client Related DAO Methods
-	
+	/**
+	 * Save or update client in the system based on user roles.
+	 * 
+	 * @param client
+	 * @param lookupId
+	 * @param companyId
+	 * @param createdBy
+	 * @param role - admin, user - only admins are allowed to make updates in the data.
+	 * @return
+	 */
 	@Transactional
-	public String saveClient(Client client, int lookupId, int createdBy, String role) {
+	public String saveClient(Client client, int lookupId,int companyId, int createdBy, String role) {
+		/**
+		 * Check if client objects already exists. If yes:
+		 	a) If role is user then set status to exists and return.
+		 	b) If role is admin then we need to update client. Pull the client object from the db, 
+		 		update all fields of persistent client from client parameter and then update. change
+		 		exists flag to true.
+		 		
+		 * Save the oject. and if updated flag is not set then update the flag to success.
+		 		
+		 */
 		Session session = factory.getCurrentSession();
 		boolean exists = false;
 		String status = "fails";
-		
-		if(clientExists(session, client)) {
+		Client clientDb = clientExists(client.getName());
+		if(clientDb != null) {
 			exists = true;
 			if(role.equalsIgnoreCase("user"))
 				return "exists";
-			else
-				status = "updated";
+			clientDb.setClientAddress(client.getClientAddress());
+			clientDb.setClientContact(client.getClientContact());
+			clientDb.setDiscount(client.getDiscount());
+			clientDb.setName(client.getName());
+			clientDb.setComission(client.getComission());
+			client = clientDb;
+			status = "updated";
 		}
 		GeneralData data = session.get(GeneralData.class, lookupId);
-		Company company = session.get(Company.class, 1);
+		Company company = session.get(Company.class, companyId);
 		client.setClientType(data);
 		client.setCompany(company);
 		client.setCreatedBy(createdBy);
-		session.save(client);
-		status = "success";
+		session.saveOrUpdate(client);
+		if(!exists)
+			status = "success";
 		return status;
 	}
 	
-	public boolean clientExists(Session session, Client client){
-		boolean status = false;
+	@Transactional
+	public Client clientExists(String clientName){
+		Session session = factory.getCurrentSession();
 		CriteriaBuilder builder = session.getCriteriaBuilder();
 		CriteriaQuery<Client> criteria = builder.createQuery(Client.class);
 		Root<Client> from = criteria.from(Client.class);
-		criteria.where(builder.and(builder.equal(from.get("name"),client.getName()),
+		Client clientDb = null;
+		criteria.where(builder.and(builder.equal(from.get("name"),clientName),
 				builder.isNull(from.get("endDate"))));
 		
 		TypedQuery<Client> query = session.createQuery(criteria);
 		List<Client> clientList = query.getResultList();
 		if(clientList != null && clientList.size() > 0) {
-			status = true;
+			clientDb = clientList.get(0);
 		}
-		return status;
+		return clientDb;
 	}
 	
 	@Transactional

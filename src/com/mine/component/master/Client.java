@@ -22,7 +22,10 @@ public class Client {
 	// For owner it will be discount, for contractor it will be commission and won't be deducted 
 	// from vehicle rate.
 	@Column(columnDefinition="double(10,2) default 0.0")
+	
 	private double discount;
+	@Column(columnDefinition = "double(10,2) default 0.0")
+	private double comission;
 	
 	private String clientAddress;
 	private String clientContact;
@@ -121,5 +124,13 @@ public class Client {
 	
 	public double getDiscount() {
 		return discount;
+	}
+	
+	public void setComission(double comission) {
+		this.comission = comission;
+	}
+	
+	public double getComission() {
+		return this.comission;
 	}
 }

@@ -35,7 +35,22 @@
   				</button>
   			</div>
 		</c:if>
-		
+		<c:if test="${status.equalsIgnoreCase('updated')}">
+			<div class="alert alert-success alert-dismissible fade show w-50 mx-auto" role="alert"><small>Client Updated</small><button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    			<span aria-hidden="true">&times;</span>
+  				</button>
+  			</div>
+		</c:if>
+		<!-- 
+			1) User based on their roles will be able to add or update client.
+			2) On saving based on user roll and action a successful creation, updation or failure msg
+				will be displayed to user.
+			3) Name for each client should be unique, if a user is try to save an already existing role
+				and error msg will be shown for admin on enterin already existing role, role will be 
+				updated.
+				
+			4) A discount and commission option is needed for contractor. 
+		 -->
 		<f:form method="POST" modelAttribute="client" action="save_client">
 		   <!-- Patient Vitals -->
 		   <!--  <h4 class="border-bottom m-3 text-muted pb-2" id="form_title">Patient Report Card</h4>-->
@@ -75,9 +90,15 @@
 					    	
 					    	<div class="form-group">
 					    		<div>
-					      			<label class="font-weight-bold">Client Discount/Commission</label>
+					      			<label class="font-weight-bold">Client Discount</label>
 					      		</div>
-					      		<f:input class="form-control form-control-sm" id="address" placeholder="Enter Discount" path="discount"/>
+					      		<f:input class="form-control form-control-sm" id="discount" placeholder="Enter Discount" path="discount"/>
+					    	</div>
+					    	<div class="form-group">
+					    		<div>
+					      			<label class="font-weight-bold">Contractor Commission</label>
+					      		</div>
+					      		<f:input class="form-control form-control-sm" id="comission" placeholder="Enter Comission" path="comission"/>
 					    	</div>
 			  			</div>
 			  		</div>
@@ -103,64 +124,8 @@
 				$("#name").attr("required","true");
 				$("#phone").attr("required","true");
 				$("#address").attr("required","true");
+				$("#comission").attr("readonly","true");
 			});
-				/* // disable oxygen device.
-				let oValue = $("#oSupplementation").val().toLowerCase();
-				if(oValue === "nil"){
-					$("#o2Device").attr("disabled",true);
-					$("#o2Device").val(null);
-				}
-				$("#oSupplementation").change(
-					e =>{
-						if($("#oSupplementation").val().toLowerCase() === "nil"){
-							$("#o2Device").attr("disabled",true);
-							$("#o2Device").val(null);
-						}
-						else{
-							$("#o2Device").attr("disabled",false);
-							$("#o2Device").val("Nasal Prongs");
-						}
-					}
-				);
-
-				// ventilator optio
-				if( $('input[name="ventilationNeeded"]:checked').val() === 'false'){
-					$("#ventilatorMode").attr("disabled",true);
-					$("#ventilatorMode").val(null);
-				}
-				$('input[name="ventilationNeeded"]').change(
-					e =>{
-						if( $('input[name="ventilationNeeded"]:checked').val() === 'false'){
-							$("#ventilatorMode").attr("disabled",true);
-							$("#ventilatorMode").val(null);
-						}
-						else{
-							$("#ventilatorMode").attr("disabled",false);
-							$("#ventilatorMode").val("NIV");
-						}
-					}
-				);			
-			// ventilator optio
-			if( $('input[name="changeInTreatment"]:checked').val() === 'false'){
-				$("#reason").attr("disabled",true);
-				$("#reason").attr("placeholder",null);
-			}
-			$('input[name="changeInTreatment"]').change(
-				e =>{
-					if( $('input[name="changeInTreatment"]:checked').val() === 'false'){
-						$("#reason").attr("disabled",true);
-						$("#reason").attr("placeholder",null);
-					}
-					else{
-						$("#reason").attr("disabled",false);
-						$("#reason").attr("placeholder","Reason of Change");
-						
-					}
-				}
-			);
-		}
-			
-		) */
 		$(document).ready(e => {
 			$("#home_icon").hover( e => {
 				$("#home_icon").css({"cursor":"pointer"})
@@ -172,48 +137,37 @@
 			$("#logout").hide();
 			}
 		);
-		
-		// Changes the page heading for mobile screen and tablets.
-		$(document).ready( e => {
-			const screenSize = window.screen.width;
-			if(screenSize < 1000){
-				$("#middle_col").replaceWith("<div id='middle_col' class='col-8'><h6 class='text-center display-5'>Sir Ganga Ram Hospital</h6><p class='text-center'>Patient Health Report Card</p></div>");
-				$("#form_title").removeClass("m-3");	
-				//$("#farewell_note").removeClass("display-4").addClass("display-5");
+
+		// on selection of owner enable comission.
+		$("#type").change(e =>{
+			if($("#type option:selected").text() == "Contractor"){
+				$("#comission").attr("readonly",false);
 			}
 		});
 		// on registration focus out get employee details through ajax call 
-		$("#registration").focusout( e =>{
+		$("#name").focusout( e =>{
 			$.ajax({
 				type: "POST",
-				url : "${home}patient_details",
-				data : {"reg_no":$("#registration").val()},
+				url : "${home}get_client",
+				data : {"name":$("#name").val()},
 				success: function(result, status, xhr){
+					console.log(result);
 					if(result != null && result != ""){
 						let json = JSON.parse(result);
 						console.log(json.name)
-						$("#name").attr("disabled","true");
-						$("#phone").attr("disabled","true");
-						$("#fgender").attr("disabled","true");
-						$("#mgender").attr("disabled","true");
-
+						$("#name").attr("readonly","true");
 						$("#name").val(json.name);
-						$("#phone").val(json.phone);
-						$("#reg_no").val(json.reg_no);
-						let gender = json.gender;
-						if(gender == 'm'){
-							$("#mgender").prop("checked",true);
-							
+						$("#phone").val(json.contact);
+						$("#address").val(json.address);
+						$("#discount").val(json.discount);
+						$("#comission").val(json.comission);
+						if(json.type_desc == 'Contractor'){
+							$("#comission").attr("readonly",false);
 						}
-						else{
-							$("#fgender").prop("checked",true);
-						}
-					}
-					else{
-						$("#name").attr("disabled",false);
-						$("#phone").attr("disabled",false);
-						$("#fgender").attr("disabled",false);
-						$("#mgender").attr("disabled",false);
+
+						// select value of select box.
+
+						$("#type").find("option[value="+json.client_type+"]").attr("selected","selected");
 					}
 				},
 				error : function(result,status,xhr){

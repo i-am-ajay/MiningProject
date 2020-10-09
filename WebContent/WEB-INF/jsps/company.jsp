@@ -36,12 +36,23 @@
 		</c:if>
 		
 		<c:if test="${status.equalsIgnoreCase('updated')}">
-			<div class="alert alert-danger alert-dismissible fade show w-50 mx-auto" role="alert"><small>There is some error in company creation.</small><button type="button" class="close" data-dismiss="alert" aria-label="Close">
+			<div class="alert alert-success alert-dismissible fade show w-50 mx-auto" role="alert"><small>Company Details Updated</small><button type="button" class="close" data-dismiss="alert" aria-label="Close">
     			<span aria-hidden="true">&times;</span>
   				</button>
   			</div>
 		</c:if>
 		
+		<!-- 
+			Company Form 
+			Fields :
+				1) Company Name - on focus out system will check if company already exists and if user has 
+					edit rights company values will be returned.
+				2) Company Contact - Auto populate based on company name if company already exists.
+				
+				3) Company Address - Auto populate for existing company
+				
+				4) Compan Email - Auto populate for existing company.
+		 -->
 		<f:form method="POST" modelAttribute="company" action="company_saved">
 		   <!-- Patient Vitals -->
 		   <!--  <h4 class="border-bottom m-3 text-muted pb-2" id="form_title">Patient Report Card</h4>-->
@@ -109,19 +120,22 @@
 		);
 		
 		// on registration focus out get employee details through ajax call 
-		$("#registration").focusout( e =>{
+		$("#name").focusout( e =>{
 			$.ajax({
 				type: "POST",
 				url : "${home}get_company",
 				data : {"name":$("#name").val()},
 				success: function(result, status, xhr){
+					console.log(result);
 					if(result != null && result != ""){
 						let json = JSON.parse(result);
+						console.log(json)
 						$("#name").val(json.name);
 						$("#phone").val(json.contact);
 						$("#address").val(json.address);
 						$("#email").val(json.email);
 						
+					}
 				},
 				error : function(result,status,xhr){
 				}

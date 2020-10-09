@@ -30,6 +30,7 @@ public class MasterController {
 	// --------------------- Control Instance Fields -------------------------------------
 	Company company = new Company();
 	int userId = 1;
+	int companyId = 1;
 	
 	// --------------------- End Control Fields ------------------------------------------
 	
@@ -52,10 +53,33 @@ public class MasterController {
 			System.out.println(result.toString());
 		}
 		else {
-			model.addAttribute("status",service.saveClient(client, id, userId));
+			model.addAttribute("status",service.saveClient(client, id, userId, companyId,"admin"));
 		}
 		return "redirect:client_creation";
 	}
+	
+	// Ajax method to get client information
+	
+	@RequestMapping("get_client")
+	public @ResponseBody String getClient(@RequestParam(name="name")String clientName) {
+		Client client = service.getClient(clientName);
+		JSONObject object = null;
+		String result = null;
+		if(client != null) {
+			object = new JSONObject();
+			object.put("name",client.getName());
+			object.put("contact", client.getClientContact());
+			object.put("client_type", client.getClientType().getId());
+			object.put("address", client.getClientAddress());
+			object.put("company", client.getCompany().getId());
+			object.put("comission", client.getComission());
+			object.put("discount", client.getDiscount());
+			object.put("type_desc", client.getClientType().getDescription());
+			result = object.toString();
+		}
+		return result;
+	}
+	
 	
 	// Ajax method to get list of clients to populate in client drop down.
 	@RequestMapping("client_list")
@@ -76,6 +100,16 @@ public class MasterController {
 	
 	
 	// ------------------------------------ Company Controls -----------------------------
+	/**
+	 * View control for company creation page. 
+	 * @param model
+	 * @param status
+	 	If control is acquired 
+	 	a) on direct request from browser then there won't be any status model attribute.
+	 	b) if after company creation there will be a status model attribute and it will be 
+	 	attached in query string.
+	 * @return
+	 */
 	@RequestMapping("company_creation")
 	public String companyCreation(Model model, @ModelAttribute("status") String status) {
 		Company company = new Company();
@@ -83,8 +117,23 @@ public class MasterController {
 		return "company";
 	}
 	
+	/**
+	 * Based on values from the view either a compnay will be created 
+	 	or updated if it exists and user is admin else if company exists and role is user then a msg will be flashed
+	 * @param model
+	 * @param company
+	 * @param companyResult
+	 * @return
+	 */
 	@RequestMapping("company_saved")
 	public String saveCompany(Model model,@ModelAttribute Company company, BindingResult companyResult) {
+		/**
+		 * Check if passed values has some error.
+		 * Call company service with company, user id and user role parameters.
+		 * On success request handing :
+		  	a) Add the message returned by service to a model as 'status'. 
+		  	b) redirect the request to company_creation control.
+		 */
 		if(companyResult.hasErrors()) {
 			
 		}
@@ -94,8 +143,14 @@ public class MasterController {
 		return "redirect:company_creation";
 	}
 	
+	/**
+	 * AJAX method call to get company details based on company name, if company already exists in the system then
+	 * a JSON object will be created with company object fields and these fields will be populated in company form.
+	 * @param companyName
+	 * @return
+	 */
 	@RequestMapping("get_company")
-	public @ResponseBody String getCompany(String companyName) {
+	public @ResponseBody String getCompany(@RequestParam(name="name")String companyName) {
 		Company company = service.getCompany(companyName);
 		JSONObject object = null;
 		String result = null;
