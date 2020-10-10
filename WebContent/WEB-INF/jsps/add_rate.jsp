@@ -13,6 +13,12 @@
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
 </head>
+<!-- 
+	For quantities bucket, ton and foot rate is only based on material type. As these are sold in number like
+	1 ton, 10 bucket, 200 foot etc.
+	
+	1) When any of these options checked in system disable all other parameters except quality and save rate.
+ -->
 <body class=mt-1>
 	<div class="container p-2 m-auto">
 		<h4 class="border-bottom border-danger m-3 pb-2 display-4" id="form_title">Add New Rate</h4>
@@ -48,7 +54,7 @@
   						<div class="col">
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Vehicle Type</label>
-					      		<f:select class="form-control form-control-sm" id="type" placeholder="Enter Vehicle Type" path="truckType">
+					      		<f:select class="form-control form-control-sm not_eligible" id="vehicle_type" placeholder="Enter Vehicle Type" path="truckType">
 					      			<c:forEach var="item" items="${vehicle_lookup}">
 					      				<f:option value="${item.value}">${item.value}</f:option>
 					      			</c:forEach>
@@ -56,7 +62,7 @@
 					    	</div>
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Tyre Type</label>
-					      		<f:select class="form-control form-control-sm" id="type" placeholder="Enter Tyre Type" path="tyreType" >
+					      		<f:select class="form-control form-control-sm not_eligible" id="tyre_type" placeholder="Enter Tyre Type" path="tyreType" >
 					      			<c:forEach var="item" items="${tyre_lookup}">
 					      				<f:option value="${item.value}">${item.value}</f:option>
 					      			</c:forEach>
@@ -64,7 +70,7 @@
 					    	</div>
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Material Type</label>
-					      		<f:select class="form-control form-control-sm" id="type" placeholder="Enter Tyre Type" path="materialType" >
+					      		<f:select class="form-control form-control-sm" id="material_type" placeholder="Enter Material Type" path="materialType" >
 					      			<c:forEach var="item" items="${material_lookup}">
 					      				<f:option value="${item.value}">${item.value}</f:option>
 					      			</c:forEach>
@@ -72,7 +78,7 @@
 					    	</div>
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Quantity</label>
-					      		<f:select class="form-control form-control-sm" id="type" placeholder="Enter Tyre Type" path="quantity" >
+					      		<f:select class="form-control form-control-sm" id="quantity_type" placeholder="Enter Tyre Type" path="quantity" >
 					      			<c:forEach var="item" items="${quantity_lookup}">
 					      				<f:option value="${item.value}">${item.value}</f:option>
 					      			</c:forEach>
@@ -104,6 +110,11 @@
 		$(document).ready(
 			function(){
 				$("#rate_id").attr("required",true);
+				let quantityVal = $("#quantity_type").val();
+				quantityVal = quantityVal.toLowerCase();
+				if(quantityVal == 'bucket' || quantityVal == 'ton' || quantityVal == 'foot'){
+					$(".not_eligible").attr("disabled",true);
+				}
 			});
 		$(document).ready(e => {
 			$("#home_icon").hover( e => {
@@ -116,6 +127,18 @@
 			$("#logout").hide();
 			}
 		);
+
+		// bucket, ton or foot selection will result in disabling fields with not_eligible class.
+		$("#quantity_type").change(e =>{
+			let quantityVal = $("#quantity_type").val();
+			quantityVal = quantityVal.toLowerCase();
+			if(quantityVal == 'bucket' || quantityVal == 'ton' || quantityVal == 'foot'){
+				$(".not_eligible").attr("disabled",true);
+			}
+			else{
+				$(".not_eligible").attr("disabled",false);
+			}
+		});
 	</script>
 </body>
 </html>

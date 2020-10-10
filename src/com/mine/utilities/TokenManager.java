@@ -15,16 +15,19 @@ public class TokenManager {
 	
 	public String generateToken(MiningService service) {
 		Token token = service.getToken();
-		
 		LocalDate date = LocalDate.now();
 		String tokenNo = null;
 		String monthName = date.getMonth().name();
-		token.setCounter(token.getCounter()+1);
-		if(!monthName.equalsIgnoreCase(token.getCurrentMonth())){
-			System.out.println("updating token");
-			changeTokenSeries(token, monthName);
+		if(token == null) {
+			token = new Token();
+			changeTokenSeries(token,monthName);
 		}
-		
+		else {
+			if(!monthName.equalsIgnoreCase(token.getCurrentMonth())){
+				changeTokenSeries(token, monthName);
+			}
+		}
+		token.setCounter(token.getCounter()+1);
 		tokenNo = token.getShortMonth()+"-"+ Integer.toString(token.getCounter());
 		service.updateToken(token);
 		return tokenNo;

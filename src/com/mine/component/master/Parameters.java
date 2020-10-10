@@ -28,6 +28,9 @@ public class Parameters {
 	@Column(name="driver_return_changed")
 	protected boolean driverReturnChanged;
 	
+	@Column(name="bucket_rate")
+	protected double bucketRate;
+	
 	@Generated(GenerationTime.ALWAYS)
 	@Column(name="creation_date", insertable=false, updatable=false)
 	protected LocalDate creationDate;
@@ -86,6 +89,12 @@ public class Parameters {
 	public void setDriverReturnChanged(boolean driverReturnChanged) {
 		this.driverReturnChanged = driverReturnChanged;
 	}
-	
-	
+
+	public double getBucketRate() {
+		return bucketRate;
+	}
+
+	public void setBucketRate(double bucketRate) {
+		this.bucketRate = bucketRate;
+	}	
 }

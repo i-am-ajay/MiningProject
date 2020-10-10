@@ -13,8 +13,15 @@
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" />
 </head>
+<!-- 
+	1) There are three new rate options bucket, ton, foot which has different logic of rate calcuation.
+	2) For these quantities rate based on number of bucket,ton or foot and material type.
+	3) When user select any of these quantities, user has to enter a number too, rate calculation will be 
+		based on these quantities. 
+	
+ -->
 <body class=mt-1>
-	<div class="px-2 pb-2 m-auto">
+	<div class="px-2 pb-2 m-auto" style="width:95%;">
 		<h4 class="border-bottom border-danger mt-1 mx-3 mb-3 pb-2 display-5" id="form_title">Supply And Sales</h4>
 		<f:form method="POST" modelAttribute="supply" action="save_supply" id="sales_form">
 		   <!-- Patient Vitals -->
@@ -109,6 +116,11 @@
 			  			</div>
 				  </div>
 				  <div class="row">
+				  <div class="col-2">
+				  		<div id="numberofDiv" class="form-group">
+				  			<input type="number" value="1" class="form-control form-control-sm" id="numberof" placeholder="Enter Quantity No"/>
+				  		</div>
+				  	</div>
 				  	<div class="col-2">
 				  		<div class="form-group">
 		
@@ -125,9 +137,13 @@
 					     		<f:input type="hidden" id="driver_return_save" path = "driverReturn" />
 					     		<input type="hidden" id="hidden_driver_return" value="${parameter.driverReturn}" />
 			  			</div>
-				  	</div> 
+				  	</div>
+				  	
 				  	<div class="col-2"></div>
-				  	<div class="col-4">
+				  	<div class="col-2">
+				  		<button id="rate_calc_btn" class="btn btn-sm btn-success btn-block mx-auto">Calculate Rate</button>
+				  	</div>
+				  	<div class="col-2">
 				  		<input type="submit" class="btn btn-sm btn-secondary btn-block mx-auto" value="Save"/> 
 				  	</div>
 				  </div>
@@ -140,7 +156,7 @@
 	</f:form>
 	</div>
 	<div id="table_section">
-		<table id="data_table" class="table table-striped table-sm display mx-auto" style="width:95%; font-size:15px;">
+		<table id="data_table" class="table table-striped table-sm display mx-auto" style="width:95%; font-size:13px;">
         <thead class="thead-dark">
             <tr>
             	<th>Token No</th>
@@ -191,6 +207,7 @@
 	<script src="https://use.fontawesome.com/80a486f3d9.js"></script>
 	<!--  <script src="${pageContext.request.contextPath}/static_resources/js/header_manipulate.js"></script>-->
 	<script>
+	// ------------------------------ Page Load Initialization -----------------------------------
 		$(document).ready(
 			function(){
 				$("#vehicle_no").attr("required","true");
@@ -198,6 +215,12 @@
 				$("#driver_number").attr("required","true");
 				$("#address").attr("required","true");
 				$("#final_rate").attr("readonly",true);
+
+				let quantityType = $("#quantity").val();
+				quantityType = quantityType.toLowerCase();
+				if(!(quantityType == 'bucket' || quantityType == 'ton' || quantityType == 'foot')){
+					$("#numberofDiv").hide();
+				}
 			});
 		$(document).ready(e => {
 			$("#home_icon").hover( e => {
@@ -210,17 +233,27 @@
 			$("#logout").hide();
 			}
 		);
+
+		// ------------------------------ Page Load Configuration End ---------------------------------
 		
-		// Changes the page heading for mobile screen and tablets.
-		$(document).ready( e => {
-			const screenSize = window.screen.width;
-			if(screenSize < 1000){
-				$("#middle_col").replaceWith("<div id='middle_col' class='col-8'><h6 class='text-center display-5'>Sir Ganga Ram Hospital</h6><p class='text-center'>Patient Health Report Card</p></div>");
-				$("#form_title").removeClass("m-3");	
-				//$("#farewell_note").removeClass("display-4").addClass("display-5");
+		// ------------------------------ On Page Actions ------------------------------------------
+		// If quantity is changed to bucket, foot, ton then show the field to enter number.
+		$("#quantity").change(e =>{
+			let quantityType = $("#quantity").val();
+			quantityType = quantityType.toLowerCase();
+			if((quantityType == 'bucket' || quantityType == 'ton' || quantityType == 'foot')){
+				$("#numberofDiv").show();
+				//$("#numberof").attr("required",true);
 			}
+			else{
+				$("#numberofDiv").hide();
+			}
+			
 		});
-		// on registration focus out get employee details through ajax call 
+		//------------------------------------ On Page Action End --------------------------------------
+		
+		// ----------------------------------- Ajax Calls from Page -------------------------------------
+
 		// check if vehicle already exists
 		$('#vehicle_no').focusout(function(){
 			$.ajax({
@@ -249,6 +282,65 @@
 
 		});
 		
+		// calculate rate based on given parameters
+		$("#rate_calc_btn").click(e =>{
+			e.preventDefault();
+			// make sure all the required fields are populated. 
+			let vehicleType = $("#vehicle_type").val();
+			let tyreType = $("#tyre_type").val();	
+			if(!(vehicleType) || !(tyreType)){
+				alert("Please select a Vehicle.");
+				return 1; 
+			}
+			//driver return logic.
+			//driverReturnLogic();
+			// fetch rate of vehicle.
+			$.ajax({
+				url : "${home}get_rate",
+				data: {"tyre_type":tyreType,
+						"vehicle_type": vehicleType,
+						"material_type":$("#material_type").val(),
+						"quantity" : $("#quantity").val()
+				},
+				success: function(result, status, xhr){
+					if(result != null || result != ''){
+						result = JSON.parse(result);
+						let rate = result.rate;
+						let quantity = $("#quantity").val();
+						quantity = quantity.toLowerCase();
+						if(quantity == 'bucket' || quantity == 'foot' || quantity == 'ton'){
+							rate = rate * $("#numberof").val();
+						}
+						let discount = $("#discount").val();
+						// check if nrl is selected.
+						if($("#nrl").prop("checked")){
+							rate = rate - $("#royalty").val();
+							$("#royalty_save").val($("#royalty").val());
+						}
+						else{
+							$("#royalty_save").val(0.0);
+						}
+						
+						$("#rate").val(rate || '0.0');
+						
+						if(rate <= 0){
+							alert("Rate can not be 0 or -ve. Kindly select your parameters again.");
+							$("#sales_form").trigger("reset");
+							return 1;
+						}
+						
+						let finalRate = rate - discount;
+						if(finalRate < 0){
+							alert("Final Rate can't be negative, Kindly select your parameters again.");
+							$("#sales_form").trigger("reset");
+							return 1;
+						}
+						$("#final_rate").val(finalRate);
+					}
+				}
+			});
+		});
+		/*
 		$('input[type="radio"][name="belongsTo"]').change( function(){
 				$("#client").attr("disabled",false);
 				$.ajax({
@@ -271,42 +363,34 @@
 						console.log("error");
 					}
 				});
-		});
+		});*/
 
-	// data table script
-		$(document).ready(function() {
-    	$('#data_table').DataTable( {
-        	"scrollY":        "200px",
-        	"scrollCollapse": true,
-        	"paging":         false
-    	} );
-	} );
 	
 	// driver return logic. If discount enabled then driver return is 0. If there is no discount driver 
 	// driver return is given.
 	
 	// find rate of vehicle.
-	var driverReturnRemoved = false;
+	//var driverReturnRemoved = false;
 	
 	$("#driver_return").click(e =>{
-		if($("#driver_return").prop("checked")){
+		driverReturnLogic();
+		/* if($("#driver_return").prop("checked")){
 			driverReturnRemoved = false;
 		}
 		else{
 			driverReturnRemoved = true;
-		}
-		console.log(driverReturnRemoved);
+		} */
 	});
-	
-	$("#rate").focusout(e =>{
-		// make sure all the required fields are populated. 
-		let vehicleType = $("#vehicle_type").val();
-		let tyreType = $("#tyre_type").val();	
-		if(!(vehicleType) || !(tyreType)){
-			alert("Please select a Vehicle.");
-			return 1; 
+
+	// --------------------------- Support Methods ----------------------------------------
+	function driverReturnLogic(){
+		if($("#driver_return").prop("checked")){
+			$("#driver_return_save").val($("#hidden_driver_return").val());
+			alert($("#driver_return_save").val());
 		}
-		if($("#discount").val() != 0){
+		
+		
+		/* if($("#discount").val() != 0){
 			$("#driver_return").attr("disabled",true);
 			$("#driver_return_save").val(0.0);
 		}
@@ -321,48 +405,13 @@
 				$("#driver_return").attr("disabled",false);
 				$("#driver_return_save").val($("#hidden_driver_return").val());
 			}
-		}
-		// fetch rate of vehicle.
-		$.ajax({
-			url : "${home}get_rate",
-			data: {"tyre_type":tyreType,
-					"vehicle_type": vehicleType,
-					"material_type":$("#material_type").val(),
-					"quantity" : $("#quantity").val()
-			},
-			success: function(result, status, xhr){
-				if(result != null || result != ''){
-					result = JSON.parse(result);
-					let rate = result['rate'];
-					let discount = $("#discount").val();
-					// check if nrl is selected.
-					if($("#nrl").prop("checked")){
-						rate = rate - $("#royalty").val();
-						$("#royalty_save").val($("#royalty").val());
-					}
-					else{
-						$("#royalty_save").val(0.0);
-					}
-					
-					$("#rate").val(rate || '0.0');
-					
-					if(rate <= 0){
-						alert("Rate can not be 0 or -ve. Kindly select your parameters again.");
-						$("#sales_form").trigger("reset");
-						return 1;
-					}
-					
-					let finalRate = rate - discount;
-					if(finalRate < 0){
-						alert("Final Rate can't be negative, Kindly select your parameters again.");
-						$("#sales_form").trigger("reset");
-						return 1;
-					}
-					$("#final_rate").val(finalRate);
-				}
-			}
-		});
-	});
+		} */
+	}
+	
+	
+	// --------------------------- Support Methods End -----------------------------------
+	
+	
 	</script>
 </body>
 </html>

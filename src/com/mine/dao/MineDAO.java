@@ -3,6 +3,7 @@ package com.mine.dao;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +34,7 @@ import com.mine.component.master.Vehicle;
 import com.mine.component.transaction.CashBookRecord;
 import com.mine.component.transaction.CreditRecord;
 import com.mine.component.transaction.SupplyDetails;
+import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
 
 @Repository
 public class MineDAO {
@@ -293,17 +295,25 @@ public class MineDAO {
 		Session session = factory.getCurrentSession();
 		Company company = session.load(Company.class, companyId);
 		
+		System.out.println("rate called");
+		
 		CriteriaBuilder builder = session.getCriteriaBuilder();
 		CriteriaQuery<Rate> criteria = builder.createQuery(Rate.class);
 		Root<Rate> from = criteria.from(Rate.class);
-		criteria.where(builder.and(
-				builder.equal(from.get("tyreType"), tyreType),
-				builder.equal(from.get("materialType"), materialType),
-				builder.equal(from.get("truckType"), truckType),
-				builder.equal(from.get("quantity"), quantity),
-				builder.isNull(from.get("endDate")),
-				builder.equal(from.get("company"), company)
-		));
+		List<Predicate> predicateList = new ArrayList<>();
+		if(!quantity.equalsIgnoreCase("bucket") && !quantity.equalsIgnoreCase("ton") && !quantity.equalsIgnoreCase("foot")) {
+			predicateList.add(builder.equal(from.get("tyreType"), tyreType));
+			predicateList.add(builder.equal(from.get("truckType"), truckType));
+		}
+		else {
+			predicateList.add(builder.isNull(from.get("tyreType")));
+			predicateList.add(builder.isNull(from.get("truckType")));
+		}
+		predicateList.add(builder.equal(from.get("materialType"), materialType));
+		predicateList.add(builder.equal(from.get("quantity"), quantity));
+		predicateList.add(builder.isNull(from.get("endDate")));
+		predicateList.add(builder.equal(from.get("company"), company));
+		criteria.where(builder.and(predicateList.toArray(new Predicate[predicateList.size()])));
 		//System.out.println(tyreType+" "+materialType+" "+truckType+" "+quantity+" "+company);
 		TypedQuery<Rate> rateQuery = session.createQuery(criteria);
 		Rate rateObj = null;
@@ -312,8 +322,7 @@ public class MineDAO {
 			rate = rateObj.getRate();
 		}
 		
-		catch(NoResultException | NonUniqueResultException | IllegalStateException ex) {
-			ex.printStackTrace(); 
+		catch(NoResultException | NonUniqueResultException | IllegalStateException ex) { 
 		}
 		return rate;
 	}
@@ -451,7 +460,7 @@ public class MineDAO {
 	@Transactional
 	public void updateToken(Token token) {
 		Session session = factory.getCurrentSession();
-		session.update(token);
+		session.saveOrUpdate(token);
 	}
 	
 	// ------------------------------------- End Token DAO Methods ------------------------------------

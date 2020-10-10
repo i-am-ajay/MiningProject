@@ -24,14 +24,17 @@ public class MainController {
 	int companyId = 1;
 	
 	int userId = 1;
-	
+	//------------------------------ Home Page Control --------------------------------
 	@RequestMapping({"/","home"})
 	public String home(Model model) {
 		System.out.print("hello");
 		return "index";
 	}
 	
-	// Sales page 1 control (dispaly page control)
+	//------------------------------ End of Home Page Control ---------------------------
+	
+	
+	//-------------------------------- Sales Control ------------------------------------
 	@RequestMapping("display_sales_page")
 	public String renderSales(Model model){
 		SupplyDetails details = new SupplyDetails();
@@ -47,54 +50,6 @@ public class MainController {
 		return "supply_and_sales";
 	}
 	
-	// Sales page 2 (vehicle check control)
-	@RequestMapping("fetch_vehicle")
-	public @ResponseBody String fetchVehicleDetails(@RequestParam("vehicle_no") String vehicleNo) {
-		Vehicle vehicle = service.getVehicle(vehicleNo);
-		System.out.println(vehicle);
-		String stringObj = null;
-		if(vehicle != null) {
-			JSONObject object = new JSONObject();
-			object.put("vehicle_type", vehicle.getVehicleType());
-			object.put("tyre_type", vehicle.getTyreType());
-			// Discount logic 
-			Client client = vehicle.getClientId();
-			String clientDescription = client.getClientType().getDescription();
-			if(clientDescription.equalsIgnoreCase("owner")) {
-				if(vehicle.getDiscount() != 0) {
-					object.put("discount", vehicle.getDiscount());
-				}
-				else {
-					object.put("discount", client.getDiscount());
-				}
-			}
-			else if(clientDescription.equalsIgnoreCase("contractor")) {
-				object.put("discount", 0.0d);
-			}
-			else {
-				object.put("discount", vehicle.getDiscount());
-			}
-			
-			// Add client information
-			
-			stringObj = object.toString();
-		}
-		return stringObj;
-	}
-	
-	// Sales Page 3 control (To get rate based on input values)
-	@RequestMapping("get_rate")
-	public @ResponseBody String getVehicleRate(@RequestParam("tyre_type")String tyreType, 
-												@RequestParam("material_type")String materialType, 
-												@RequestParam("vehicle_type")String truckType, 
-												@RequestParam("quantity")String quantity) {
-		double rate = service.getRate(tyreType, materialType, truckType, quantity, companyId);
-		JSONObject obj = new JSONObject();
-		obj.put("rate", rate);
-		return obj.toString();
-	}
-	
-	// Sales page 4th control (To save sales data )
 	@RequestMapping("save_supply")
 	public String saveSales(Model model,@ModelAttribute("supply") SupplyDetails details, 
 			BindingResult result) {
@@ -105,8 +60,53 @@ public class MainController {
 		String token = TokenManager.giveToken(service);
 		System.out.println(token);
 		details.setToken(token);
+		System.out.println("Driver Return"+ details.getDriverReturn());
+		System.out.println("NRL"+details.getNrl());
 		service.saveSupplyDetails(details, userId);
 		page = "redirect:display_sales_page";
 		return page;
 	}
+	
+	// JSON Request to get rate based on selected  parameter
+	@RequestMapping("get_rate")
+	public @ResponseBody String getVehicleRate(@RequestParam("tyre_type")String tyreType, 
+												@RequestParam("material_type")String materialType, 
+												@RequestParam("vehicle_type")String truckType, 
+												@RequestParam("quantity")String quantity) {
+		double rate = service.getRate(tyreType, materialType, truckType, quantity, companyId);
+		JSONObject obj = new JSONObject();
+		obj.put("rate", rate);
+		return obj.toString();
+	}
+	// -------------------------------- End Of Sales Page Control 
+	
+	
+	
+	// -------------------------------- JSON Control to get Vehicle and Associated Discount
+	@RequestMapping("fetch_vehicle")
+	public @ResponseBody String fetchVehicleDetails(@RequestParam("vehicle_no") String vehicleNo) {
+		Vehicle vehicle = service.getVehicle(vehicleNo);
+		String stringObj = null;
+		if(vehicle != null) {
+			JSONObject object = new JSONObject();
+			object.put("vehicle_type", vehicle.getVehicleType());
+			object.put("tyre_type", vehicle.getTyreType());
+			// Discount logic 
+			Client client = vehicle.getClientId();
+			//String clientDescription = client.getClientType().getDescription();
+			
+			if(vehicle.getDiscount() != 0) {
+				object.put("discount", vehicle.getDiscount());
+			}
+			else {
+				object.put("discount", client.getDiscount());
+			}
+			// Add client information
+			
+			stringObj = object.toString();
+		}
+		return stringObj;
+	}	
+	
+	//---------------------------------- End Of Control -----------------------------------
 }

@@ -140,10 +140,9 @@
 
 		// on selection of owner enable comission.
 		$("#type").change(e =>{
-			if($("#type option:selected").text() == "Contractor"){
-				$("#comission").attr("readonly",false);
-			}
+			managerDiscount&Comission();
 		});
+
 		// on registration focus out get employee details through ajax call 
 		$("#name").focusout( e =>{
 			$.ajax({
@@ -161,9 +160,10 @@
 						$("#address").val(json.address);
 						$("#discount").val(json.discount);
 						$("#comission").val(json.comission);
-						if(json.type_desc == 'Contractor'){
+						/* if(json.type_desc == 'Contractor'){
 							$("#comission").attr("readonly",false);
-						}
+						} */
+						manageDisscount&Commission(json.type_desc);
 
 						// select value of select box.
 
@@ -178,6 +178,24 @@
 				}
 			});
 		});
+
+		//----------------------------- Support Method -----------------------------------
+		
+		function manageDisscount&Commission(val){
+			if(!val){
+				val = $("#type option:selected").text() == "Contractor"
+			}
+			if(val){
+				$("#comission").attr("readonly",false);
+				$("#discount").val(0.0);
+				$("#discount").attr("readonly",true);
+			}
+			else{
+				$("#comission").attr("readonly",true);
+				$("#discount").attr("readonly",false);
+			}
+		}
+		//----------------------------- End Support Method -------------------------------
 	
 	</script>
 </body>
