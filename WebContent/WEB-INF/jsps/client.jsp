@@ -181,7 +181,7 @@
 
 		//----------------------------- Support Method -----------------------------------
 		
-		function manageDisscount&Commission(val){
+		function manageDisscount_Commission(val){
 			if(!val){
 				val = $("#type option:selected").text() == "Contractor"
 			}
