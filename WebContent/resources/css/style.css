@@ -1,0 +1,99 @@
+
+body{
+	width : 97%;
+}
+table{
+	width : 95%;
+}
+table th{
+	font-size: 10px;
+}
+
+table td{
+	font-size : 13px;
+	text-align : center;
+	padding : 1px;
+}
+
+#address{
+	font-size: 10px;
+	padding-left : 5px;
+	text-align : left;
+}
+
+#disease{
+	font-size : 10px;
+	padding : 5px;
+	text-align : left;
+}
+
+#creation_date{
+	font-size : 11px;
+	padding : 1px;
+	text-align : center;
+}
+
+.ans{
+	text-align :center;
+}
+
+td.demo{
+	text-align : left;
+}
+
+#header{
+	font-size : 8px;
+}
+
+/* td#address{
+	font-size: 10px;
+	padding-left : 5px;
+	text-align : left;
+}
+
+td#disease{
+	font-size : 10px;
+	padding : 5px;
+	text-align : left;
+}
+
+td#creation_date{
+	font-size : 11px;
+	padding : 1px;
+	text-align : center;
+}
+
+td.ans{
+	text-align :center;
+}
+
+td.demo{
+	text-align : left;
+}
+ */
+.dataTables_filter input { 
+	width: 200px; 
+	display: inline;
+	padding-left : 20px; 
+	font-size : 8px;
+}
+
+
+.dataTables_paginate{
+	font-size : 10px;
+}
+
+.paginate_button{
+	color: grey;
+	font-size : 8px;
+}
+
+.buttons-html5{
+	font-size : 8px;
+	height : .5 em;
+}
+
+.search{
+	font-size :13px;
+}
+

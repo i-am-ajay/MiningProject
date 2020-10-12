@@ -1,0 +1,20 @@
+
+
+table{
+	width : 90%;
+}
+table th{
+	font-size: 12px;
+	text-align : center;
+}
+
+table td{
+	font-size : 15px;
+	text-align : center;
+	padding : 1px;
+}
+
+#example_model{
+	width : 100%;
+	font-size : 10px;
+}
