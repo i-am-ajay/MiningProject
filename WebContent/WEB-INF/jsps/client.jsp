@@ -140,7 +140,7 @@
 
 		// on selection of owner enable comission.
 		$("#type").change(e =>{
-			managerDiscount&Comission();
+			manageDisscount_Commission();
 		});
 
 		// on registration focus out get employee details through ajax call 
@@ -163,11 +163,11 @@
 						/* if(json.type_desc == 'Contractor'){
 							$("#comission").attr("readonly",false);
 						} */
-						manageDisscount&Commission(json.type_desc);
+						manageDisscount_Commission(json.type_desc);
 
 						// select value of select box.
 
-						$("#type").find("option[value="+json.client_type+"]").attr("selected","selected");
+						$("#type").find("option[value='"+json.client_type+"']").attr("selected","selected");
 					}
 				},
 				error : function(result,status,xhr){
@@ -191,6 +191,7 @@
 				$("#discount").attr("readonly",true);
 			}
 			else{
+				$("#comission").val(0.0);
 				$("#comission").attr("readonly",true);
 				$("#discount").attr("readonly",false);
 			}
