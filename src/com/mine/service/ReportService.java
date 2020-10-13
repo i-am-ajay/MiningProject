@@ -1,5 +1,6 @@
 package com.mine.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.mine.component.master.Client;
 import com.mine.component.master.Rate;
 import com.mine.component.master.Vehicle;
+import com.mine.component.transaction.SupplyDetails;
 import com.mine.dao.ReportDAO;
 
 @Service("reportService")
@@ -16,7 +18,9 @@ public class ReportService {
 	ReportDAO reportDAO;
 	
 	// ----------------------- Sales Report Service ---------------------------
-	
+	public List<SupplyDetails> getSupplyDetails(String vehicleNo,String quantity, String material, String paymentType, LocalDate fromDate, LocalDate toDate){
+		return reportDAO.getSalesList(vehicleNo, quantity, material, paymentType, fromDate, toDate);
+	}
 	
 	// ----------------------- End Sales Report Service -----------------------
 	

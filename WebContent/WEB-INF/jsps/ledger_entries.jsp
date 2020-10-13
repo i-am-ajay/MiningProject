@@ -22,8 +22,8 @@
  -->
 <body class=mt-1>
 	<div class="px-2 pb-2 m-auto" style="width:95%;">
-		<h4 class="border-bottom border-danger mt-1 mx-3 mb-3 pb-2 display-5" id="form_title">Supply And Sales</h4>
-		<f:form method="POST" modelAttribute="supply" action="save_supply" id="sales_form">
+		<h4 class="border-bottom border-danger mt-1 mx-3 mb-3 pb-2 display-5" id="form_title">Ledger Entries</h4>
+		<f:form method="POST" modelAttribute="supply" action="ledger_entry" id="eledger">
 		   <!-- Patient Vitals -->
 		   <!--  <h4 class="border-bottom m-3 text-muted pb-2" id="form_title">Patient Report Card</h4>-->
 		   <!-- Card Vitals -->
@@ -34,120 +34,32 @@
   					<div class="row">
   						<div class="col-2">
 					    	<div class="form-group">
-					      		<label class="font-weight-bold">Driver Name</label>
-					      		<f:input id="driver_name" class="form-control form-control-sm" placeholder="Enter Driver Name" path="driverName" />
+					      		<label class="font-weight-bold">Party</label>
+					      		<input id="party" class="form-control form-control-sm" name="party" />
 					    	</div>
 					    </div>
 					    <div class="col-2">
 					    	<div class="form-group">
-					      		<label class="font-weight-bold">Driver Number</label>
-					      		<f:input id="driver_number" class="form-control form-control-sm" placeholder="Enter Driver Number" path="driverNumber" />
+					      		<label class="font-weight-bold">Amount</label>
+					      		<input id="amount" class="form-control form-control-sm" placeholder="Enter Amount" name="amount" />
 					    	</div>
 					    </div>
   						<div class="col-2">
 					    	<div class="form-group">
-					      		<label class="font-weight-bold">Vehicle Number</label>
-					      		<f:input id="vehicle_no" class="form-control form-control-sm" placeholder="Enter Vehicle No" path="vehicle.vehicleNo" />
+					      		<label class="font-weight-bold">Type</label>
+					      		<select id="type" class="form-control fomr-control-sm">
+					      			<option value="income">Income</option>
+					      			<option value="expense">Expense</option>
+					      		</select>
 					    	</div>
 					    </div>
 					    <div class="col-2">
 					    	<div class="form-group">
-					      		<label class="font-weight-bold">Vehicle Type</label>
-					      		<f:input id="vehicle_type" class="form-control form-control-sm" placeholder="Vehicle Type" path="vehicle.vehicleType" />
-					    	</div>
-					    </div>
-					    <div class="col-2">
-					    	<div class="form-group">
-					      		<label class="font-weight-bold">Tyre Type</label>
-					      		<f:input id="tyre_type" class="form-control form-control-sm" placeholder="Tyre Type" path="vehicle.tyreType" />
-					    	</div>
-					    </div>
-					     <div class="col-2">
-					    	<div class="form-group">
-					      		<label class="font-weight-bold">Material</label>
-					      		<f:select class="form-control form-control-sm" id="material_type" placeholder="Enter Material Type" path="material" >
-					      			<c:forEach var="item" items="${material_lookup}">
-					      				<f:option value="${item.value}">${item.value}</f:option>
-					      			</c:forEach>
-					      		</f:select>
+					      		<label class="font-weight-bold">Remark</label>
+					      		<input type="text" id="remark" class="form-control form-control-sm" placeholder="Remark If Any" name="remark" />
 					    	</div>
 					    </div>
 				 	</div>
-				    <div class="row">
-				    	<div class="col-2">
-				    		<div class="form-group">
-					      		<label class="font-weight-bold">Quantity</label>
-					      		<f:select class="form-control form-control-sm" id="quantity" placeholder="Enter Tyre Type" path="quantity" >
-					      			<c:forEach var="item" items="${quantity_lookup}">
-					      				<f:option value="${item.value}">${item.value}</f:option>
-					      			</c:forEach>
-					      		</f:select>
-					    	</div>
-					    </div>
-					    <div class="col-2">
-					    	<div class="form-group">
-					      		<label class="font-weight-bold">Payment Type</label>
-					      		<f:select class="form-control form-control-sm" id="payment_type" placeholder="Choose Payment" path="paymentType" >
-					      			<f:option value="cash">Cash</f:option>
-					      			<f:option value="credit">Credit</f:option>
-					      			<f:option value="credit">Bank</f:option>
-					      		</f:select>
-					    	</div>
-					    </div>
-				  		<div class="col-2">
-				  			<div class="form-group">
-					    		<label class="font-weight-bold">Rate</label>
-					     		<f:input id="rate" class="form-control form-control-sm" placeholder="Rate" path="rate" />
-			  				</div>
-			  			</div>
-			  			<div class="col-2">
-			  				<div class="form-group">
-					    		<label class="font-weight-bold">Discount</label>
-					     		<f:input id="discount" class="form-control form-control-sm" placeholder="Discount" path="discount" />
-			  				</div>
-			  			</div>
-			  			<div class="col-2">
-			  				<div class="form-group">
-					    		<label class="font-weight-bold">Final Rate</label>
-					     		<f:input id="final_rate" class="form-control form-control-sm" placeholder="Final Rate" path="finalRate"/>
-			  				</div>
-			  			</div>
-			  			<div class="col-2">
-			  				
-			  			</div>
-				  </div>
-				  <div class="row">
-				  <div class="col-2">
-				  		<div id="numberofDiv" class="form-group">
-				  			<input type="number" value="1" class="form-control form-control-sm" id="numberof" placeholder="Enter Quantity No"/>
-				  		</div>
-				  	</div>
-				  	<div class="col-2">
-				  		<div class="form-group">
-		
-					    		<label class="font-weight-bold form-check-label">Non Royalty</label>
-					     		<input type="checkbox" id="nrl" class="form-check-input mx-4 mt-2" value=true/>
-					     		<f:input type="hidden" id ="royalty_save" path="nrl" />
-					     		<input type="hidden" id="royalty" value="${parameter.royalty}" />
-			  			</div>
-				  	</div>
-				  	<div class="col-2">
-				  		<div class="form-group">
-					    		<label class="font-weight-bold form-check-label">Driver Return</label>
-					     		<input type="checkbox" id="driver_return" class="form-check-input mx-4 mt-2" value=true/>
-					     		<f:input type="hidden" id="driver_return_save" path = "driverReturn" />
-					     		<input type="hidden" id="hidden_driver_return" value="${parameter.driverReturn}" />
-			  			</div>
-				  	</div>
-				  	
-				  	<div class="col-2"></div>
-				  	<div class="col-2">
-				  		<button id="rate_calc_btn" class="btn btn-sm btn-success btn-block mx-auto">Calculate Rate</button>
-				  	</div>
-				  	<div class="col-2">
-				  		<input type="submit" id="save_btn" class="btn btn-sm btn-secondary btn-block mx-auto" value="Save"/> 
-				  	</div>
-				  </div>
 			  	</div>
 			</div>
 		</div>
@@ -160,21 +72,16 @@
 		<table id="data_table" class="table table-striped table-sm display mx-auto" style="width:95%; font-size:13px;">
         <thead class="thead-dark">
             <tr>
-            	<th>Token No</th>
-                <th>Driver Name</th>
-                <th>Driver Contact</th>
+            	<th>Date</th>
+                <th>Particulars</th>
+                <th>Amount</th>
                 <th>Vehicle No</th>
-                <th>Vehicle Type</th>
-                <th>Vehicle Tyre</th>
-                <th>Material</th>
-                <th>Quantity</th>
-                <th>Payment Type</th>
-                <th>Rate</th>
-                <th>Discount</th>
-                <th>Final Rate</th>
-                <th>NRL</th>
-                <th>Driver Return</th>
+                <th>Remarks</th>
+                <th>&emsp;</th>
                 <th>Date</th>
+                <th>Particular</th>
+                <th>Amount</th>
+                <th>Remarks</th>
             </tr>
         </thead>
         <tbody>

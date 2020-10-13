@@ -17,7 +17,7 @@
 	<div class="p-2 m-auto">
 		<div id="search_div" class="container">
 		<h6 class="border-bottom mx-1 text-muted pb-2" id="form_title">Rate Report</h6>
-		<div  class="mt-3">
+		<div  class="mt-3 bg-light p-1">
 			<form action="rate_report" method="POST">
 			 <div class="form-row search">
 			    <div class="form-group col-md-2">

@@ -17,7 +17,7 @@
 	<div class="p-2 m-auto">
 		<div id="search_div" class="container">
 		<h6 class="border-bottom mx-1 text-muted pb-2" id="form_title">Vehicle Report</h6>
-		<div  class="mt-3">
+		<div  class="mt-3 bg-light p-1">
 			<form action="vehicle_report" method="POST">
 			 <div class="form-row search">
 		  	 <div class="form-group col-md-2">
@@ -54,7 +54,7 @@
 		      		</select>
 			    </div>
 			    <div class="form-group col-md-1"></div>
-			    <div class="">
+			    <div class="mt-1">
 		    		<div><label class="font-weight-bold">Vehicle Belongs To</label></div>
 		    		<div class="form-check form-check-inline">
 		    			<input type="radio" class="form-check-input belong" value="1" id="sbelongs" name="belongs_to"/><label class="form-check-label">Self</label></div>
@@ -190,10 +190,5 @@
 			console.log(this);
 		});
 	</script>
-	
-	
- 
-
-	
 </body>
 </html>

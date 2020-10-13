@@ -1,5 +1,8 @@
 package com.mine.dao;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +22,7 @@ import com.mine.component.master.Client;
 import com.mine.component.master.GeneralData;
 import com.mine.component.master.Rate;
 import com.mine.component.master.Vehicle;
+import com.mine.component.transaction.SupplyDetails;
 
 @Repository
 public class ReportDAO {
@@ -142,4 +146,49 @@ public class ReportDAO {
 	
 	//-------------------------------- End Vehicle Rate Report DAO ---------------------------------
 	
+	
+	//-------------------------------- Sales Report ------------------------------------------------
+	@Transactional
+	public List<SupplyDetails> getSalesList(String vehicleNo,String quantity, String material, String paymentType, LocalDate fromDate, LocalDate toDate){
+		boolean initiateSearch = false;
+		List<SupplyDetails> salesList = null;
+		Session session = factory.getCurrentSession();
+		CriteriaBuilder builder = session.getCriteriaBuilder();
+		CriteriaQuery<SupplyDetails> criteria = builder.createQuery(SupplyDetails.class);
+		Root<SupplyDetails> from = criteria.from(SupplyDetails.class);
+		List<Predicate> predicateList = new ArrayList<>();
+		if(vehicleNo != null && vehicleNo.length() > 0) {
+			initiateSearch = true;
+			predicateList.add(builder.equal(from.get("vehicle").get("vehicleNo"),vehicleNo));
+		}
+		if(quantity != null && quantity.length() > 0) {
+			initiateSearch = true;
+			predicateList.add(builder.equal(from.get("quantity"), quantity));
+		}
+		if(material != null && material.length() > 0) {
+			initiateSearch = true;
+			predicateList.add(builder.equal(from.get("material"), material));
+		}
+		if(paymentType != null && paymentType.length() > 0) {
+			initiateSearch = true;
+			predicateList.add(builder.equal(from.get("paymentType"), paymentType));
+		}
+		if(fromDate != null) {
+			initiateSearch = true;
+			LocalDateTime fromDateTime = LocalDateTime.of(fromDate, LocalTime.of(0, 0));
+			predicateList.add(builder.greaterThanOrEqualTo(from.get("salesDate"), fromDateTime));
+		}
+		if(toDate != null) {
+			initiateSearch = true;
+			LocalDateTime toDateTime = LocalDateTime.of(toDate, LocalTime.of(11, 59));
+			predicateList.add(builder.lessThanOrEqualTo(from.get("salesDate"), toDateTime));
+		}
+		if(initiateSearch) {
+			criteria.where(builder.and(predicateList.toArray(new Predicate[predicateList.size()])));
+			TypedQuery<SupplyDetails> salesQuery = session.createQuery(criteria);
+			salesList = salesQuery.getResultList();
+		}
+		return salesList;
+	}
+	//-------------------------------- End Sales Report --------------------------------------------
 }

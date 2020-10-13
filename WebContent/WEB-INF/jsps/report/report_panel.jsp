@@ -14,12 +14,12 @@
 <body>
 	
 	<div class="container mt-4">
-	<h4 class="border-bottom border-danger mt-1 mx-3 mb-3 pb-2 display-5" id="form_title">Dashboard</h4>
+	<h4 class="border-bottom border-danger mt-1 mx-3 mb-3 pb-2 display-5" id="form_title">Report Dashboard</h4>
 	<div class="row mt-3">
 		<div class="col-sm-12 col-md-4">
-			<div class="card bg-light my-1 py-1" id="company">
+			<div class="card bg-light my-1 py-1" id="sales_report">
 			<article class="card-body mx-auto">
-				<h4 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Create<br/>Company</h4>
+				<h4 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Sales<br/>Report</h4>
 				<p class="text-center mt-3"><i class="fa fa-building fa-4x" aria-hidden="true"></i></i></p>	
 			</article>
 			</div>
@@ -27,7 +27,7 @@
 		<div class=" col-sm-12 col-md-4">
 			<div class="card bg-light my-1 py-1" id="client">
 			<article class="card-body mx-auto">
-				<h4 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Create<br/> Client</h4>
+				<h4 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Client<br/> Report</h4>
 				<p class="text-center mt-3"><i class="fa fa-user-plus fa-4x" aria-hidden="true"></i></p>
 			</article>
 			</div>
@@ -35,7 +35,7 @@
 		<div class=" col-sm-12 col-md-4">
 			<div class="card bg-light my-1 py-1" id="vehicle">
 			<article class="card-body mx-auto">
-				<h4 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Add<br/> Vehicle</h4>
+				<h4 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Vehicle<br/> Report</h4>
 				<p class="text-center mt-3"><i class="fa fa-truck fa-4x" aria-hidden="true"></i></p>
 			</article>
 			</div>
@@ -46,26 +46,26 @@
 		<div class="col-sm-12 col-md-4">
 			<div class="card bg-light my-1 py-1" id="rates">
 			<article class="card-body mx-auto">
-				<h4 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Add<br/>Rates</h4>
+				<h4 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Rates<br/>Report</h4>
 				<p class="text-center mt-3"><i class="fa fa-money fa-4x" aria-hidden="true"></i></p>	
 			</article>
 			</div>
 		</div>
 		<div class=" col-sm-12 col-md-4">
-			<div class="card bg-light my-1 py-1" id="sales">
+			<!-- <div class="card bg-light my-1 py-1" id="sales">
 			<article class="card-body mx-auto">
 				<h4 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Supply<br/>& Sales</h4>
 				<p class="text-center mt-3"><i class="fa fa-calculator fa-4x" aria-hidden="true"></i></p>
 			</article>
-			</div>
+			</div> -->
 		</div>
 		<div class=" col-sm-12 col-md-4">
-			<div class="card bg-light my-1 py-1" id="report">
+			<!-- <div class="card bg-light my-1 py-1" id="report">
 			<article class="card-body mx-auto">
-				<h3 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Reports<br/> &nbsp;&nbsp;</h3>
+				<h3 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Add<br/> Vehicle</h3>
 				<p class="text-center mt-3"><i class="fa fa-file-text-o fa-3x" aria-hidden="true"></i></p>
 			</article>
-			</div>
+			</div> -->
 		</div>
 	</div>
 	</div> 
@@ -86,47 +86,32 @@
 		});
 
 		// go to create user
-		$("#company").click(function(e) {
+		$("#sales_report").click(function(e) {
 			//$("#hidden_form").submit();
-			window.location.href ="company_creation";
+			window.location.href ="sales_report";
 		});
 		
 		// go to graphs
 		$("#client").click( e=>{
-			window.location.href ="client_creation";
+			window.location.href ="client_report";
 		});
 		// go to feedback
 		$("#vehicle").click( e=>{
-			window.location.href ="create_vehicle";
+			window.location.href ="vehicle_report";
 		});
 
 		$("#rates").click( e=>{
-			window.location.href ="add_rate";
+			window.location.href ="rate_report";
 		});
 		
 		$("#sales").click( e=>{
 			window.location.href ="display_sales_page";
 		});
 
-		$("#report").click( e=>{
-			window.location.href ="report_panel";
-		});
-
 		$(document).ready( e=>{
 			$("#home_icon").hide();
 		});
 
-		// Changes the page heading for mobile screen and tablets.
-		$(document).ready( e => {
-			const screenSize = window.screen.width;
-			if(screenSize < 1000){
-				$("#header_div").replaceWith("<h6 class='text-center display-5'>Sir Ganga Ram Hospital</h6>" +
-						"<p class='text-center'>Patient Data Portal</p>");
-				$("#form_title").removeClass("m-3");
-				
-				//$("#farewell_note").removeClass("display-4").addClass("display-5");
-			}
-		})
 	</script>
 </body>
 </html>
