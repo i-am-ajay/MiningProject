@@ -27,12 +27,8 @@ public class CreditRecord {
 	private int id;
 	
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name="client")
+	@JoinColumn(name="party")
 	private Client client;
-	
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name="vehicle")
-	private Vehicle vehicle;
 	
 	@JoinColumn(name="sales_id")
 	@OneToOne(fetch=FetchType.EAGER)
@@ -45,7 +41,15 @@ public class CreditRecord {
 	@Column(name = "creation_date")
 	private LocalDateTime entryDate;
 	
+	@Column(name="status")
 	private boolean status;
+	
+	// sales / expanse / expanse comission / expanse sanchalan
+	@Column(name="type")
+	private String type;
+	
+	// asset / liability / deposit
+	private String category;
 
 	public Client getClient() {
 		return client;
@@ -91,11 +95,19 @@ public class CreditRecord {
 		return id;
 	}
 
-	public Vehicle getVehicle() {
-		return vehicle;
+	public String getType() {
+		return type;
 	}
 
-	public void setVehicle(Vehicle vehicle) {
-		this.vehicle = vehicle;
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
 	}
 }

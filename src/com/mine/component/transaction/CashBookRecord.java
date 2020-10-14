@@ -28,25 +28,19 @@ public class CashBookRecord {
 	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="client")
-	private Client client;
+	private Client party;
 	
 	@JoinColumn(name="sales_id")
 	@OneToOne(fetch=FetchType.EAGER)
 	private SupplyDetails sales;
-	
-	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name="vehicle")
-	private Vehicle vehicle;
-	
-	public Vehicle getVehicle() {
-		return vehicle;
-	}
-
-	public void setVehicle(Vehicle vehicle) {
-		this.vehicle = vehicle;
-	}
 
 	private double amount;
+	
+	// sales/ expanse / deposite
+	private String type;
+	
+	// income / expanse
+	private String category;
 	
 	@Generated(GenerationTime.INSERT)
 	@Column(name = "creation_date")
@@ -54,12 +48,12 @@ public class CashBookRecord {
 	
 	private boolean status;
 
-	public Client getClient() {
-		return client;
+	public Client getParty() {
+		return party;
 	}
 
-	public void setClient(Client client) {
-		this.client = client;
+	public void setParty(Client party) {
+		this.party = party;
 	}
 
 	public SupplyDetails getSales() {
@@ -97,4 +91,22 @@ public class CashBookRecord {
 	public int getId() {
 		return id;
 	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
+	
+	
 }

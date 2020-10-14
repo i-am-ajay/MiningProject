@@ -33,6 +33,7 @@ import com.mine.component.master.User;
 import com.mine.component.master.Vehicle;
 import com.mine.component.transaction.CashBookRecord;
 import com.mine.component.transaction.CreditRecord;
+import com.mine.component.transaction.Ledger;
 import com.mine.component.transaction.SupplyDetails;
 import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
 
@@ -359,19 +360,35 @@ public class MineDAO {
 		if(details.getPaymentType().equalsIgnoreCase("cash")) {
 			CashBookRecord cashRecord = new CashBookRecord();
 			cashRecord.setAmount(details.getFinalRate());
-			cashRecord.setClient(vehicle.getClientId());
-			cashRecord.setVehicle(vehicle);
+			cashRecord.setParty(vehicle.getClientId());
 			cashRecord.setSales(details);
+			cashRecord.setType("Sale");
+			cashRecord.setCategory("Income");
 			cashRecord.setStatus(true);
 			session.save(cashRecord);
+			
+			// ledger record
+			
+			Ledger ledger = new Ledger();
+			ledger.setCreditAmount(details.getFinalRate());
+			ledger.setSource("Sales");
+			ledger.setTarget("Cash");
+			ledger.setType("Sale");
 		}
 		else {
 			CreditRecord creditRecord = new CreditRecord();
 			creditRecord.setAmount(details.getFinalRate());
 			creditRecord.setClient(vehicle.getClientId());
-			creditRecord.setVehicle(vehicle);
 			creditRecord.setSales(details);
 			creditRecord.setStatus(true);
+			creditRecord.setType("Sale");
+			creditRecord.setCategory("Asset");
+			
+			// ledger record
+			Ledger ledger = new Ledger();
+			ledger.setCreditAmount(details.getFinalRate());
+			ledger.setSource("Sale");
+			ledger.setTarget(vehicle.getClientId().getName());
 			session.save(creditRecord);
 		}
 		details.setVehicle(vehicle);
