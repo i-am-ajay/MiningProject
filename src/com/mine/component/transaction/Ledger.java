@@ -23,15 +23,24 @@ public class Ledger {
 	
 	protected String type;
 	
+	// target will be giving
 	protected String target;
 	
+	// source will get the money
 	protected String source;
 	
 	@Column(name="debit_amount")
-	protected double debitAmout;
+	protected double debitAmount;
 	
 	@Column(name="credit_amount")
 	protected double creditAmount;
+	
+	@Column(name="cashbook_link")
+	protected CashBookRecord cashbookLinking;
+	
+	@Column(name="creditbook_link")
+	protected CreditRecord creditRecordLinking;
+	
 
 	public LocalDateTime getEntryDate() {
 		return entryDate;
@@ -60,17 +69,17 @@ public class Ledger {
 	public String getSource() {
 		return source;
 	}
-
+	// Source will get the money
 	public void setSource(String source) {
 		this.source = source;
 	}
 
-	public double getDebitAmout() {
-		return debitAmout;
+	public double getDebitAmount() {
+		return debitAmount;
 	}
 
-	public void setDebitAmout(double debitAmout) {
-		this.debitAmout = debitAmout;
+	public void setDebitAmount(double debitAmout) {
+		this.debitAmount = debitAmout;
 	}
 
 	public double getCreditAmount() {
@@ -83,5 +92,21 @@ public class Ledger {
 
 	public int getId() {
 		return id;
+	}
+
+	public CashBookRecord getCashbookLinking() {
+		return cashbookLinking;
+	}
+
+	public void setCashbookLinking(CashBookRecord cashbookLinking) {
+		this.cashbookLinking = cashbookLinking;
+	}
+
+	public CreditRecord getCreditRecordLinking() {
+		return creditRecordLinking;
+	}
+
+	public void setCreditRecordLinking(CreditRecord creditRecordLinking) {
+		this.creditRecordLinking = creditRecordLinking;
 	}
 }

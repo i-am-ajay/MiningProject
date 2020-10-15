@@ -47,6 +47,14 @@ public class CashBookRecord {
 	private LocalDateTime entryDate;
 	
 	private boolean status;
+	
+	// links for ledger and credit book
+	
+	@OneToOne(mappedBy = "cashbookDepsiteLink")
+	CreditRecord creditRecord;
+	
+	@OneToOne(mappedBy = "cashbookLinking")
+	Ledger ledger;
 
 	public Client getParty() {
 		return party;
@@ -107,6 +115,20 @@ public class CashBookRecord {
 	public void setCategory(String category) {
 		this.category = category;
 	}
-	
-	
+
+	public CreditRecord getCreditRecord() {
+		return creditRecord;
+	}
+
+	public void setCreditRecord(CreditRecord creditRecord) {
+		this.creditRecord = creditRecord;
+	}
+
+	public Ledger getLedger() {
+		return ledger;
+	}
+
+	public void setLedger(Ledger ledger) {
+		this.ledger = ledger;
+	}
 }

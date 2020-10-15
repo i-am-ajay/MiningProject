@@ -50,6 +50,10 @@ public class CreditRecord {
 	
 	// asset / liability / deposit
 	private String category;
+	
+	@OneToOne
+	@JoinColumn(name="cashbook_link_for_deposite")
+	private CashBookRecord cashbookDepositeLink;
 
 	public Client getClient() {
 		return client;
@@ -110,4 +114,14 @@ public class CreditRecord {
 	public void setCategory(String category) {
 		this.category = category;
 	}
+
+	public CashBookRecord getCashbookDepositeLink() {
+		return cashbookDepositeLink;
+	}
+
+	public void setCashbookDepositeLink(CashBookRecord cashbookDepositeLink) {
+		this.cashbookDepositeLink = cashbookDepositeLink;
+	}
+	
+	
 }

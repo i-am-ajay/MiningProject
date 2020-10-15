@@ -35,6 +35,8 @@ import com.mine.component.transaction.CashBookRecord;
 import com.mine.component.transaction.CreditRecord;
 import com.mine.component.transaction.Ledger;
 import com.mine.component.transaction.SupplyDetails;
+import com.mine.utilities.DefineTypesAndCategories;
+import com.mine.utilities.TypesAndCategories;
 import com.mysql.cj.x.protobuf.MysqlxDatatypes.Array;
 
 @Repository
@@ -356,16 +358,22 @@ public class MineDAO {
 		Session session = factory.getCurrentSession();
 		// save sales record in Cash or credit table.
 		User user = session.get(User.class, userId);
+		TypesAndCategories cashSale = DefineTypesAndCategories.cashSale; 
+		TypesAndCategories creditSale = DefineTypesAndCategories.creditSale;
+		
+		// get vehicle and set it's linking.
 		Vehicle vehicle = session.get(Vehicle.class, details.getVehicle().getVehicleNo());
+		details.setVehicle(vehicle);
+		details.setUser(user);
+		
 		if(details.getPaymentType().equalsIgnoreCase("cash")) {
 			CashBookRecord cashRecord = new CashBookRecord();
 			cashRecord.setAmount(details.getFinalRate());
 			cashRecord.setParty(vehicle.getClientId());
 			cashRecord.setSales(details);
-			cashRecord.setType("Sale");
-			cashRecord.setCategory("Income");
+			cashRecord.setType(cashSale.getCashbookType());
+			cashRecord.setCategory(cashSale.getCashbookCategory());
 			cashRecord.setStatus(true);
-			session.save(cashRecord);
 			
 			// ledger record
 			
@@ -373,7 +381,14 @@ public class MineDAO {
 			ledger.setCreditAmount(details.getFinalRate());
 			ledger.setSource("Sales");
 			ledger.setTarget("Cash");
-			ledger.setType("Sale");
+			ledger.setType(cashSale.getLedgerType());
+			
+			cashRecord.setLedger(ledger);
+			ledger.setCashbookLinking(cashRecord);
+			
+			session.save(ledger);
+			session.save(cashRecord);
+			
 		}
 		else {
 			CreditRecord creditRecord = new CreditRecord();
@@ -381,20 +396,24 @@ public class MineDAO {
 			creditRecord.setClient(vehicle.getClientId());
 			creditRecord.setSales(details);
 			creditRecord.setStatus(true);
-			creditRecord.setType("Sale");
-			creditRecord.setCategory("Asset");
+			creditRecord.setType(creditSale.getCreditType());
+			creditRecord.setCategory(creditSale.getCreditCategory());
 			
 			// ledger record
 			Ledger ledger = new Ledger();
-			ledger.setCreditAmount(details.getFinalRate());
+			ledger.setDebitAmount(details.getFinalRate());
 			ledger.setSource("Sale");
 			ledger.setTarget(vehicle.getClientId().getName());
+			ledger.setType(creditSale.getLedgerType());
+			
 			session.save(creditRecord);
+			session.save(ledger);
 		}
-		details.setVehicle(vehicle);
-		details.setUser(user);
 		session.save(details);
 	}
+	
+	// amount added from cash transaction screen income and expense both will be registered here.
+	
 	
 	// Non Used method.
 	/*@Transactional
@@ -418,6 +437,94 @@ public class MineDAO {
 	}
 	// ---------------------------- End Sales DAO Methods ----------------------------------------
 	
+	
+	// ---------------------------- Expense and Deposite related DAO -----------------------------
+	
+	public void addDeposite(int clientId, double amount, String type, String cashbookType, String cashbookCategory, String creditType, String creditCategory, String ledgerType) {
+		CashBookRecord cashRecord = null;
+		Ledger ledger = null;
+		CreditRecord creditRecord = null;
+		
+		Session session = factory.getCurrentSession();
+		Client client = session.get(Client.class, clientId);
+		
+		if(type.equals("deposite")) {
+			cashRecord = new CashBookRecord();
+			cashRecord.setAmount(amount);
+			cashRecord.setCategory(cashbookCategory);
+			cashRecord.setType(cashbookType);
+			cashRecord.setStatus(true);
+			
+			// credit book entry -  if it's a cash deposite an entry will be sent to credit records too.
+			creditRecord = new CreditRecord();
+			creditRecord.setAmount(amount * -1);
+			creditRecord.setCategory(creditCategory);
+			creditRecord.setType(creditType);
+			creditRecord.setStatus(true);
+			creditRecord.setClient(client);
+			creditRecord.setCashbookDepositeLink(cashRecord);
+			
+			// ledger entry
+			ledger = new Ledger();
+			ledger.setCreditAmount(amount);
+			ledger.setSource(client.getName());
+			ledger.setTarget("Cash");
+			ledger.setType(ledgerType);
+			ledger.setCashbookLinking(cashRecord);
+			
+			cashRecord.setLedger(ledger);
+			cashRecord.setCreditRecord(creditRecord);
+		}
+		else {
+			// if it's not deposite then it's expense and expense can be cash or credit.
+			if(type.equals("Cash")) {
+				cashRecord = new CashBookRecord();
+				cashRecord.setAmount(amount * -1);
+				cashRecord.setCategory(cashbookCategory);
+				cashRecord.setType(cashbookType);
+				cashRecord.setStatus(true);
+				
+				/*// credit book entry -  if it's a cash deposite an entry will be sent to credit records too.
+				creditRecord = new CreditRecord();
+				creditRecord.setAmount(amount);
+				creditRecord.setCategory(category);
+				creditRecord.setType(type);
+				creditRecord.setStatus(true);
+				creditRecord.setClient(client);
+				creditRecord.setCashbookDepsiteLink(cashRecord);*/
+				
+				// ledger entry
+				ledger = new Ledger();
+				ledger.setDebitAmount(amount);
+				ledger.setSource("Cash");
+				ledger.setTarget(client.getName());
+				ledger.setType(ledgerType);
+				ledger.setCashbookLinking(cashRecord);
+				
+				cashRecord.setLedger(ledger);
+				cashRecord.setCreditRecord(creditRecord);
+			}
+			else {
+				creditRecord = new CreditRecord();
+				creditRecord.setAmount(amount);
+				creditRecord.setCategory(creditCategory);
+				creditRecord.setType(creditType);
+				creditRecord.setStatus(true);
+				creditRecord.setClient(client);
+				
+				// ledger entry
+				ledger = new Ledger();
+				ledger.setCreditAmount(amount);
+				ledger.setSource("expense");
+				ledger.setTarget(client.getName());
+				ledger.setType(ledgerType);
+				ledger.setCashbookLinking(cashRecord);
+			}
+		}
+	}
+	
+	
+	// ---------------------------- End Expense and Deposite related DAO -------------------------
 	
 	
 	
