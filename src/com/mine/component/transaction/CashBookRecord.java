@@ -50,7 +50,7 @@ public class CashBookRecord {
 	
 	// links for ledger and credit book
 	
-	@OneToOne(mappedBy = "cashbookDepsiteLink")
+	@OneToOne(mappedBy = "cashbookDepositeLink")
 	CreditRecord creditRecord;
 	
 	@OneToOne(mappedBy = "cashbookLinking")

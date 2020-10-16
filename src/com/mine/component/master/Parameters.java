@@ -7,11 +7,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
 
 @Entity
+@Table(name="parameters")
 public class Parameters {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -28,8 +30,18 @@ public class Parameters {
 	@Column(name="driver_return_changed")
 	protected boolean driverReturnChanged;
 	
-	@Column(name="bucket_rate")
-	protected double bucketRate;
+	// FinalRate <= freeLimit : Sanchalan will be equal to sanchalanOnFree.
+	protected double freeLimit;
+	
+	// Number of Vehicle Filled < thresholdLimit : sanchalanHigh : sanchalanLow 
+	protected int threshholdLimit;
+	
+	protected double sanchalanOnFree;
+	
+	// when vehicle filled is less than threshhold
+	protected double sanchalanHigh;
+	
+	protected double sanchalanLow;
 	
 	@Generated(GenerationTime.ALWAYS)
 	@Column(name="creation_date", insertable=false, updatable=false)
@@ -90,11 +102,43 @@ public class Parameters {
 		this.driverReturnChanged = driverReturnChanged;
 	}
 
-	public double getBucketRate() {
-		return bucketRate;
+	public double getFreeLimit() {
+		return freeLimit;
 	}
 
-	public void setBucketRate(double bucketRate) {
-		this.bucketRate = bucketRate;
+	public void setFreeLimit(double freeLimit) {
+		this.freeLimit = freeLimit;
+	}
+
+	public int getThreshholdLimit() {
+		return threshholdLimit;
+	}
+
+	public void setThreshholdLimit(int threshholdLimit) {
+		this.threshholdLimit = threshholdLimit;
+	}
+
+	public double getSanchalanOnFree() {
+		return sanchalanOnFree;
+	}
+
+	public void setSanchalanOnFree(double sanchalanOnFree) {
+		this.sanchalanOnFree = sanchalanOnFree;
+	}
+
+	public double getSanchalanHigh() {
+		return sanchalanHigh;
+	}
+
+	public void setSanchalanHigh(double sanchalanHigh) {
+		this.sanchalanHigh = sanchalanHigh;
+	}
+
+	public double getSanchalanLow() {
+		return sanchalanLow;
+	}
+
+	public void setSanchalanLow(double sanchalanLow) {
+		this.sanchalanLow = sanchalanLow;
 	}	
 }

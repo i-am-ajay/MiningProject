@@ -14,15 +14,34 @@
 	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" />
 </head>
 <!-- 
-	1) There are three new rate options bucket, ton, foot which has different logic of rate calcuation.
-	2) For these quantities rate based on number of bucket,ton or foot and material type.
-	3) When user select any of these quantities, user has to enter a number too, rate calculation will be 
-		based on these quantities. 
-	
+	1) We have to change client to party.
+	2) Different type of parties will be :
+		1) Self
+		2) Owner
+		3) Comission Agent
+		4) Sanchalan Person
+		5) Office 
+		6) Other
+		
+	3) There will be subtypes that will decide type of transactions based on party.
+		If Income :
+		Party client -> Client Deposite
+		Party any other than client -> Other Deposite
+		
+		If expense :
+		Type cash : 
+		Party Comission Agent -> comission_expense
+		Party Sanchalan Person -> sanchalan_expense
+		Party Office -> Office_expense
+		Any other situation -> other_expense
+		
+		Type Credit : 
+		Party Sanchalan -> credit_sanchalan_expense
+		Any Other situation -> credit_other_expense
  -->
 <body class=mt-1>
 	<div class="px-2 pb-2 m-auto" style="width:95%;">
-		<h4 class="border-bottom border-danger mt-1 mx-3 mb-3 pb-2 display-5" id="form_title">Ledger Entries</h4>
+		<h4 class="border-bottom border-danger mt-1 mx-3 mb-3 pb-2 display-5" id="form_title">Deposite and Expense</h4>
 		<f:form method="POST" modelAttribute="supply" action="ledger_entry" id="eledger">
 		   <!-- Patient Vitals -->
 		   <!--  <h4 class="border-bottom m-3 text-muted pb-2" id="form_title">Patient Report Card</h4>-->
@@ -53,6 +72,16 @@
 					      		</select>
 					    	</div>
 					    </div>
+					    <div id="expense_type" class="col-2">
+					    	<div class="form-group">
+					      		<label class="font-weight-bold">Expense Type</label>
+					      		<select id="e_type" class="form-control fomr-control-sm">
+					      			<option value="cash_expense">Cash</option>
+					      			<option value="credit_expense">Credit</option>
+					      		</select>
+					    	</div>
+					    </div>
+					    
 					    <div class="col-2">
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Remark</label>
@@ -74,13 +103,12 @@
             <tr>
             	<th>Date</th>
                 <th>Particulars</th>
-                <th>Amount</th>
-                <th>Vehicle No</th>
+                <th>Credit Amount</th>
                 <th>Remarks</th>
                 <th>&emsp;</th>
                 <th>Date</th>
                 <th>Particular</th>
-                <th>Amount</th>
+                <th>Debit Amount</th>
                 <th>Remarks</th>
             </tr>
         </thead>
@@ -116,63 +144,29 @@
 	<!--  <script src="${pageContext.request.contextPath}/static_resources/js/header_manipulate.js"></script>-->
 	<script>
 	// ------------------------------ Page Load Initialization -----------------------------------
-		$(document).ready(
-			function(){
-				$("#vehicle_no").attr("required","true");
-				$("#driver_name").attr("required","true");
-				$("#driver_number").attr("required","true");
-				$("#address").attr("required","true");
-				$("#final_rate").attr("readonly",true);
-
-				let quantityType = $("#quantity").val();
-				quantityType = quantityType.toLowerCase();
-				if(!(quantityType == 'bucket' || quantityType == 'ton' || quantityType == 'foot')){
-					$("#numberofDiv").hide();
-				}
-			});
-		$(document).ready(e => {
-			$("#home_icon").hover( e => {
-				$("#home_icon").css({"cursor":"pointer"})
-			});
-
-			$("#home_icon").click( e =>{
-				window.location.href = "admin_panel";
-			});
-			$("#logout").hide();
-			}
-		);
+		$(document).ready(e =>{
+			$("#expense_type").hide();
+		});
+		$(document).ready();
 
 		// ------------------------------ Page Load Configuration End ---------------------------------
 		
 		// ------------------------------ On Page Actions ------------------------------------------
-		// If quantity is changed to bucket, foot, ton then show the field to enter number.
-		$("#quantity").change(e =>{
-			let quantityType = $("#quantity").val();
-			quantityType = quantityType.toLowerCase();
-			if((quantityType == 'bucket' || quantityType == 'ton' || quantityType == 'foot')){
-				$("#numberofDiv").show();
-				//$("#numberof").attr("required",true);
+		// If type changed to expense then show expense type option i.e cash / credit.
+		$("#type").change(e=>{
+			if($("#type").val() == "Expense" ){
+				$("#expense_type").show();
 			}
-			else{
-				$("#numberofDiv").hide();
-			}
-			
-		});
+		})
+		
 
 		// submit button click validations
-		$("#save_btn").click(e =>{
-			let rate = $("#rate").val();
-			if(rate == "" || rate == 0.0){
-				e.preventDefault();
-				alert("Calculate Rate, before saving.");
-				return -1;
-			}
-		});
+		$("#save_btn").click(e =>{});
 		//------------------------------------ On Page Action End --------------------------------------
 		
 		// ----------------------------------- Ajax Calls from Page -------------------------------------
 
-		// check if vehicle already exists
+		// will populate ledger table.
 		$('#vehicle_no').focusout(function(){
 			$.ajax({
 				type: "POST",
@@ -199,132 +193,8 @@
 			});
 
 		});
-		
-		// calculate rate based on given parameters
-		$("#rate_calc_btn").click(e =>{
-			e.preventDefault();
-			// make sure all the required fields are populated. 
-			let vehicleType = $("#vehicle_type").val();
-			let tyreType = $("#tyre_type").val();	
-			if(!(vehicleType) || !(tyreType)){
-				alert("Please select a Vehicle.");
-				return 1; 
-			}
-			//driver return logic.
-			//driverReturnLogic();
-			// fetch rate of vehicle.
-			$.ajax({
-				url : "${home}get_rate",
-				data: {"tyre_type":tyreType,
-						"vehicle_type": vehicleType,
-						"material_type":$("#material_type").val(),
-						"quantity" : $("#quantity").val()
-				},
-				success: function(result, status, xhr){
-					if(result != null || result != ''){
-						result = JSON.parse(result);
-						let rate = result.rate;
-						let quantity = $("#quantity").val();
-						quantity = quantity.toLowerCase();
-						if(quantity == 'bucket' || quantity == 'foot' || quantity == 'ton'){
-							rate = rate * $("#numberof").val();
-						}
-						let discount = $("#discount").val();
-						// check if nrl is selected.
-						if($("#nrl").prop("checked")){
-							rate = rate - $("#royalty").val();
-							$("#royalty_save").val($("#royalty").val());
-						}
-						else{
-							$("#royalty_save").val(0.0);
-						}
-						
-						$("#rate").val(rate || '0.0');
-						
-						if(rate <= 0){
-							alert("Rate can not be 0 or -ve. Kindly select your parameters again.");
-							$("#sales_form").trigger("reset");
-							return 1;
-						}
-						
-						let finalRate = rate - discount;
-						if(finalRate < 0){
-							alert("Final Rate can't be negative, Kindly select your parameters again.");
-							$("#sales_form").trigger("reset");
-							return 1;
-						}
-						$("#final_rate").val(finalRate);
-					}
-				}
-			});
-		});
-		/*
-		$('input[type="radio"][name="belongsTo"]').change( function(){
-				$("#client").attr("disabled",false);
-				$.ajax({
-					type: "POST",
-					url : "${home}client_list",
-					data : {"client_id":this.value},
-					success: function(result, status, xhr){
-						if(result != null && result != ""){
-							$("#client").empty();
-							let json = JSON.parse(result);
-							let array = Object.keys(json);
-							array.forEach(e=>{
-								$("#client")
-								.append("<option value="+e+">"+json[e]+"</option>");
-							});
-							
-						}
-					},
-					error : function(result,status,xhr){
-						console.log("error");
-					}
-				});
-		});*/
-
-	
-	// driver return logic. If discount enabled then driver return is 0. If there is no discount driver 
-	// driver return is given.
-	
-	// find rate of vehicle.
-	//var driverReturnRemoved = false;
-	
-	$("#driver_return").click(e =>{
-		driverReturnLogic();
-		/* if($("#driver_return").prop("checked")){
-			driverReturnRemoved = false;
-		}
-		else{
-			driverReturnRemoved = true;
-		} */
-	});
 
 	// --------------------------- Support Methods ----------------------------------------
-	function driverReturnLogic(){
-		if($("#driver_return").prop("checked")){
-			$("#driver_return_save").val($("#hidden_driver_return").val());
-			alert($("#driver_return_save").val());
-		}
-		
-		
-		/* if($("#discount").val() != 0){
-			$("#driver_return").attr("disabled",true);
-			$("#driver_return_save").val(0.0);
-		}
-		else{
-			if(driverReturnRemoved){
-				$("#driver_return").prop("checked",false);
-				$("#driver_return").attr("disabled",false);
-				$("#driver_return_save").val(0.0);
-			}
-			else{
-				$("#driver_return").prop("checked",true);
-				$("#driver_return").attr("disabled",false);
-				$("#driver_return_save").val($("#hidden_driver_return").val());
-			}
-		} */
-	}
 	
 	
 	// --------------------------- Support Methods End -----------------------------------

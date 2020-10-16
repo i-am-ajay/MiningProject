@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 
 import com.mine.component.master.Client;
@@ -18,6 +19,7 @@ import com.mine.component.master.User;
 import com.mine.component.master.Vehicle;
 import com.mine.component.transaction.SupplyDetails;
 import com.mine.dao.MineDAO;
+import com.mine.utilities.DefineTypesAndCategories;
 
 @Service
 public class MiningService {
@@ -99,7 +101,47 @@ public class MiningService {
 	// ------------------------------ Supply Service ----------------------------------
 	
 	public void saveSupplyDetails(SupplyDetails supplyDetails, int user) {
+		Parameters params = this.getParameters();
 		dao.addSales(supplyDetails, user);
+		
+		// both expenses will be added in credit table as we are not paying them in cash. 
+		/* add an entry of sanchalan expense. 
+		 * 1) If final rate is 5000 or less then Sanchalan will be 1000 or any decided rate.
+		 * 2) If vehicle sold is less than a threshhold value then sanchalan expense is 2700, if threshhold is crossed rate is reduced.
+		 * 3) We'll add same cost for all vehicle i.e cost after threshold is reached, 
+		 * if threshold is not crossed then an entry will be passed to add addition price in expense.
+		 * */
+		Client client = supplyDetails.getVehicle().getClientId();
+		double sanchalanAmount = supplyDetails.getFinalRate() <= params.getFreeLimit()  ? params.getSanchalanOnFree() : params.getSanchalanLow(); 
+		dao.addDepositeOrExpense(client.getClientId(), sanchalanAmount, 
+				"Expense", DefineTypesAndCategories.creditExpenseSanchalan.getCashbookType(), 
+				DefineTypesAndCategories.creditExpenseSanchalan.getCashbookCategory(), 
+				DefineTypesAndCategories.creditExpenseSanchalan.getCreditType(), 
+				DefineTypesAndCategories.creditExpenseSanchalan.getCreditCategory(), 
+				DefineTypesAndCategories.creditExpenseSanchalan.getLedgerType());
+		
+		
+		// If it is comission agent vehicle add comission expense too. if vehicle is not a free vehicle.
+		if(client.getClientType().getDescription().equalsIgnoreCase("Contractor")) {
+			if(supplyDetails.getFinalRate() != 0.0) {
+				dao.addDepositeOrExpense(client.getClientId(), supplyDetails.getFinalRate(), 
+						"Expense", DefineTypesAndCategories.creditExpenseComission.getCashbookType(), 
+						DefineTypesAndCategories.creditExpenseComission.getCashbookCategory(), 
+						DefineTypesAndCategories.creditExpenseComission.getCreditType(), 
+						DefineTypesAndCategories.creditExpenseComission.getCreditCategory(), 
+						DefineTypesAndCategories.creditExpenseComission.getLedgerType());
+			}
+		}
+		// if driver wapsi is there then it will be a cash expense. 
+		double driverReturnAmount = supplyDetails.getDriverReturn();
+		if(driverReturnAmount > 0.0) {
+			dao.addDepositeOrExpense(client.getClientId(), driverReturnAmount, 
+					"CashExpense", DefineTypesAndCategories.cashExpenseDriverReturn.getCashbookType(), 
+					DefineTypesAndCategories.cashExpenseDriverReturn.getCashbookCategory(), 
+					DefineTypesAndCategories.cashExpenseDriverReturn.getCreditType(), 
+					DefineTypesAndCategories.cashExpenseDriverReturn.getCreditCategory(), 
+					DefineTypesAndCategories.cashExpenseDriverReturn.getLedgerType());
+		}
 	}
 	
 	// get data of supply
@@ -113,6 +155,83 @@ public class MiningService {
 	
 	// ----------------------------- End Supply Service ------------------------------------
 	
+	
+	// ----------------------------- Ledger Entries ----------------------------------------
+	public void ledgerEntries(int partyId, double amount, String type, 
+			String expenseCategory, String subtype, String remarks) {
+			if(type.equalsIgnoreCase("income")) {
+				if(subtype.equalsIgnoreCase("Client Cash")) {
+				dao.addDepositeOrExpense(partyId, amount, "deposite", 
+						DefineTypesAndCategories.deposite.getCashbookType(), 
+						DefineTypesAndCategories.deposite.getCashbookCategory(), 
+						DefineTypesAndCategories.deposite.getCreditType(), 
+						DefineTypesAndCategories.deposite.getCreditCategory(), 
+						DefineTypesAndCategories.deposite.getLedgerType());
+				}
+				else {
+					dao.addDepositeOrExpense(partyId, amount, "deposite", 
+							DefineTypesAndCategories.otherDeposite.getCashbookType(), 
+							DefineTypesAndCategories.otherDeposite.getCashbookCategory(), 
+							DefineTypesAndCategories.otherDeposite.getCreditType(), 
+							DefineTypesAndCategories.otherDeposite.getCreditCategory(), 
+							DefineTypesAndCategories.otherDeposite.getLedgerType());
+				}
+		}
+		else {
+			if(expenseCategory.equalsIgnoreCase("cash")) {
+				if(subtype.equalsIgnoreCase("office_expense")) {
+				dao.addDepositeOrExpense(
+						partyId, amount, "CashExpense", 
+						DefineTypesAndCategories.cashExpenseOffice.getCashbookType(), 
+						DefineTypesAndCategories.cashExpenseOffice.getCashbookCategory(), 
+						DefineTypesAndCategories.cashExpenseOffice.getCreditType(),
+						DefineTypesAndCategories.cashExpenseOffice.getCreditCategory(), 
+						DefineTypesAndCategories.cashExpenseOffice.getLedgerType());
+				}
+				else if(subtype.equalsIgnoreCase("comission_expense")) {
+					dao.addDepositeOrExpense(
+							partyId, amount, "CashExpense", 
+							DefineTypesAndCategories.cashExpenseComission.getCashbookType(), 
+							DefineTypesAndCategories.cashExpenseComission.getCashbookCategory(), 
+							DefineTypesAndCategories.cashExpenseComission.getCreditType(),
+							DefineTypesAndCategories.cashExpenseComission.getCreditCategory(), 
+							DefineTypesAndCategories.cashExpenseComission.getLedgerType());
+				}
+				else if(subtype.equalsIgnoreCase("sanchalan_expense")) {
+					dao.addDepositeOrExpense(
+							partyId, amount, "CashExpense", 
+							DefineTypesAndCategories.cashExpenseSanchalan.getCashbookType(), 
+							DefineTypesAndCategories.cashExpenseSanchalan.getCashbookCategory(), 
+							DefineTypesAndCategories.cashExpenseSanchalan.getCreditType(),
+							DefineTypesAndCategories.cashExpenseSanchalan.getCreditCategory(), 
+							DefineTypesAndCategories.cashExpenseSanchalan.getLedgerType());
+				}
+			}
+			else {
+				if(subtype.equalsIgnoreCase("credit_sanchalan_expense")) {
+					dao.addDepositeOrExpense(
+							partyId, amount, "CreditExpense", 
+							DefineTypesAndCategories.creditExpenseSanchalan.getCashbookType(), 
+							DefineTypesAndCategories.creditExpenseSanchalan.getCashbookCategory(), 
+							DefineTypesAndCategories.creditExpenseSanchalan.getCreditType(),
+							DefineTypesAndCategories.creditExpenseSanchalan.getCreditCategory(), 
+							DefineTypesAndCategories.creditExpenseSanchalan.getLedgerType());
+				}
+				else {
+					dao.addDepositeOrExpense(
+							partyId, amount, "CreditExpense", 
+							DefineTypesAndCategories.creditExpenseOther.getCashbookType(), 
+							DefineTypesAndCategories.creditExpenseOther.getCashbookCategory(), 
+							DefineTypesAndCategories.creditExpenseOther.getCreditType(),
+							DefineTypesAndCategories.creditExpenseOther.getCreditCategory(), 
+							DefineTypesAndCategories.creditExpenseOther.getLedgerType());
+				}
+			}
+		}
+	}
+	
+	
+	// ----------------------------- End Ledger Entries ------------------------------------
 	
 	// ----------------------------- Token Service -----------------------------------------
 	public Token getToken() {

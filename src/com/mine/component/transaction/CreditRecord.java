@@ -54,6 +54,10 @@ public class CreditRecord {
 	@OneToOne
 	@JoinColumn(name="cashbook_link_for_deposite")
 	private CashBookRecord cashbookDepositeLink;
+	
+	@OneToOne(mappedBy = "creditRecordLinking")
+	@JoinColumn(name="ledger_linking")
+	private Ledger ledgerLinking;
 
 	public Client getClient() {
 		return client;
@@ -122,6 +126,12 @@ public class CreditRecord {
 	public void setCashbookDepositeLink(CashBookRecord cashbookDepositeLink) {
 		this.cashbookDepositeLink = cashbookDepositeLink;
 	}
-	
-	
+
+	public Ledger getLedgerLinking() {
+		return ledgerLinking;
+	}
+
+	public void setLedgerLinking(Ledger ledgerLinking) {
+		this.ledgerLinking = ledgerLinking;
+	}
 }

@@ -78,8 +78,18 @@ public class MainController {
 		obj.put("rate", rate);
 		return obj.toString();
 	}
-	// -------------------------------- End Of Sales Page Control 
+	// -------------------------------- End Of Sales Page Control -----------------------------
 	
+	
+	//-------------------------------- Expense and Deposite Control ---------------------------
+	@RequestMapping("ledger_entries_screen")
+	public String ledgerEntries(@RequestParam("party_id") int partyId, @RequestParam("amount") double amount, 
+			@RequestParam("type") String type, @RequestParam("expense_type") String subtype, @RequestParam("remarks") String remarks) {
+		
+		return "ledger_entries";
+	}
+	
+	//-------------------------------- End Expense and Deposite Control -----------------------
 	
 	
 	// -------------------------------- JSON Control to get Vehicle and Associated Discount

@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
@@ -35,10 +37,12 @@ public class Ledger {
 	@Column(name="credit_amount")
 	protected double creditAmount;
 	
-	@Column(name="cashbook_link")
+	@OneToOne
+	@JoinColumn(name="cashbook_link")
 	protected CashBookRecord cashbookLinking;
 	
-	@Column(name="creditbook_link")
+	@OneToOne
+	@JoinColumn(name="creditbook_link")
 	protected CreditRecord creditRecordLinking;
 	
 

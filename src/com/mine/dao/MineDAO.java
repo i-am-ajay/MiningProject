@@ -405,6 +405,7 @@ public class MineDAO {
 			ledger.setSource("Sale");
 			ledger.setTarget(vehicle.getClientId().getName());
 			ledger.setType(creditSale.getLedgerType());
+			ledger.setCreditRecordLinking(creditRecord);
 			
 			session.save(creditRecord);
 			session.save(ledger);
@@ -439,8 +440,8 @@ public class MineDAO {
 	
 	
 	// ---------------------------- Expense and Deposite related DAO -----------------------------
-	
-	public void addDeposite(int clientId, double amount, String type, String cashbookType, String cashbookCategory, String creditType, String creditCategory, String ledgerType) {
+	@Transactional
+	public void addDepositeOrExpense(int clientId, double amount, String type, String cashbookType, String cashbookCategory, String creditType, String creditCategory, String ledgerType) {
 		CashBookRecord cashRecord = null;
 		Ledger ledger = null;
 		CreditRecord creditRecord = null;
@@ -474,10 +475,14 @@ public class MineDAO {
 			
 			cashRecord.setLedger(ledger);
 			cashRecord.setCreditRecord(creditRecord);
+			
+			session.save(ledger);
+			session.save(creditRecord);
+			session.save(cashRecord);
 		}
 		else {
 			// if it's not deposite then it's expense and expense can be cash or credit.
-			if(type.equals("Cash")) {
+			if(type.equals("CashExpense")) {
 				cashRecord = new CashBookRecord();
 				cashRecord.setAmount(amount * -1);
 				cashRecord.setCategory(cashbookCategory);
@@ -502,7 +507,9 @@ public class MineDAO {
 				ledger.setCashbookLinking(cashRecord);
 				
 				cashRecord.setLedger(ledger);
-				cashRecord.setCreditRecord(creditRecord);
+				
+				session.save(ledger);
+				session.save(cashRecord);
 			}
 			else {
 				creditRecord = new CreditRecord();
@@ -518,7 +525,12 @@ public class MineDAO {
 				ledger.setSource("expense");
 				ledger.setTarget(client.getName());
 				ledger.setType(ledgerType);
-				ledger.setCashbookLinking(cashRecord);
+				ledger.setCreditRecordLinking(creditRecord);
+				
+				creditRecord.setLedgerLinking(ledger);
+				session.save(ledger);
+				session.save(creditRecord);
+				
 			}
 		}
 	}
