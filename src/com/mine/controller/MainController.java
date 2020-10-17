@@ -84,8 +84,9 @@ public class MainController {
 	//-------------------------------- Expense and Deposite Control ---------------------------
 	@RequestMapping("ledger_entries_screen")
 	public String ledgerEntries(@RequestParam("party_id") int partyId, @RequestParam("amount") double amount, 
-			@RequestParam("type") String type, @RequestParam("expense_type") String subtype, @RequestParam("remarks") String remarks) {
-		
+			@RequestParam("type") String type, @RequestParam("expense_type") String expenseType, 
+			@RequestParam("remarks") String remarks, @RequestParam("sub_type") String subType) {
+		service.ledgerEntries(partyId, amount, type, expenseType, subType, remarks);
 		return "ledger_entries";
 	}
 	

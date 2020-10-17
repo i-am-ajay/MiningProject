@@ -160,7 +160,7 @@ public class MiningService {
 	public void ledgerEntries(int partyId, double amount, String type, 
 			String expenseCategory, String subtype, String remarks) {
 			if(type.equalsIgnoreCase("income")) {
-				if(subtype.equalsIgnoreCase("Client Cash")) {
+				if(subtype.equalsIgnoreCase("client_cash")) {
 				dao.addDepositeOrExpense(partyId, amount, "deposite", 
 						DefineTypesAndCategories.deposite.getCashbookType(), 
 						DefineTypesAndCategories.deposite.getCashbookCategory(), 
