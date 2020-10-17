@@ -42,7 +42,7 @@
 <body class=mt-1>
 	<div class="px-2 pb-2 m-auto" style="width:95%;">
 		<h4 class="border-bottom border-danger mt-1 mx-3 mb-3 pb-2 display-5" id="form_title">Deposite and Expense</h4>
-		<f:form method="POST" modelAttribute="supply" action="ledger_entry" id="eledger">
+		<form method="POST" action="ledger_entries_screen" id="eledger">
 		   <!-- Patient Vitals -->
 		   <!--  <h4 class="border-bottom m-3 text-muted pb-2" id="form_title">Patient Report Card</h4>-->
 		   <!-- Card Vitals -->
@@ -54,32 +54,46 @@
   						<div class="col-2">
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Income/Expense</label>
-					      		<select id="type" class="form-control fomr-control-sm">
+					      		<select id="type" class="form-control form-control-sm">
 					      			<option value="income">Income</option>
 					      			<option value="expense">Expense</option>
+					      		</select>
+					    	</div>
+					    </div>
+					    <div id="expense_type" class="col-2">
+					    	<div class="form-group">
+					      		<label class="font-weight-bold">Expense Type</label>
+					      		<select id="e_type" class="form-control form-control-sm" name="expense_type" disabled>
+					      			<option value="cash_expense">Cash</option>
+					      			<option value="credit_expense">Credit</option>
 					      		</select>
 					    	</div>
 					    </div>
   						<div class="col-2">
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Party</label>
-					      		<datalist class="form-conrol form-control-sm" name="party">
-					      			<option></option>
+					      		<input list="party" class="form-control form-control-sm" placeholder="Choose Party" id="party_name" name="party_id">
+					      		<datalist id="party">
+					      		<c:forEach var="party" items="${party_list}"> 
+					      			<option>${party.value}</option>
+					      		</c:forEach>
 					      		</datalist>
 					    	</div>
 					    </div>
-					    <div class="col-2">
+					    <%-- <div class="col-2">
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Transaction Type</label>
-					      		<datalist class="form-control form-control-sm" name="subType">
-					      			<option></option>
-					      		</datalist>
+					      		<select class="form-control form-control-sm" id="subType_list" class="form-control form-control-sm" name="sub_type">
+					      			<c:forEach var="subtype" items="${subtype_list}">
+					      				<option value="${subtype.key}">${subtype.value}</option>
+					      			</c:forEach>
+					      		</select>
 					    	</div>
-					    </div>
+					    </div> --%>
 					    <div class="col-2">
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Amount</label>
-					      		<input id="amount" class="form-control form-control-sm" placeholder="Enter Amount" name="amount" />
+					      		<input id="amount_id" class="form-control form-control-sm" placeholder="Enter Amount" name="amount" />
 					    	</div>
 					    </div>
 					    <div class="col-2">
@@ -88,23 +102,15 @@
 					      		<input type="text" id="remark" class="form-control form-control-sm" placeholder="Remark If Any" name="remark" />
 					    	</div>
 					    </div>
-					    <div id="expense_type" class="col-2">
-					    	<div class="form-group">
-					      		<label class="font-weight-bold">Expense Type</label>
-					      		<select id="e_type" class="form-control fomr-control-sm" name="expenseType">
-					      			<option value="cash_expense">Cash</option>
-					      			<option value="credit_expense">Credit</option>
-					      		</select>
-					    	</div>
-					    </div>
 				 	</div>
+				 	<input type="submit" class="btn btn-sm btn-success btn-block w-50 mx-auto" value="submit"/>
 			  	</div>
 			</div>
 		</div>
 	</div>
 			    
 	<input type="hidden" id="role" value="${role}" />
-	</f:form>
+	</form>
 	</div>
 	<div id="table_section">
 		<table id="data_table" class="table table-striped table-sm display mx-auto" style="width:95%; font-size:13px;">
@@ -153,9 +159,6 @@
 	<!--  <script src="${pageContext.request.contextPath}/static_resources/js/header_manipulate.js"></script>-->
 	<script>
 	// ------------------------------ Page Load Initialization -----------------------------------
-		$(document).ready(e =>{
-			$("#expense_type").hide();
-		});
 		$(document).ready();
 
 		// ------------------------------ Page Load Configuration End ---------------------------------
@@ -163,8 +166,11 @@
 		// ------------------------------ On Page Actions ------------------------------------------
 		// If type changed to expense then show expense type option i.e cash / credit.
 		$("#type").change(e=>{
-			if($("#type").val() == "Expense" ){
-				$("#expense_type").show();
+			if($("#type").val().toLowerCase() == "expense"){
+				$("#e_type").attr("disabled",false);
+			}
+			else{
+				$("#e_type").attr("disabled",true);
 			}
 		})
 		
@@ -176,31 +182,21 @@
 		// ----------------------------------- Ajax Calls from Page -------------------------------------
 
 		// will populate ledger table.
-		$('#vehicle_no').focusout(function(){
+		// call an ajax function on client selection
+		$("#party_name").focusout(e =>{
+			let val = $("#party_type").val();
 			$.ajax({
 				type: "POST",
-				url : "${home}fetch_vehicle",
-				data : {"vehicle_no":this.value},
+				url : "${home}get_party_ledger",
+				data : {"name":$("#party_name").val()},
 				success: function(result, status, xhr){
-					if(result != null && result != ""){
+					if(result){
 						let json = JSON.parse(result);
-						$("#vehicle_type").val(json['vehicle_type']);
-						$("#tyre_type").val(json['tyre_type']);
-						$("#discount").val(json['discount']);
-						
-						$("#vehicle_type").attr("readonly",true);
-						$("#tyre_type").attr("readonly",true);
-
-					}
-					else{
-						alert("This vehicle is not registered.");
+						console.log(json);
 					}
 				},
-				error : function(result,status,xhr){
-					console.log("error");
-				}
-			});
-
+				error: {}
+			})
 		});
 
 	// --------------------------- Support Methods ----------------------------------------

@@ -1,6 +1,7 @@
 package com.mine.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.mine.component.master.Client;
 import com.mine.component.master.Rate;
 import com.mine.component.master.Vehicle;
+import com.mine.component.transaction.Ledger;
 import com.mine.component.transaction.SupplyDetails;
 import com.mine.dao.ReportDAO;
 
@@ -66,7 +68,13 @@ public class ReportService {
 	
 	
 	// ----------------------- Ledger Report Service ----------------------------
+	public List<Ledger> getLedgerEntries(String name, LocalDateTime startDate, LocalDateTime endDate){
+		return reportDAO.ledgerEntries(name, startDate, endDate);
+	}
 	
+	public Double[] getBalances(String name, LocalDateTime startDate, LocalDateTime endDate) {
+		return reportDAO.getBalances(name, startDate, endDate);
+	}
 	
 	// ----------------------- End Ledger Report Service ------------------------
 	

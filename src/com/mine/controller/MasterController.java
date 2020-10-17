@@ -84,7 +84,7 @@ public class MasterController {
 	// Ajax method to get list of clients to populate in client drop down.
 	@RequestMapping("client_list")
 	@ResponseBody public String getClientList(@RequestParam("client_id") int id) {
-		Map<Integer,String> clientMap = service.getClientList(company, id);
+		Map<Integer,String> clientMap = service.getClientList(companyId, id);
 		String dataString = null;
 		if(clientMap != null && clientMap.size()>0) {
 			JSONObject obj = new JSONObject();

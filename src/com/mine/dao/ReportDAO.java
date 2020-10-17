@@ -22,6 +22,7 @@ import com.mine.component.master.Client;
 import com.mine.component.master.GeneralData;
 import com.mine.component.master.Rate;
 import com.mine.component.master.Vehicle;
+import com.mine.component.transaction.Ledger;
 import com.mine.component.transaction.SupplyDetails;
 
 @Repository
@@ -80,7 +81,7 @@ public class ReportDAO {
 		return vehicleList;
 	}
 	
-	//-------------------------------- Vehicle Reports DAO --------------------------------------
+	//-------------------------------- End Vehicle Reports DAO --------------------------------------
 
 	
 	//-------------------------------- Client Reports DAO --------------------------------------
@@ -117,7 +118,7 @@ public class ReportDAO {
 	
 	//-------------------------------- End Client Reports DAO --------------------------------------
 	
-	//-------------------------------- Vehicle Rate Report DAO -------------------------------------
+	//-------------------------------- Rate Report DAO -------------------------------------
 	@Transactional
 	public List<Rate> getRateList(String vehicleType, int tyreType, String quantity, String material){
 		List<Rate> rateList = null;
@@ -144,7 +145,7 @@ public class ReportDAO {
 		return rateList;
 	}
 	
-	//-------------------------------- End Vehicle Rate Report DAO ---------------------------------
+	//-------------------------------- End Rate Report DAO ---------------------------------
 	
 	
 	//-------------------------------- Sales Report ------------------------------------------------
@@ -191,4 +192,61 @@ public class ReportDAO {
 		return salesList;
 	}
 	//-------------------------------- End Sales Report --------------------------------------------
+	
+	
+	// ------------------------------ Ledger DAO -------------------------------------------------
+	@Transactional
+	public List<Ledger> ledgerEntries(String name, LocalDateTime startDate, LocalDateTime endDate){
+		Session session = factory.getCurrentSession();
+		CriteriaBuilder builder = session.getCriteriaBuilder();
+		CriteriaQuery<Ledger> query = builder.createQuery(Ledger.class);
+		Root<Ledger> from = query.from(Ledger.class);
+		List<Predicate> predicateList = new ArrayList<>();
+		predicateList.add(builder.equal(from.get("source"), name));
+		predicateList.add(builder.equal(from.get("target"), name));
+		predicateList.add(builder.between(from.get("entryDate"), startDate, endDate));
+		query.where(builder.and(predicateList.toArray(new Predicate[predicateList.size()]))).orderBy(builder.desc(from.get("entryDate")));
+		
+		TypedQuery<Ledger> ledgerQuery = session.createQuery(query);
+		return ledgerQuery.getResultList();
+	}
+	
+	@Transactional
+	public Double[] getBalances(String name, LocalDateTime startDate, LocalDateTime endDate) {
+		Session session = factory.getCurrentSession();
+		String openingBalanceQuery = "SELECT SUM(l.creditAmount)-SUM(l.debitAmount) FROM Ledger l WHERE "
+				+ "l.target = :name AND l.source= :name AND l.entryDate < :sDate";
+		
+		String rangeBalanceQuery = "SELECT SUM(l.creditAmount)-SUM(l.debitAmount) FROM Ledger l WHERE "
+				+ "l.target = :name AND l.source= :name AND (l.entryDate BETWEEN :sDate AND :eDate)";
+		TypedQuery<Double> creditDebitAmount = session.createQuery(openingBalanceQuery,Double.class);
+		creditDebitAmount.setParameter("name", name);
+		creditDebitAmount.setParameter("sDate", startDate);
+		Double openingBalance = Double.MIN_VALUE;
+		try {
+			openingBalance = creditDebitAmount.getSingleResult();
+		}
+		catch(Exception ex) {
+			ex.printStackTrace();
+		}
+		
+		// Get balance of selected records
+		creditDebitAmount = session.createQuery(rangeBalanceQuery,Double.class);
+		creditDebitAmount.setParameter("name", name);
+		creditDebitAmount.setParameter("sDate", startDate);
+		creditDebitAmount.setParameter("eDate", startDate);
+		Double selectedRecordsBalance = Double.MIN_VALUE;
+		try {
+			selectedRecordsBalance = creditDebitAmount.getSingleResult();
+		}
+		catch(Exception ex) {
+			ex.printStackTrace();
+		}
+		
+		return new Double[]{openingBalance, selectedRecordsBalance};
+	}
+	
+	
+	// ------------------------------ End Ledger DAO ---------------------------------------------
+	
 }

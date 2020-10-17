@@ -18,7 +18,7 @@
 	2) Different type of parties will be :
 		1) Self
 		2) Owner
-		3) Comission Agent
+		3) Contractor
 		4) Sanchalan Person
 		5) Office 
 		6) Other

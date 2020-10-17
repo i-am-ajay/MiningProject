@@ -28,8 +28,8 @@ public class MiningService {
 	
 	// -------------------------------- Client Service ----------------------------------------
 	
-	public Map<Integer,String> getClientList(Company company, int clientTypeId){
-		List<Client> clientList = dao.getClientList(company, clientTypeId);
+	public Map<Integer,String> getClientList(int companyId, int clientTypeId){
+		List<Client> clientList = dao.getClientList(companyId, clientTypeId);
 		Map<Integer,String> map = new HashMap<>();
 		for(Client client : clientList) {
 			map.put(client.getClientId(), client.getName());
@@ -113,7 +113,8 @@ public class MiningService {
 		 * */
 		Client client = supplyDetails.getVehicle().getClientId();
 		double sanchalanAmount = supplyDetails.getFinalRate() <= params.getFreeLimit()  ? params.getSanchalanOnFree() : params.getSanchalanLow(); 
-		dao.addDepositeOrExpense(client.getClientId(), sanchalanAmount, 
+		Client sanchalanPerson = dao.getSanchalanPerson(1);
+		dao.addDepositeOrExpense(sanchalanPerson.getClientId(), sanchalanAmount, 
 				"Expense", DefineTypesAndCategories.creditExpenseSanchalan.getCashbookType(), 
 				DefineTypesAndCategories.creditExpenseSanchalan.getCashbookCategory(), 
 				DefineTypesAndCategories.creditExpenseSanchalan.getCreditType(), 
@@ -135,7 +136,8 @@ public class MiningService {
 		// if driver wapsi is there then it will be a cash expense. 
 		double driverReturnAmount = supplyDetails.getDriverReturn();
 		if(driverReturnAmount > 0.0) {
-			dao.addDepositeOrExpense(client.getClientId(), driverReturnAmount, 
+			Client driverReturn = dao.clientExists("Driver Return");
+			dao.addDepositeOrExpense(driverReturn.getClientId(), driverReturnAmount, 
 					"CashExpense", DefineTypesAndCategories.cashExpenseDriverReturn.getCashbookType(), 
 					DefineTypesAndCategories.cashExpenseDriverReturn.getCashbookCategory(), 
 					DefineTypesAndCategories.cashExpenseDriverReturn.getCreditType(), 
@@ -158,9 +160,9 @@ public class MiningService {
 	
 	// ----------------------------- Ledger Entries ----------------------------------------
 	public void ledgerEntries(int partyId, double amount, String type, 
-			String expenseCategory, String subtype, String remarks) {
+			String expenseCategory, String partyType, String remarks) {
 			if(type.equalsIgnoreCase("income")) {
-				if(subtype.equalsIgnoreCase("client_cash")) {
+				if(partyType.equalsIgnoreCase("owner")) {
 				dao.addDepositeOrExpense(partyId, amount, "deposite", 
 						DefineTypesAndCategories.deposite.getCashbookType(), 
 						DefineTypesAndCategories.deposite.getCashbookCategory(), 
@@ -179,7 +181,7 @@ public class MiningService {
 		}
 		else {
 			if(expenseCategory.equalsIgnoreCase("cash")) {
-				if(subtype.equalsIgnoreCase("office_expense")) {
+				if(partyType.equalsIgnoreCase("office")) {
 				dao.addDepositeOrExpense(
 						partyId, amount, "CashExpense", 
 						DefineTypesAndCategories.cashExpenseOffice.getCashbookType(), 
@@ -188,7 +190,7 @@ public class MiningService {
 						DefineTypesAndCategories.cashExpenseOffice.getCreditCategory(), 
 						DefineTypesAndCategories.cashExpenseOffice.getLedgerType());
 				}
-				else if(subtype.equalsIgnoreCase("comission_expense")) {
+				else if(partyType.equalsIgnoreCase("contractor")) {
 					dao.addDepositeOrExpense(
 							partyId, amount, "CashExpense", 
 							DefineTypesAndCategories.cashExpenseComission.getCashbookType(), 
@@ -197,7 +199,7 @@ public class MiningService {
 							DefineTypesAndCategories.cashExpenseComission.getCreditCategory(), 
 							DefineTypesAndCategories.cashExpenseComission.getLedgerType());
 				}
-				else if(subtype.equalsIgnoreCase("sanchalan_expense")) {
+				else if(partyType.equalsIgnoreCase("sanchalan")) {
 					dao.addDepositeOrExpense(
 							partyId, amount, "CashExpense", 
 							DefineTypesAndCategories.cashExpenseSanchalan.getCashbookType(), 
@@ -208,7 +210,7 @@ public class MiningService {
 				}
 			}
 			else {
-				if(subtype.equalsIgnoreCase("credit_sanchalan_expense")) {
+				if(partyType.equalsIgnoreCase("sanchalan")) {
 					dao.addDepositeOrExpense(
 							partyId, amount, "CreditExpense", 
 							DefineTypesAndCategories.creditExpenseSanchalan.getCashbookType(), 

@@ -243,9 +243,9 @@ public class MineDAO {
 	}
 	
 	@Transactional
-	public List<Client> getClientList(Company company, int clientTypeId) {
+	public List<Client> getClientList(int companyId, int clientTypeId) {
 		Session session = factory.getCurrentSession();
-		company = session.get(Company.class, 1);
+		Company company = session.get(Company.class, companyId);
 		GeneralData clientType = session.get(GeneralData.class, clientTypeId);
 		CriteriaBuilder builder = session.getCriteriaBuilder();
 		
@@ -267,6 +267,36 @@ public class MineDAO {
 		List<Client> client = clientQuery.getResultList();
 		return client;
 	}
+	
+	// get sanchalan person name
+	@Transactional
+	public Client getSanchalanPerson(int companyId) {
+		GeneralData data = this.getGeneralDataDescBased("Sanchalan");
+		Session session = factory.getCurrentSession();
+		Company company = session.get(Company.class, companyId);
+		CriteriaBuilder builder = session.getCriteriaBuilder();
+		
+		List<Predicate> predicateList = new ArrayList<Predicate>();
+		
+		CriteriaQuery<Client> criteria = builder.createQuery(Client.class);
+		Root<Client> from = criteria.from(Client.class);
+		
+		predicateList.add(builder.equal(from.get("clientType"),data));
+		predicateList.add(builder.isNull(from.get("endDate")));
+		
+		criteria.where(builder.and(predicateList.toArray(new Predicate[predicateList.size()])));
+		
+		TypedQuery<Client> query = session.createQuery(criteria);
+		Client client = null;
+		try {
+			client = query.getSingleResult();
+		}
+		catch(Exception ex) {
+			
+		}
+		return client;
+	}
+	
 	// ------------------------------ End Client DAO Methods ---------------------------------
 	
 	
@@ -522,8 +552,8 @@ public class MineDAO {
 				// ledger entry
 				ledger = new Ledger();
 				ledger.setCreditAmount(amount);
-				ledger.setSource("expense");
-				ledger.setTarget(client.getName());
+				ledger.setSource(client.getName());
+				ledger.setTarget("Expense");
 				ledger.setType(ledgerType);
 				ledger.setCreditRecordLinking(creditRecord);
 				
@@ -539,6 +569,7 @@ public class MineDAO {
 	// ---------------------------- End Expense and Deposite related DAO -------------------------
 	
 	
+
 	
 	// ---------------------------- Misc DAO Methods ---------------------------------------------
 	/* pull parameters from the database. In parameter table there will be only single active record. Method
@@ -571,6 +602,23 @@ public class MineDAO {
 		TypedQuery<GeneralData> query = session.createQuery(criteria);
 		List<GeneralData> objectList = query.getResultList();
 		return objectList;
+	}
+	
+	@Transactional
+	public GeneralData getGeneralDataDescBased(String desc) {
+		Session session = factory.getCurrentSession();
+		CriteriaBuilder builder = session.getCriteriaBuilder();
+		CriteriaQuery<GeneralData> criteria = builder.createQuery(GeneralData.class);
+		Root<GeneralData> from = criteria.from(GeneralData.class);
+		criteria.where(builder.and(builder.equal(from.get("description"),desc),builder.isNull(from.get("endDate"))));
+		
+		TypedQuery<GeneralData> query = session.createQuery(criteria);
+		List<GeneralData> objectList = query.getResultList();
+		GeneralData generalData = null;
+		if(objectList != null && objectList.size() > 0) {
+			generalData = objectList.get(0);
+		}
+		return generalData;
 	}
 	
 	// ----------------------------------------- End Misc DAO Methods ------------------------------

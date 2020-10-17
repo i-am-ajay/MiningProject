@@ -83,17 +83,23 @@ public class MainController {
 	
 	//-------------------------------- Expense and Deposite Control ---------------------------
 	@RequestMapping("ledger_entries_screen")
-	public String ledgerEntries(@RequestParam("party_id") int partyId, @RequestParam("amount") double amount, 
-			@RequestParam("type") String type, @RequestParam("expense_type") String expenseType, 
-			@RequestParam("remarks") String remarks, @RequestParam("sub_type") String subType) {
-		service.ledgerEntries(partyId, amount, type, expenseType, subType, remarks);
+	public String ledgerEntries(Model model,@RequestParam(name="party_id", required=false, defaultValue="0") int partyId, @RequestParam(name="amount",required=false, defaultValue="0.0") double amount, 
+			@RequestParam(name="type", required=false) String type, @RequestParam(name="expense_type", required=false) String expenseType, 
+			@RequestParam(name="remarks", required=false) String remarks, @RequestParam(name="sub_type", required=false) String subType) {
+		if (partyId != 0 && amount != 0.0) {
+			service.ledgerEntries(partyId, amount, type, expenseType, subType, remarks);
+		}
+		
+		model.addAttribute("party_list",service.getClientList(companyId, 0));
+		model.addAttribute("subtype_list",service.getLookupMap("SubType"));
 		return "ledger_entries";
 	}
 	
 	//-------------------------------- End Expense and Deposite Control -----------------------
 	
 	
-	// -------------------------------- JSON Control to get Vehicle and Associated Discount
+	// -------------------------------- JSON Control ------------------------------------------ 
+	//get Vehicle and Associated Discount
 	@RequestMapping("fetch_vehicle")
 	public @ResponseBody String fetchVehicleDetails(@RequestParam("vehicle_no") String vehicleNo) {
 		Vehicle vehicle = service.getVehicle(vehicleNo);
@@ -113,11 +119,9 @@ public class MainController {
 				object.put("discount", client.getDiscount());
 			}
 			// Add client information
-			
 			stringObj = object.toString();
 		}
 		return stringObj;
 	}	
-	
 	//---------------------------------- End Of Control -----------------------------------
 }
