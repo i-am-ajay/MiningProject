@@ -485,6 +485,7 @@ public class MineDAO {
 			cashRecord.setCategory(cashbookCategory);
 			cashRecord.setType(cashbookType);
 			cashRecord.setStatus(true);
+			cashRecord.setParty(client);
 			
 			// credit book entry -  if it's a cash deposite an entry will be sent to credit records too.
 			creditRecord = new CreditRecord();
@@ -512,11 +513,15 @@ public class MineDAO {
 		}
 		else {
 			// if it's not deposite then it's expense and expense can be cash or credit.
-			if(type.equals("CashExpense")) {
+			System.out.println("Expense");
+			System.out.println(type);
+			if(type.equalsIgnoreCase("CashExpense")) {
+				System.out.println("Cash Expense");
 				cashRecord = new CashBookRecord();
 				cashRecord.setAmount(amount * -1);
 				cashRecord.setCategory(cashbookCategory);
 				cashRecord.setType(cashbookType);
+				cashRecord.setParty(client);
 				cashRecord.setStatus(true);
 				
 				/*// credit book entry -  if it's a cash deposite an entry will be sent to credit records too.
@@ -542,6 +547,7 @@ public class MineDAO {
 				session.save(cashRecord);
 			}
 			else {
+				System.out.println("Credit Expense");
 				creditRecord = new CreditRecord();
 				creditRecord.setAmount(amount);
 				creditRecord.setCategory(creditCategory);

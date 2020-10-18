@@ -54,7 +54,7 @@
   						<div class="col-2">
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Income/Expense</label>
-					      		<select id="type" class="form-control form-control-sm">
+					      		<select id="type_id" class="form-control form-control-sm" name="type">
 					      			<option value="income">Income</option>
 					      			<option value="expense">Expense</option>
 					      		</select>
@@ -72,7 +72,7 @@
   						<div class="col-2">
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Party</label>
-					      		<input list="party" class="form-control form-control-sm" placeholder="Choose Party" id="party_name" name="party_id">
+					      		<input list="party" class="form-control form-control-sm" placeholder="Choose Party" id="party_name" name="party">
 					      		<datalist id="party">
 					      		<c:forEach var="party" items="${party_list}"> 
 					      			<option>${party.value}</option>
@@ -115,7 +115,7 @@
 	<div id="table_section">
 		<table id="data_table" class="table table-striped table-sm display mx-auto" style="width:95%; font-size:13px;">
         <thead class="thead-dark">
-            <tr>
+            <tr class="text-center">
             	<th>Date</th>
                 <th>Particulars</th>
                 <th>Credit Amount</th>
@@ -127,10 +127,13 @@
                 <th>Remarks</th>
             </tr>
         </thead>
-        <tbody>
-        	<c:forEach var="item" items="${data_list}">
+        <tbody id="table_body">
 	            <tr>
-	            	<td>${item.token}</td>
+	            	<td>Hello</td>
+	            	<td>Bollo</td>
+	           </tr>
+	           </tbody>
+	             <%--	<td>${item.token}</td>
 	                <td>${item.driverName}</td>
 	                <td>${item.driverNumber}</td>
 	                <td>${item.vehicle.vehicleNo}</td>
@@ -146,7 +149,7 @@
 	                <td>${item.driverReturn}</td>
 	                <td>${item.salesDate}</td>
 	            </tr>
-            </c:forEach>
+            </c:forEach> --%>
         </tbody>
         </table>
 	</div>
@@ -165,8 +168,8 @@
 		
 		// ------------------------------ On Page Actions ------------------------------------------
 		// If type changed to expense then show expense type option i.e cash / credit.
-		$("#type").change(e=>{
-			if($("#type").val().toLowerCase() == "expense"){
+		$("#type_id").change(e=>{
+			if($("#type_id").val().toLowerCase() == "expense"){
 				$("#e_type").attr("disabled",false);
 			}
 			else{
@@ -190,12 +193,34 @@
 				url : "${home}get_party_ledger",
 				data : {"name":$("#party_name").val()},
 				success: function(result, status, xhr){
+					console.log("success");
+					//console.log(result);
+					//console.log(status);
+					$("#table_body").empty();
 					if(result){
-						let json = JSON.parse(result);
-						console.log(json);
+						let array = JSON.parse(result);
+						console.log(array);
+						array.forEach(e =>{
+							let row = "<tr>"+
+										"<td class='table-success'>"+e.date+"</td>"+
+										"<td class='table-success'>"+e.cParticular+"</td>"+
+										"<td class='table-success'>"+e.creditAmount+"</td>"+
+										"<td class='table-success'>"+e.cRemarks+"</td>"+
+										"<td>&emsp;</td>"+
+										"<td class='table-danger'>"+e.date+"</td>"+
+										"<td class='table-danger'>"+e.dParticular+"</td>"+
+										"<td class='table-danger'>"+e.debitAmount+"</td>"+
+										"<td class='table-danger'>"+e.dRemarks+"</td>"+
+										"<tr>"
+							$("#table_body").append(row);
+						})
+						
 					}
 				},
-				error: {}
+				error: function(result, status, xhr){
+					console.log("error");
+					console.log(result);
+				}
 			})
 		});
 

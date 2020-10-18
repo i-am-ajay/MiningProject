@@ -83,15 +83,16 @@ public class MainController {
 	
 	//-------------------------------- Expense and Deposite Control ---------------------------
 	@RequestMapping("ledger_entries_screen")
-	public String ledgerEntries(Model model,@RequestParam(name="party_id", required=false, defaultValue="0") int partyId, @RequestParam(name="amount",required=false, defaultValue="0.0") double amount, 
+	public String ledgerEntries(Model model,@RequestParam(name="party", required=false) String partyName, @RequestParam(name="amount",required=false, defaultValue="0.0") double amount, 
 			@RequestParam(name="type", required=false) String type, @RequestParam(name="expense_type", required=false) String expenseType, 
-			@RequestParam(name="remarks", required=false) String remarks, @RequestParam(name="sub_type", required=false) String subType) {
-		if (partyId != 0 && amount != 0.0) {
-			service.ledgerEntries(partyId, amount, type, expenseType, subType, remarks);
+			@RequestParam(name="remarks", required=false) String remarks) {
+		if (partyName != null && amount != 0.0) {
+			service.ledgerEntries(partyName, amount, type, expenseType, remarks);
 		}
 		
 		model.addAttribute("party_list",service.getClientList(companyId, 0));
 		model.addAttribute("subtype_list",service.getLookupMap("SubType"));
+		List<>
 		return "ledger_entries";
 	}
 	

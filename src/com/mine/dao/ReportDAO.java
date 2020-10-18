@@ -205,8 +205,8 @@ public class ReportDAO {
 		predicateList.add(builder.equal(from.get("source"), name));
 		predicateList.add(builder.equal(from.get("target"), name));
 		predicateList.add(builder.between(from.get("entryDate"), startDate, endDate));
-		query.where(builder.and(predicateList.toArray(new Predicate[predicateList.size()]))).orderBy(builder.desc(from.get("entryDate")));
-		
+		//query.where(builder.and(predicateList.toArray(new Predicate[predicateList.size()]))).orderBy(builder.desc(from.get("entryDate")));
+		query.where(builder.and(builder.or(builder.equal(from.get("source"), name),builder.equal(from.get("target"), name)),builder.between(from.get("entryDate"), startDate, endDate)));
 		TypedQuery<Ledger> ledgerQuery = session.createQuery(query);
 		return ledgerQuery.getResultList();
 	}
@@ -215,14 +215,14 @@ public class ReportDAO {
 	public Double[] getBalances(String name, LocalDateTime startDate, LocalDateTime endDate) {
 		Session session = factory.getCurrentSession();
 		String openingBalanceQuery = "SELECT SUM(l.creditAmount)-SUM(l.debitAmount) FROM Ledger l WHERE "
-				+ "l.target = :name AND l.source= :name AND l.entryDate < :sDate";
+				+ "(l.target = :name OR l.source= :name) AND l.entryDate < :sDate";
 		
 		String rangeBalanceQuery = "SELECT SUM(l.creditAmount)-SUM(l.debitAmount) FROM Ledger l WHERE "
-				+ "l.target = :name AND l.source= :name AND (l.entryDate BETWEEN :sDate AND :eDate)";
+				+ "(l.target = :name OR l.source= :name) AND (l.entryDate BETWEEN :sDate AND :eDate)";
 		TypedQuery<Double> creditDebitAmount = session.createQuery(openingBalanceQuery,Double.class);
 		creditDebitAmount.setParameter("name", name);
 		creditDebitAmount.setParameter("sDate", startDate);
-		Double openingBalance = Double.MIN_VALUE;
+		Double openingBalance = null;
 		try {
 			openingBalance = creditDebitAmount.getSingleResult();
 		}
@@ -235,7 +235,7 @@ public class ReportDAO {
 		creditDebitAmount.setParameter("name", name);
 		creditDebitAmount.setParameter("sDate", startDate);
 		creditDebitAmount.setParameter("eDate", startDate);
-		Double selectedRecordsBalance = Double.MIN_VALUE;
+		Double selectedRecordsBalance = null;
 		try {
 			selectedRecordsBalance = creditDebitAmount.getSingleResult();
 		}
@@ -243,7 +243,7 @@ public class ReportDAO {
 			ex.printStackTrace();
 		}
 		
-		return new Double[]{openingBalance, selectedRecordsBalance};
+		return new Double[]{openingBalance != null ? openingBalance : 0.0, selectedRecordsBalance != null ? selectedRecordsBalance : 0.0};
 	}
 	
 	

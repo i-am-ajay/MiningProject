@@ -159,11 +159,15 @@ public class MiningService {
 	
 	
 	// ----------------------------- Ledger Entries ----------------------------------------
-	public void ledgerEntries(int partyId, double amount, String type, 
-			String expenseCategory, String partyType, String remarks) {
+	public void ledgerEntries(String partyName, double amount, String type, 
+			String expenseCategory, String remarks) {
+			Client party = dao.clientExists(partyName);
+			System.out.println("Party Name" + partyName);
+			System.out.println("Party Id"+ party.getClientId());
+			String partyType = party.getClientType().getDescription();
 			if(type.equalsIgnoreCase("income")) {
 				if(partyType.equalsIgnoreCase("owner")) {
-				dao.addDepositeOrExpense(partyId, amount, "deposite", 
+				dao.addDepositeOrExpense(party.getClientId(), amount, "deposite", 
 						DefineTypesAndCategories.deposite.getCashbookType(), 
 						DefineTypesAndCategories.deposite.getCashbookCategory(), 
 						DefineTypesAndCategories.deposite.getCreditType(), 
@@ -171,7 +175,7 @@ public class MiningService {
 						DefineTypesAndCategories.deposite.getLedgerType());
 				}
 				else {
-					dao.addDepositeOrExpense(partyId, amount, "deposite", 
+					dao.addDepositeOrExpense(party.getClientId(), amount, "deposite", 
 							DefineTypesAndCategories.otherDeposite.getCashbookType(), 
 							DefineTypesAndCategories.otherDeposite.getCashbookCategory(), 
 							DefineTypesAndCategories.otherDeposite.getCreditType(), 
@@ -180,10 +184,11 @@ public class MiningService {
 				}
 		}
 		else {
-			if(expenseCategory.equalsIgnoreCase("cash")) {
+			System.out.println("Running expense part.");
+			if(expenseCategory.equalsIgnoreCase("cash_expense")) {
 				if(partyType.equalsIgnoreCase("office")) {
 				dao.addDepositeOrExpense(
-						partyId, amount, "CashExpense", 
+						party.getClientId(), amount, "CashExpense", 
 						DefineTypesAndCategories.cashExpenseOffice.getCashbookType(), 
 						DefineTypesAndCategories.cashExpenseOffice.getCashbookCategory(), 
 						DefineTypesAndCategories.cashExpenseOffice.getCreditType(),
@@ -192,7 +197,7 @@ public class MiningService {
 				}
 				else if(partyType.equalsIgnoreCase("contractor")) {
 					dao.addDepositeOrExpense(
-							partyId, amount, "CashExpense", 
+							party.getClientId(), amount, "CashExpense", 
 							DefineTypesAndCategories.cashExpenseComission.getCashbookType(), 
 							DefineTypesAndCategories.cashExpenseComission.getCashbookCategory(), 
 							DefineTypesAndCategories.cashExpenseComission.getCreditType(),
@@ -201,18 +206,27 @@ public class MiningService {
 				}
 				else if(partyType.equalsIgnoreCase("sanchalan")) {
 					dao.addDepositeOrExpense(
-							partyId, amount, "CashExpense", 
+							party.getClientId(), amount, "CashExpense", 
 							DefineTypesAndCategories.cashExpenseSanchalan.getCashbookType(), 
 							DefineTypesAndCategories.cashExpenseSanchalan.getCashbookCategory(), 
 							DefineTypesAndCategories.cashExpenseSanchalan.getCreditType(),
 							DefineTypesAndCategories.cashExpenseSanchalan.getCreditCategory(), 
 							DefineTypesAndCategories.cashExpenseSanchalan.getLedgerType());
 				}
+				else {
+					dao.addDepositeOrExpense(
+							party.getClientId(), amount, "CashExpense", 
+							DefineTypesAndCategories.cashExpenseOther.getCashbookType(), 
+							DefineTypesAndCategories.cashExpenseOther.getCashbookCategory(), 
+							DefineTypesAndCategories.cashExpenseOther.getCreditType(),
+							DefineTypesAndCategories.cashExpenseOther.getCreditCategory(), 
+							DefineTypesAndCategories.cashExpenseOther.getLedgerType());
+				}
 			}
 			else {
 				if(partyType.equalsIgnoreCase("sanchalan")) {
 					dao.addDepositeOrExpense(
-							partyId, amount, "CreditExpense", 
+							party.getClientId(), amount, "CreditExpense", 
 							DefineTypesAndCategories.creditExpenseSanchalan.getCashbookType(), 
 							DefineTypesAndCategories.creditExpenseSanchalan.getCashbookCategory(), 
 							DefineTypesAndCategories.creditExpenseSanchalan.getCreditType(),
@@ -221,7 +235,7 @@ public class MiningService {
 				}
 				else {
 					dao.addDepositeOrExpense(
-							partyId, amount, "CreditExpense", 
+							party.getClientId(), amount, "CreditExpense", 
 							DefineTypesAndCategories.creditExpenseOther.getCashbookType(), 
 							DefineTypesAndCategories.creditExpenseOther.getCashbookCategory(), 
 							DefineTypesAndCategories.creditExpenseOther.getCreditType(),
