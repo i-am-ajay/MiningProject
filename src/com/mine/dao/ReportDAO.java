@@ -234,7 +234,7 @@ public class ReportDAO {
 		creditDebitAmount = session.createQuery(rangeBalanceQuery,Double.class);
 		creditDebitAmount.setParameter("name", name);
 		creditDebitAmount.setParameter("sDate", startDate);
-		creditDebitAmount.setParameter("eDate", startDate);
+		creditDebitAmount.setParameter("eDate", endDate);
 		Double selectedRecordsBalance = null;
 		try {
 			selectedRecordsBalance = creditDebitAmount.getSingleResult();
@@ -242,7 +242,9 @@ public class ReportDAO {
 		catch(Exception ex) {
 			ex.printStackTrace();
 		}
-		
+		System.out.println(selectedRecordsBalance);
+		System.out.println(startDate);
+		System.out.println(endDate);
 		return new Double[]{openingBalance != null ? openingBalance : 0.0, selectedRecordsBalance != null ? selectedRecordsBalance : 0.0};
 	}
 	

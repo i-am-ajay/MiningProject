@@ -112,8 +112,57 @@
 	<input type="hidden" id="role" value="${role}" />
 	</form>
 	</div>
-	<div id="table_section">
-		<table id="data_table" class="table table-striped table-sm display mx-auto" style="width:95%; font-size:13px;">
+	<div id="table_section" class="row">
+		<div class="col" id="credit_table">
+			<table id="data_table" class="table table-striped table-sm display mx-auto col" style="width:95%; font-size:13px;">
+		        <thead class="thead-dark">
+		            <tr class="text-center">
+		            	<th>Date</th>
+		                <th>Particulars</th>
+		                <th>Credit Amount</th>
+		                <th>Remarks</th>
+		            </tr>
+		        </thead>
+		        <tbody id="table_body">
+			        	<c:forEach var="record" items="${ledger_records}">
+			        		<c:if test="${!record[2].equalsIgnoreCase('') && !record[2].equalsIgnoreCase('0.0')}">
+			        			<tr>
+			        				<td>${record[0]}</td>
+			        				<td>${record[1]}</td>
+			        				<td>${record[2]}</td>
+			        				<td>${record[4]}</td>
+			        			</tr>
+			        		</c:if>
+			        	</c:forEach>
+			    </tbody>
+		 	</table>
+		</div>
+		<div class="col" id="debit_table">
+			<table id="data_table" class="table table-striped table-sm display mx-auto col" style="width:95%; font-size:13px;">
+		        <thead class="thead-dark">
+		            <tr class="text-center">
+		            	<th>Date</th>
+		                <th>Particulars</th>
+		                <th>Debit Amount</th>
+		                <th>Remarks</th>
+		            </tr>
+		        </thead>
+		        <tbody id="table_body">
+			        	<c:forEach var="record" items="${ledger_records}">
+			        		<c:if test="${!record[3].equalsIgnoreCase('') && !record[3].equalsIgnoreCase('0.0')}">
+			        			<tr class="table-danger">
+			        				<td>${record[0]}</td>
+			        				<td>${record[1]}</td>
+			        				<td>${record[3]}</td>
+			        				<td>${record[4]}</td>
+			        			</tr>
+			        		</c:if>
+			        	</c:forEach>
+			    </tbody>
+		 	</table>
+		</div>
+		<%-- <div class="col-6" id="debit_table"></div>
+		<table id="data_table" class="table table-striped table-sm display mx-auto col" style="width:95%; font-size:13px;">
         <thead class="thead-dark">
             <tr class="text-center">
             	<th>Date</th>
@@ -128,12 +177,17 @@
             </tr>
         </thead>
         <tbody id="table_body">
+        	<tr>
+	        	<c:forEach var="record" items="${stringList}">
+	        		
+	        	</c:forEach>
+        	</tr>
 	            <tr>
 	            	<td>Hello</td>
 	            	<td>Bollo</td>
 	           </tr>
 	           </tbody>
-	             <%--	<td>${item.token}</td>
+	             	<td>${item.token}</td>
 	                <td>${item.driverName}</td>
 	                <td>${item.driverNumber}</td>
 	                <td>${item.vehicle.vehicleNo}</td>
@@ -149,9 +203,9 @@
 	                <td>${item.driverReturn}</td>
 	                <td>${item.salesDate}</td>
 	            </tr>
-            </c:forEach> --%>
+            </c:forEach>
         </tbody>
-        </table>
+        </table> --%>
 	</div>
 	<!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>

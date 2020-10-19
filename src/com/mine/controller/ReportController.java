@@ -184,17 +184,17 @@ public class ReportController {
 			strArray = new String[] {startDate.toString(),"Opening Balance","",Double.toString(openingBalance),""};
 		}
 		listOfRecords.add(strArray);
-		int count = 1;
+
 		for(Ledger ledger : ledgerEntries) {
 			strArray = new String[] {ledger.getEntryDate().toLocalDate().toString(),ledger.getSource()+" to "+ledger.getTarget(),Double.toString(ledger.getCreditAmount()),Double.toString(ledger.getDebitAmount()),""};
 			listOfRecords.add(strArray);
 		}
 		
 		if(closingBalance >= 0) {
-			strArray = new String[] {startDate.toString(),"Closing Balance",Double.toString(openingBalance),"",""};
+			strArray = new String[] {endDate.toString(),"Closing Balance",Double.toString(closingBalance),"",""};
 		}
 		else {
-			strArray = new String[] {startDate.toString(),"Closing Balance","",Double.toString(openingBalance),""};
+			strArray = new String[] {endDate.toString(),"Closing Balance","",Double.toString(closingBalance),""};
 		}
 		listOfRecords.add(strArray);
 		return listOfRecords;

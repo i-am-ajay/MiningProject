@@ -3,6 +3,7 @@ package com.mine.controller;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,9 @@ public class MainController {
 	
 	@Autowired
 	ReportService reportService;
+	
+	@Autowired
+	ReportController reportController;
 	
 	int companyId = 1;
 	
@@ -100,8 +104,11 @@ public class MainController {
 		
 		model.addAttribute("party_list",service.getClientList(companyId, 0));
 		model.addAttribute("subtype_list",service.getLookupMap("SubType"));
-		LocalDateTime startDate = LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0));
-		List<String[]> stringList = reportService.getLedgerEntries("Cash", LocalDateTime.of(LocalDate.now(), time), )
+		LocalDate startDate = LocalDate.now();
+		LocalDate endDate = LocalDate.now();
+		List<String[]> stringList = reportController.getPartyLedgerEntries("Cash", startDate, endDate);
+		model.addAttribute("ledger_records",stringList);
+		System.out.println(stringList.size());
 		return "ledger_entries";
 	}
 	
