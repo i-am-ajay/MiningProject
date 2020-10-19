@@ -1,5 +1,9 @@
 package com.mine.controller;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,12 +18,16 @@ import com.mine.component.master.Client;
 import com.mine.component.master.Vehicle;
 import com.mine.component.transaction.SupplyDetails;
 import com.mine.service.MiningService;
+import com.mine.service.ReportService;
 import com.mine.utilities.TokenManager;
 
 @Controller
 public class MainController {
 	@Autowired
 	MiningService service;
+	
+	@Autowired
+	ReportService reportService;
 	
 	int companyId = 1;
 	
@@ -92,7 +100,8 @@ public class MainController {
 		
 		model.addAttribute("party_list",service.getClientList(companyId, 0));
 		model.addAttribute("subtype_list",service.getLookupMap("SubType"));
-		List<>
+		LocalDateTime startDate = LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0));
+		List<String[]> stringList = reportService.getLedgerEntries("Cash", LocalDateTime.of(LocalDate.now(), time), )
 		return "ledger_entries";
 	}
 	
