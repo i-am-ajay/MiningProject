@@ -503,7 +503,7 @@ public class MineDAO {
 	//natureOfTransaction - Cash/Bank/Credit
 	// SupplyDetails - If entry is made through Sale for contractor, sanchalan and driver return. Then pass sales details too.
 	@Transactional
-	public void addDepositeOrExpense(int clientId, double amount, String type, String cashbookType, String cashbookCategory, String creditType, String creditCategory, String ledgerType, String natureOfTransaction, SupplyDetails details) {
+	public void addDepositeOrExpense(int clientId, double amount, String type, String cashbookType, String cashbookCategory, String creditType, String creditCategory, String ledgerType, String natureOfTransaction, SupplyDetails details, String remarks) {
 		CashBookRecord cashRecord = null;
 		Ledger ledger = null;
 		CreditRecord creditRecord = null;

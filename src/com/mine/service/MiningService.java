@@ -119,7 +119,7 @@ public class MiningService {
 				DefineTypesAndCategories.creditExpenseSanchalan.getCashbookCategory(), 
 				DefineTypesAndCategories.creditExpenseSanchalan.getCreditType(), 
 				DefineTypesAndCategories.creditExpenseSanchalan.getCreditCategory(), 
-				DefineTypesAndCategories.creditExpenseSanchalan.getLedgerType(),"Credit", supplyDetails);
+				DefineTypesAndCategories.creditExpenseSanchalan.getLedgerType(),"Credit", supplyDetails, "Sanchalan Expense Credited");
 		
 		
 		// If it is comission agent vehicle add comission expense too. if vehicle is not a free vehicle.
@@ -130,7 +130,7 @@ public class MiningService {
 						DefineTypesAndCategories.creditExpenseComission.getCashbookCategory(), 
 						DefineTypesAndCategories.creditExpenseComission.getCreditType(), 
 						DefineTypesAndCategories.creditExpenseComission.getCreditCategory(), 
-						DefineTypesAndCategories.creditExpenseComission.getLedgerType(),"Credit",supplyDetails);
+						DefineTypesAndCategories.creditExpenseComission.getLedgerType(),"Credit",supplyDetails,"Contractor Sales Commission Credited");
 			}
 		}
 		// if driver wapsi is there then it will be a cash expense. 
@@ -142,7 +142,7 @@ public class MiningService {
 					DefineTypesAndCategories.cashExpenseDriverReturn.getCashbookCategory(), 
 					DefineTypesAndCategories.cashExpenseDriverReturn.getCreditType(), 
 					DefineTypesAndCategories.cashExpenseDriverReturn.getCreditCategory(), 
-					DefineTypesAndCategories.cashExpenseDriverReturn.getLedgerType(),"Cash",supplyDetails);
+					DefineTypesAndCategories.cashExpenseDriverReturn.getLedgerType(),"Cash",supplyDetails, "Driver Return Paid");
 		}
 	}
 	
@@ -172,7 +172,7 @@ public class MiningService {
 						DefineTypesAndCategories.deposite.getCashbookCategory(), 
 						DefineTypesAndCategories.deposite.getCreditType(), 
 						DefineTypesAndCategories.deposite.getCreditCategory(), 
-						DefineTypesAndCategories.deposite.getLedgerType(),expenseCategory, null);
+						DefineTypesAndCategories.deposite.getLedgerType(),expenseCategory, null,remarks);
 				}
 				else {
 					dao.addDepositeOrExpense(party.getClientId(), amount, "deposite", 
@@ -180,7 +180,7 @@ public class MiningService {
 							DefineTypesAndCategories.otherDeposite.getCashbookCategory(), 
 							DefineTypesAndCategories.otherDeposite.getCreditType(), 
 							DefineTypesAndCategories.otherDeposite.getCreditCategory(), 
-							DefineTypesAndCategories.otherDeposite.getLedgerType(),expenseCategory,null);
+							DefineTypesAndCategories.otherDeposite.getLedgerType(),expenseCategory,null,remarks);
 				}
 		}
 		else {
@@ -193,7 +193,7 @@ public class MiningService {
 						DefineTypesAndCategories.cashExpenseOffice.getCashbookCategory(), 
 						DefineTypesAndCategories.cashExpenseOffice.getCreditType(),
 						DefineTypesAndCategories.cashExpenseOffice.getCreditCategory(), 
-						DefineTypesAndCategories.cashExpenseOffice.getLedgerType(),expenseCategory,null);
+						DefineTypesAndCategories.cashExpenseOffice.getLedgerType(),expenseCategory,null,remarks);
 				}
 				else if(partyType.equalsIgnoreCase("contractor")) {
 					dao.addDepositeOrExpense(
@@ -202,7 +202,7 @@ public class MiningService {
 							DefineTypesAndCategories.cashExpenseComission.getCashbookCategory(), 
 							DefineTypesAndCategories.cashExpenseComission.getCreditType(),
 							DefineTypesAndCategories.cashExpenseComission.getCreditCategory(), 
-							DefineTypesAndCategories.cashExpenseComission.getLedgerType(),expenseCategory,null);
+							DefineTypesAndCategories.cashExpenseComission.getLedgerType(),expenseCategory,null,remarks);
 				}
 				else if(partyType.equalsIgnoreCase("sanchalan")) {
 					dao.addDepositeOrExpense(
@@ -211,7 +211,7 @@ public class MiningService {
 							DefineTypesAndCategories.cashExpenseSanchalan.getCashbookCategory(), 
 							DefineTypesAndCategories.cashExpenseSanchalan.getCreditType(),
 							DefineTypesAndCategories.cashExpenseSanchalan.getCreditCategory(), 
-							DefineTypesAndCategories.cashExpenseSanchalan.getLedgerType(),expenseCategory,null);
+							DefineTypesAndCategories.cashExpenseSanchalan.getLedgerType(),expenseCategory,null,remarks);
 				}
 				else {
 					dao.addDepositeOrExpense(
@@ -220,7 +220,7 @@ public class MiningService {
 							DefineTypesAndCategories.cashExpenseOther.getCashbookCategory(), 
 							DefineTypesAndCategories.cashExpenseOther.getCreditType(),
 							DefineTypesAndCategories.cashExpenseOther.getCreditCategory(), 
-							DefineTypesAndCategories.cashExpenseOther.getLedgerType(),expenseCategory,null);
+							DefineTypesAndCategories.cashExpenseOther.getLedgerType(),expenseCategory,null,remarks);
 				}
 			}
 			else {
@@ -231,7 +231,7 @@ public class MiningService {
 							DefineTypesAndCategories.creditExpenseSanchalan.getCashbookCategory(), 
 							DefineTypesAndCategories.creditExpenseSanchalan.getCreditType(),
 							DefineTypesAndCategories.creditExpenseSanchalan.getCreditCategory(), 
-							DefineTypesAndCategories.creditExpenseSanchalan.getLedgerType(),expenseCategory,null);
+							DefineTypesAndCategories.creditExpenseSanchalan.getLedgerType(),expenseCategory,null,remarks);
 				}
 				else {
 					dao.addDepositeOrExpense(
@@ -240,7 +240,7 @@ public class MiningService {
 							DefineTypesAndCategories.creditExpenseOther.getCashbookCategory(), 
 							DefineTypesAndCategories.creditExpenseOther.getCreditType(),
 							DefineTypesAndCategories.creditExpenseOther.getCreditCategory(), 
-							DefineTypesAndCategories.creditExpenseOther.getLedgerType(),expenseCategory,null);
+							DefineTypesAndCategories.creditExpenseOther.getLedgerType(),expenseCategory,null,remarks);
 				}
 			}
 		}
