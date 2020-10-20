@@ -62,10 +62,11 @@
 					    </div>
 					    <div id="expense_type" class="col-2">
 					    	<div class="form-group">
-					      		<label class="font-weight-bold">Expense Type</label>
-					      		<select id="e_type" class="form-control form-control-sm" name="expense_type" disabled>
+					      		<label class="font-weight-bold">Sub Type</label>
+					      		<select id="e_type" class="form-control form-control-sm" name="expense_type">
 					      			<option value="cash_expense">Cash</option>
-					      			<option value="credit_expense">Credit</option>
+					      			<option value="bank">Bank</option>
+					      			<!-- <option id="credit_id" value="credit_expense">Credit</option> -->
 					      		</select>
 					    	</div>
 					    </div>
@@ -125,14 +126,32 @@
 		        </thead>
 		        <tbody id="table_body">
 			        	<c:forEach var="record" items="${ledger_records}">
-			        		<c:if test="${!record[2].equalsIgnoreCase('') && !record[2].equalsIgnoreCase('0.0')}">
-			        			<tr>
+			        		<c:choose>
+			        			<c:when test="${(record[1].equalsIgnoreCase('opening balance') || record[1].equalsIgnoreCase('closing balance')) &&  !record[2].equalsIgnoreCase('')}">
+			        				<tr class="table-success">
+				        				<td>${record[0]}</td>
+				        				<td class="text-success font-weight-bold">${record[1]}</td>
+				        				<td class="font-weight-bold">${record[2]}</td>
+				        				<td>${record[4]}</td>
+			        				</tr>
+			        			</c:when>
+			        			<c:when test="${!record[2].equalsIgnoreCase('') && !record[2].equalsIgnoreCase('0.0')}">
+			        				<tr class="table-success">
+				        				<td>${record[0]}</td>
+				        				<td>${record[1]}</td>
+				        				<td>${record[2]}</td>
+				        				<td>${record[4]}</td>
+			        				</tr>
+			        			</c:when>
+			        		</c:choose>
+			        		<%-- <c:if test="${!record[2].equalsIgnoreCase('')}">
+			        			<tr class="table-success">
 			        				<td>${record[0]}</td>
 			        				<td>${record[1]}</td>
 			        				<td>${record[2]}</td>
 			        				<td>${record[4]}</td>
 			        			</tr>
-			        		</c:if>
+			        		</c:if> --%>
 			        	</c:forEach>
 			    </tbody>
 		 	</table>
@@ -149,14 +168,32 @@
 		        </thead>
 		        <tbody id="table_body">
 			        	<c:forEach var="record" items="${ledger_records}">
-			        		<c:if test="${!record[3].equalsIgnoreCase('') && !record[3].equalsIgnoreCase('0.0')}">
+			        		<c:choose>
+			        			<c:when test="${(record[1].equalsIgnoreCase('opening balance') || record[1].equalsIgnoreCase('closing balance')) &&  (!record[3].equalsIgnoreCase(''))}">
+			        				<tr class="table-danger">
+				        				<td>${record[0]}</td>
+				        				<td class="text-danger font-weight-bold">${record[1]}</td>
+				        				<td class="font-weight-bold">${record[3]}</td>
+				        				<td>${record[4]}</td>
+			        				</tr>
+			        			</c:when>
+			        			<c:when test="${!record[3].equalsIgnoreCase('') && !record[3].equalsIgnoreCase('0.0')}">
+			        				<tr class="table-danger">
+				        				<td>${record[0]}</td>
+				        				<td>${record[1]}</td>
+				        				<td>${record[3]}</td>
+				        				<td>${record[4]}</td>
+			        				</tr>
+			        			</c:when>
+			        		</c:choose>
+			        		<%-- <c:if test="${!record[3].equalsIgnoreCase('')}">
 			        			<tr class="table-danger">
 			        				<td>${record[0]}</td>
 			        				<td>${record[1]}</td>
 			        				<td>${record[3]}</td>
 			        				<td>${record[4]}</td>
 			        			</tr>
-			        		</c:if>
+			        		</c:if> --%>
 			        	</c:forEach>
 			    </tbody>
 		 	</table>
@@ -216,7 +253,8 @@
 	<!--  <script src="${pageContext.request.contextPath}/static_resources/js/header_manipulate.js"></script>-->
 	<script>
 	// ------------------------------ Page Load Initialization -----------------------------------
-		$(document).ready();
+		$(document).ready(
+		);
 
 		// ------------------------------ Page Load Configuration End ---------------------------------
 		
@@ -224,10 +262,10 @@
 		// If type changed to expense then show expense type option i.e cash / credit.
 		$("#type_id").change(e=>{
 			if($("#type_id").val().toLowerCase() == "expense"){
-				$("#e_type").attr("disabled",false);
+				$("#e_type").append('<option value="credit_expense">Credit</option>');
 			}
 			else{
-				$("#e_type").attr("disabled",true);
+				$("#e_type").find('option[value="credit_expense"]').remove();
 			}
 		})
 		

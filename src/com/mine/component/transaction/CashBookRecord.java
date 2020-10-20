@@ -48,6 +48,9 @@ public class CashBookRecord {
 	
 	private boolean status;
 	
+	@Column(name="payment_type")
+	private String paymentType;
+	
 	// links for ledger and credit book
 	
 	@OneToOne(mappedBy = "cashbookDepositeLink")
@@ -130,5 +133,13 @@ public class CashBookRecord {
 
 	public void setLedger(Ledger ledger) {
 		this.ledger = ledger;
+	}
+
+	public String getPaymentType() {
+		return paymentType;
+	}
+
+	public void setPaymentType(String paymentType) {
+		this.paymentType = paymentType;
 	}
 }

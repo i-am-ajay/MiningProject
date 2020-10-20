@@ -45,6 +45,10 @@ public class Ledger {
 	@JoinColumn(name="creditbook_link")
 	protected CreditRecord creditRecordLinking;
 	
+	@OneToOne
+	@JoinColumn(name="sales_id")
+	protected SupplyDetails salesLink;
+	
 
 	public LocalDateTime getEntryDate() {
 		return entryDate;
@@ -112,5 +116,13 @@ public class Ledger {
 
 	public void setCreditRecordLinking(CreditRecord creditRecordLinking) {
 		this.creditRecordLinking = creditRecordLinking;
+	}
+
+	public SupplyDetails getSalesLink() {
+		return salesLink;
+	}
+
+	public void setSalesLink(SupplyDetails salesLink) {
+		this.salesLink = salesLink;
 	}
 }

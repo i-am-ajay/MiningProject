@@ -72,8 +72,6 @@ public class MainController {
 		String token = TokenManager.giveToken(service);
 		System.out.println(token);
 		details.setToken(token);
-		System.out.println("Driver Return"+ details.getDriverReturn());
-		System.out.println("NRL"+details.getNrl());
 		service.saveSupplyDetails(details, userId);
 		page = "redirect:display_sales_page";
 		return page;
