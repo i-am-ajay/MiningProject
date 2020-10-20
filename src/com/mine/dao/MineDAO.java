@@ -544,6 +544,7 @@ public class MineDAO {
 			ledger.setType(ledgerType);
 			ledger.setCashbookLinking(cashRecord);
 			ledger.setSalesLink(details);
+			ledger.setRemarks(remarks);
 			
 			cashRecord.setLedger(ledger);
 			cashRecord.setCreditRecord(creditRecord);
@@ -588,6 +589,7 @@ public class MineDAO {
 				ledger.setType(ledgerType);
 				ledger.setCashbookLinking(cashRecord);
 				ledger.setSalesLink(details);
+				ledger.setRemarks(remarks);
 				
 				cashRecord.setLedger(ledger);
 				
@@ -612,6 +614,7 @@ public class MineDAO {
 				ledger.setType(ledgerType);
 				ledger.setCreditRecordLinking(creditRecord);
 				ledger.setSalesLink(details);
+				ledger.setRemarks(remarks);
 				
 				creditRecord.setLedgerLinking(ledger);
 				session.save(ledger);
