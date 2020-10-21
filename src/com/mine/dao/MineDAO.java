@@ -384,10 +384,9 @@ public class MineDAO {
 	
 	// ----------------------------- Sales Related DAO Methods ------------------------------------
 	@Transactional
-	public void addSales(SupplyDetails details, int userId) {
+	public void addSales(SupplyDetails details, User user) {
 		Session session = factory.getCurrentSession();
 		// save sales record in Cash or credit table.
-		User user = session.get(User.class, userId);
 		TypesAndCategories cashSale = DefineTypesAndCategories.cashSale; 
 		TypesAndCategories creditSale = DefineTypesAndCategories.creditSale;
 		TypesAndCategories bankSale = DefineTypesAndCategories.bankSale;
@@ -414,6 +413,7 @@ public class MineDAO {
 			ledger.setSource("Sales");
 			ledger.setTarget("Cash");
 			ledger.setType(cashSale.getLedgerType());
+			ledger.setCreatedBy(user);
 			
 			
 			cashRecord.setLedger(ledger);
@@ -441,6 +441,7 @@ public class MineDAO {
 			ledger.setSource("Sales");
 			ledger.setTarget("Bank");
 			ledger.setType(bankSale.getLedgerType());
+			ledger.setCreatedBy(user);
 			
 			cashRecord.setLedger(ledger);
 			ledger.setCashbookLinking(cashRecord);
@@ -466,6 +467,7 @@ public class MineDAO {
 			ledger.setType(creditSale.getLedgerType());
 			ledger.setCreditRecordLinking(creditRecord);
 			ledger.setSalesLink(details);
+			ledger.setCreatedBy(user);
 			
 			session.save(creditRecord);
 			session.save(ledger);
@@ -503,7 +505,7 @@ public class MineDAO {
 	//natureOfTransaction - Cash/Bank/Credit
 	// SupplyDetails - If entry is made through Sale for contractor, sanchalan and driver return. Then pass sales details too.
 	@Transactional
-	public void addDepositeOrExpense(int clientId, double amount, String type, String cashbookType, String cashbookCategory, String creditType, String creditCategory, String ledgerType, String natureOfTransaction, SupplyDetails details, String remarks) {
+	public void addDepositeOrExpense(int clientId, double amount, String type, String cashbookType, String cashbookCategory, String creditType, String creditCategory, String ledgerType, String natureOfTransaction, SupplyDetails details, String remarks, User user) {
 		CashBookRecord cashRecord = null;
 		Ledger ledger = null;
 		CreditRecord creditRecord = null;
@@ -545,6 +547,7 @@ public class MineDAO {
 			ledger.setCashbookLinking(cashRecord);
 			ledger.setSalesLink(details);
 			ledger.setRemarks(remarks);
+			ledger.setCreatedBy(user);
 			
 			cashRecord.setLedger(ledger);
 			cashRecord.setCreditRecord(creditRecord);
@@ -555,8 +558,6 @@ public class MineDAO {
 		}
 		else {
 			// if it's not deposite then it's expense and expense can be cash or credit.
-			System.out.println("Expense");
-			System.out.println(type);
 			if(type.equalsIgnoreCase("CashExpense")) {
 				cashRecord = new CashBookRecord();
 				cashRecord.setAmount(amount * -1);
@@ -590,6 +591,7 @@ public class MineDAO {
 				ledger.setCashbookLinking(cashRecord);
 				ledger.setSalesLink(details);
 				ledger.setRemarks(remarks);
+				ledger.setCreatedBy(user);
 				
 				cashRecord.setLedger(ledger);
 				
@@ -615,6 +617,7 @@ public class MineDAO {
 				ledger.setCreditRecordLinking(creditRecord);
 				ledger.setSalesLink(details);
 				ledger.setRemarks(remarks);
+				ledger.setCreatedBy(user);
 				
 				creditRecord.setLedgerLinking(ledger);
 				session.save(ledger);

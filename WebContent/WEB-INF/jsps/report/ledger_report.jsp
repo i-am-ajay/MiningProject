@@ -18,7 +18,7 @@
 	2) Different type of parties will be :
 		1) Self
 		2) Owner
-		3) Contractor
+		3) Comission Agent
 		4) Sanchalan Person
 		5) Office 
 		6) Other
@@ -41,8 +41,11 @@
  -->
 <body class=mt-1>
 	<div class="px-2 pb-2 m-auto" style="width:95%;">
-		<h4 class="border-bottom border-danger mt-1 mx-3 mb-3 pb-2 display-5" id="form_title">Deposite and Expense</h4>
-		<f:form method="POST" modelAttribute="supply" action="ledger_entry" id="eledger">
+		<div class="row">
+			<h4 class=" col-8 border-bottom border-danger mt-1 mx-3 mb-3 pb-2 display-5" id="form_title">Ledger</h4>
+			<div class="col-2 align-right ml-auto pl-5 mr-5"><i id="home_icon" class="fa fa-home fa-x" aria-hidden="true"></i></div>
+		</div>
+		<form method="POST" action="ledger_report" id="eledger">
 		   <!-- Patient Vitals -->
 		   <!--  <h4 class="border-bottom m-3 text-muted pb-2" id="form_title">Patient Report Card</h4>-->
 		   <!-- Card Vitals -->
@@ -53,96 +56,60 @@
   					<div class="row">
   						<div class="col-2">
 					    	<div class="form-group">
-					      		<label class="font-weight-bold">Income/Expense</label>
-					      		<select id="type" class="form-control fomr-control-sm">
-					      			<option value="income">Income</option>
-					      			<option value="expense">Expense</option>
-					      		</select>
-					    	</div>
-					    </div>
-  						<div class="col-2">
-					    	<div class="form-group">
 					      		<label class="font-weight-bold">Party</label>
-					      		<datalist class="form-conrol form-control-sm" name="party">
-					      			<option></option>
+					      		<input list="party" class="form-control form-control-sm" placeholder="Choose Party" id="party_name" name="party">
+					      		<datalist id="party">
+					      		<option>Cash</option>
+					      		<option>Credit</option>
+					      		<c:forEach var="party" items="${party_list}"> 
+					      			<option>${party.value}</option>
+					      		</c:forEach>
 					      		</datalist>
 					    	</div>
 					    </div>
-					    <div class="col-2">
-					    	<div class="form-group">
-					      		<label class="font-weight-bold">Transaction Type</label>
-					      		<datalist class="form-control form-control-sm" name="subType">
-					      			<option></option>
-					      		</datalist>
-					    	</div>
-					    </div>
-					    <div class="col-2">
-					    	<div class="form-group">
-					      		<label class="font-weight-bold">Amount</label>
-					      		<input id="amount" class="form-control form-control-sm" placeholder="Enter Amount" name="amount" />
-					    	</div>
-					    </div>
-					    <div class="col-2">
-					    	<div class="form-group">
-					      		<label class="font-weight-bold">Remark</label>
-					      		<input type="text" id="remark" class="form-control form-control-sm" placeholder="Remark If Any" name="remark" />
-					    	</div>
-					    </div>
-					    <div id="expense_type" class="col-2">
-					    	<div class="form-group">
-					      		<label class="font-weight-bold">Expense Type</label>
-					      		<select id="e_type" class="form-control fomr-control-sm" name="expenseType">
-					      			<option value="cash_expense">Cash</option>
-					      			<option value="credit_expense">Credit</option>
-					      		</select>
-					    	</div>
-					    </div>
+					<div class="form-group col-md-2">
+	      				<label for="f_date" class="font-weight-bold">From Date</label>
+				      	<input type="date" class="form-control form-control-sm" id="fDate" name="f_date"/>
+				    </div>	
+				    <div class="form-group col-md-2">
+				      	<label for="tDate" class="font-weight-bold">To Date</label>
+				      	<input type="date" class="form-control form-control-sm" id="tDate" name="t_date" />
+				    </div>	
 				 	</div>
+				 	<input type="submit" class="btn btn-sm btn-success btn-block w-50 mx-auto" value="submit"/>
 			  	</div>
 			</div>
 		</div>
 	</div>
 			    
 	<input type="hidden" id="role" value="${role}" />
-	</f:form>
+	</form>
 	</div>
-	<div id="table_section">
-		<table id="data_table" class="table table-striped table-sm display mx-auto" style="width:95%; font-size:13px;">
-        <thead class="thead-dark">
-            <tr>
-            	<th>Date</th>
-                <th>Particulars</th>
-                <th>Credit Amount</th>
-                <th>Remarks</th>
-                <th>&emsp;</th>
-                <th>Date</th>
-                <th>Particular</th>
-                <th>Debit Amount</th>
-                <th>Remarks</th>
-            </tr>
-        </thead>
-        <tbody>
-        	<c:forEach var="item" items="${data_list}">
-	            <tr>
-	            	<td>${item.token}</td>
-	                <td>${item.driverName}</td>
-	                <td>${item.driverNumber}</td>
-	                <td>${item.vehicle.vehicleNo}</td>
-	                <td>${item.vehicle.vehicleType}</td>
-	                <td>${item.vehicle.tyreType}</td>
-	                <td>${item.material }</td>
-	                <td>${item.quantity}</td>
-	                <td>${item.paymentType }</td>
-	                <td>${item.rate}</td>
-	                <td>${item.discount}</td>
-	                <td>${item.finalRate}</td>
-	                <td>${item.nrl}</td>
-	                <td>${item.driverReturn}</td>
-	                <td>${item.salesDate}</td>
-	            </tr>
-            </c:forEach>
-        </tbody>
-        </table>
+	<div id="table_section" class="row">
+		<div class="col" id="credit_table">
+			<table id="data_table" class="table table-striped table-sm display mx-auto col" style="width:95%; font-size:13px;">
+		        <thead class="thead-dark">
+		            <tr class="text-center">
+		            	<th>Date</th>
+		                <th>Particulars</th>
+		                <th>Credit Amount</th>
+		                <th>Debit Amout</th>
+		                <th>Remarks</th>
+		            </tr>
+		        </thead>
+		        <tbody id="table_body">
+			        <c:forEach var="record" items="${ledger_records}">
+			        	<tr>
+	        				<td>${record[0]}</td>
+	        				<td>${record[1]}</td>
+	        				<td class="table-success">${record[2]}</td>
+	        				<td class="table-danger">${record[3]}</td>
+	        				<td>${record[4]}</td>
+        				</tr>
+			        	</c:forEach>
+			    </tbody>
+		 	</table>
+		</div>
 	</div>
 	<!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
@@ -154,19 +121,19 @@
 	<script>
 	// ------------------------------ Page Load Initialization -----------------------------------
 		$(document).ready(e =>{
-			$("#expense_type").hide();
+			$(".fa").hover(e =>{
+				$(".fa").css({"cursor":"pointer"});
+			});
+
+			$("#home_icon").click( e =>{
+				window.location.href = "report_panel";
+			});
 		});
-		$(document).ready();
 
 		// ------------------------------ Page Load Configuration End ---------------------------------
 		
 		// ------------------------------ On Page Actions ------------------------------------------
 		// If type changed to expense then show expense type option i.e cash / credit.
-		$("#type").change(e=>{
-			if($("#type").val() == "Expense" ){
-				$("#expense_type").show();
-			}
-		})
 		
 
 		// submit button click validations
@@ -176,32 +143,44 @@
 		// ----------------------------------- Ajax Calls from Page -------------------------------------
 
 		// will populate ledger table.
-		$('#vehicle_no').focusout(function(){
+		// call an ajax function on client selection
+		/* $("#party_name").focusout(e =>{
+			let val = $("#party_type").val();
 			$.ajax({
 				type: "POST",
-				url : "${home}fetch_vehicle",
-				data : {"vehicle_no":this.value},
+				url : "${home}get_party_ledger",
+				data : {"name":$("#party_name").val()},
 				success: function(result, status, xhr){
-					if(result != null && result != ""){
-						let json = JSON.parse(result);
-						$("#vehicle_type").val(json['vehicle_type']);
-						$("#tyre_type").val(json['tyre_type']);
-						$("#discount").val(json['discount']);
+					console.log("success");
+					//console.log(result);
+					//console.log(status);
+					$("#table_body").empty();
+					if(result){
+						let array = JSON.parse(result);
+						console.log(array);
+						array.forEach(e =>{
+							let row = "<tr>"+
+										"<td class='table-success'>"+e.date+"</td>"+
+										"<td class='table-success'>"+e.cParticular+"</td>"+
+										"<td class='table-success'>"+e.creditAmount+"</td>"+
+										"<td class='table-success'>"+e.cRemarks+"</td>"+
+										"<td>&emsp;</td>"+
+										"<td class='table-danger'>"+e.date+"</td>"+
+										"<td class='table-danger'>"+e.dParticular+"</td>"+
+										"<td class='table-danger'>"+e.debitAmount+"</td>"+
+										"<td class='table-danger'>"+e.dRemarks+"</td>"+
+										"<tr>"
+							$("#table_body").append(row);
+						})
 						
-						$("#vehicle_type").attr("readonly",true);
-						$("#tyre_type").attr("readonly",true);
-
-					}
-					else{
-						alert("This vehicle is not registered.");
 					}
 				},
-				error : function(result,status,xhr){
+				error: function(result, status, xhr){
 					console.log("error");
+					console.log(result);
 				}
-			});
-
-		});
+			})
+		}); */
 
 	// --------------------------- Support Methods ----------------------------------------
 	

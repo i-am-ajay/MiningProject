@@ -36,9 +36,11 @@ public class Rate {
 	private LocalDate endDate;
 	
 	@ManyToOne
+	@JoinColumn(name="created_by")
 	private User createdById;
 	
-	private Integer endedById;
+	@ManyToOne
+	private User endedById;
 
 	public String getTyreType() {
 		return tyreType;
@@ -104,11 +106,11 @@ public class Rate {
 		this.createdById = createdById;
 	}
 
-	public Integer getEndedById() {
+	public User getEndedById() {
 		return endedById;
 	}
 
-	public void setEndedById(Integer endedById) {
+	public void setEndedById(User endedById) {
 		this.endedById = endedById;
 	}
 
@@ -118,14 +120,6 @@ public class Rate {
 
 	public void setRate(double rate) {
 		this.rate = rate;
-	}
-
-	public void getEndedById() {
-		return this.endedById;
-	}
-
-	public void setEndedById(int endedById) {
-		this.endedById = endedById;
 	}
 
 	public Company getCompany() {

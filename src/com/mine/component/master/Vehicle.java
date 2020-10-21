@@ -35,6 +35,8 @@ public class Vehicle {
 	
 	private LocalDate endDate;
 	
+	@ManyToOne
+	@JoinColumn(name="created_by")
 	private User createdById;
 	
 	private Integer endedById;

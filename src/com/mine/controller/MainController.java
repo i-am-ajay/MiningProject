@@ -37,8 +37,7 @@ public class MainController {
 	ReportController reportController;
 	
 	int companyId = 1;
-	
-	int userId = 1;
+
 	//------------------------------ Home Page Control --------------------------------
 	@RequestMapping({"/","home"})
 	public String home(Model model, HttpSession session) {
@@ -84,7 +83,8 @@ public class MainController {
 		String token = TokenManager.giveToken(service);
 		System.out.println(token);
 		details.setToken(token);
-		service.saveSupplyDetails(details, userId);
+		User user = (User)session.getAttribute("user");
+		service.saveSupplyDetails(details, user);
 		page = "redirect:display_sales_page";
 		return page;
 	}
@@ -111,8 +111,9 @@ public class MainController {
 		if(session.getAttribute("username") == null || session.getAttribute("username").toString().length() == 0) {
 			return "login";
 		}
+		User user = (User)session.getAttribute("user");
 		if (partyName != null && amount != 0.0) {
-			service.ledgerEntries(partyName, amount, type, expenseType, remarks);
+			service.ledgerEntries(partyName, amount, type, expenseType, remarks,user);
 		}
 		
 		model.addAttribute("party_list",service.getClientList(companyId, 0));
@@ -167,6 +168,7 @@ public class MainController {
 			if(user.getPassword().equals(password.trim())) {
 				String role = user.getRole();
 				session.setAttribute("username", user.getUsername());
+				session.setAttribute("user", user);
 				session.setAttribute("role", role);
 				
 				role = role.toLowerCase();
@@ -215,7 +217,7 @@ public class MainController {
 		if(activeStatus == true) {
 			active = false;
 		}
-		boolean status = service.createUser(username, password, role, session.getAttribute("username").toString(), active);
+		boolean status = service.createUser(username, password, role, (User)session.getAttribute("user"), active);
 		if(status == true) {
 			requestStatus = "success";
 		}

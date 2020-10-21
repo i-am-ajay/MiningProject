@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import org.hibernate.annotations.Filter;
@@ -22,10 +23,12 @@ public class GeneralData {
 	private LocalDate createdOn;
 	
 	@ManyToOne
+	@JoinColumn(name="created_by")
 	private User createdBy;
+	
 	private LocalDate endDate;
 	private Integer endedBy;
-	public String getCategory() {
+	public String getCategory(){
 		return category;
 	}
 	public void setCategory(String category) {

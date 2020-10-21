@@ -15,6 +15,8 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Generated;
@@ -30,8 +32,9 @@ public class User{
 	@Column(nullable=false)
 	private String password;
 	
-	@Column(nullable=false, name="created_by")
-	private String createdBy;
+	@ManyToOne
+	@JoinColumn(name="created_by")
+	private User createdBy;
 	
 	@Column(nullable=false)
 	private boolean active;
@@ -59,11 +62,11 @@ public class User{
 		this.password = password;
 	}
 
-	public String getCreatedBy() {
+	public User getCreatedBy() {
 		return createdBy;
 	}
 
-	public void setCreatedBy(String createdBy) {
+	public void setCreatedBy(User createdBy) {
 		this.createdBy = createdBy;
 	}
 

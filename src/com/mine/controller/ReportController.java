@@ -167,6 +167,28 @@ public class ReportController {
 			//System.out.println(Arrays.toString(objArray));
 			return Arrays.toString(objArray);
 		}*/
+	
+	@RequestMapping("ledger_report")
+	public String ledgerReport(HttpSession session,Model model,@RequestParam(name="party", required=false)String partyName, 
+			@RequestParam(name="f_date", required=false) @DateTimeFormat(iso=ISO.DATE)LocalDate startDate,
+			@RequestParam(name="t_date", required=false) @DateTimeFormat(iso=ISO.DATE)LocalDate endDate) {
+		if(startDate == null) {
+			startDate = LocalDate.now();
+		}
+		if(endDate == null) {
+			endDate = LocalDate.now();
+		}
+		if(session.getAttribute("username") == null || session.getAttribute("username").toString().length() == 0) {
+			return "login";
+		}
+		List<String[]> stringArray = null;
+		if(partyName != null && partyName.length() > 0) {
+			stringArray = getPartyLedgerEntries(partyName,startDate,endDate);
+		}
+		model.addAttribute("party_list",miningService.getClientList(companyId, 0));
+		model.addAttribute("ledger_records",stringArray);
+		return "report/ledger_report";
+	}
 	// ------------------------------ End Ledger Control ----------------------------------
 	
 	// ------------------------------ Report Panel ----------------------------------------
@@ -183,6 +205,7 @@ public class ReportController {
 	// -------------------------------End Report Panel -----------------------------------
 	
 	// ------------------------------- Support Methods -----------------------------------
+	
 	
 	public List<String[]> getPartyLedgerEntries(String partyName, LocalDate startDate, LocalDate endDate) {
 		LocalDateTime startDateTime = LocalDateTime.of(startDate, LocalTime.of(0, 0,0));

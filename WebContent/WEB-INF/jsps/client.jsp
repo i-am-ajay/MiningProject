@@ -15,8 +15,10 @@
 </head>
 <body class=mt-1>
 	<div class="container p-2 m-auto">
-		<h4 class="border-bottom border-danger m-3 pb-2 display-4" id="form_title">Client Creation</h4>
-		
+		<div class="row">
+		<h4 class="border-bottom border-danger m-3 pb-2 display-4 col-8" id="form_title">Client Creation</h4>
+		<div class="col-2 align-right ml-auto pl-5 mt-4 mr-5"><i id="home_icon" class="fa fa-home fa-2x" aria-hidden="true"></i></div>
+		</div>
 		<c:if test="${status.equalsIgnoreCase('success')}">
 			<div class="alert alert-success alert-dismissible fade show w-50 mx-auto" role="alert"><small>Client Created Successfully.</small><button type="button" class="close" data-dismiss="alert" aria-label="Close">
     			<span aria-hidden="true">&times;</span>

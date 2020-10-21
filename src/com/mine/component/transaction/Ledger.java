@@ -8,10 +8,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
+
+import com.mine.component.master.User;
 
 @Entity
 public class Ledger {
@@ -39,6 +42,10 @@ public class Ledger {
 	
 	@Column(name="remarks")
 	protected String remarks;
+	
+	@ManyToOne
+	@JoinColumn(name="created_by")
+	protected User createdBy;
 	
 	@OneToOne
 	@JoinColumn(name="cashbook_link")
@@ -137,5 +144,12 @@ public class Ledger {
 
 	public void setRemarks(String remarks) {
 		this.remarks = remarks;
+	}
+
+	public User getCreatedBy() {
+		return createdBy;
+	}
+	public void setCreatedBy(User createdBy) {
+		this.createdBy = createdBy;
 	}
 }

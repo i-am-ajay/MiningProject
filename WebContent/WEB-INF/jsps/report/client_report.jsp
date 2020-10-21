@@ -16,7 +16,10 @@
 <body class=mt-1>
 	<div class="p-2 m-auto">
 		<div id="search_div" class="container">
-		<h6 class="border-bottom mx-1 text-muted pb-2" id="form_title">Client Report</h6>
+		<div class="row">
+			<h6 class="border-bottom mx-1 text-muted pb-2 col-8" id="form_title">Client Report</h6>
+			<div class="col-2 align-right ml-auto pl-5 mr-5"><i id="home_icon" class="fa fa-home fa-x" aria-hidden="true"></i></div>
+		</div>
 		<div  class="mt-3 bg-light">
 			<form action="client_report" method="POST">
 			 <div class="form-row search p-1">
@@ -118,7 +121,6 @@
 
 			$("#report").hide();
 		});
-		
 		
 		/// calculate age
 		function calculate_age(birth_date){

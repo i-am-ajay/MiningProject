@@ -16,50 +16,59 @@
 	<div class="container mt-4">
 	<h4 class="border-bottom border-danger mt-1 mx-3 mb-3 pb-2 display-5" id="form_title">Dashboard</h4>
 	<div class="row mt-3">
-		<div class="col-sm-12 col-md-4">
+		<div class="col-sm-12 col-md-3">
 			<div class="card bg-light my-1 py-1" id="company">
 			<article class="card-body mx-auto">
 				<h4 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Create<br/>Company</h4>
-				<p class="text-center mt-3"><i class="fa fa-building fa-4x" aria-hidden="true"></i></i></p>	
+				<p class="text-center mt-3"><i class="fa fa-building fa-3x" aria-hidden="true"></i></i></p>	
 			</article>
 			</div>
 		</div>
-		<div class=" col-sm-12 col-md-4">
+		<div class=" col-sm-12 col-md-3">
 			<div class="card bg-light my-1 py-1" id="client">
 			<article class="card-body mx-auto">
 				<h4 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Create<br/> Client</h4>
-				<p class="text-center mt-3"><i class="fa fa-user-plus fa-4x" aria-hidden="true"></i></p>
+				<p class="text-center mt-3"><i class="fa fa-user-plus fa-3x" aria-hidden="true"></i></p>
 			</article>
 			</div>
 		</div>
-		<div class=" col-sm-12 col-md-4">
+		<div class=" col-sm-12 col-md-3">
 			<div class="card bg-light my-1 py-1" id="vehicle">
 			<article class="card-body mx-auto">
 				<h4 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Add<br/> Vehicle</h4>
-				<p class="text-center mt-3"><i class="fa fa-truck fa-4x" aria-hidden="true"></i></p>
+				<p class="text-center mt-3"><i class="fa fa-truck fa-3x" aria-hidden="true"></i></p>
+			</article>
+			</div>
+		</div>
+		
+		<div class="col-sm-12 col-md-3">
+			<div class="card bg-light my-1 py-1" id="rates">
+			<article class="card-body mx-auto">
+				<h4 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Add<br/>Rates</h4>
+				<p class="text-center mt-3"><i class="fa fa-money fa-3x" aria-hidden="true"></i></p>	
 			</article>
 			</div>
 		</div>
 		
 	</div>
 	<div class="row mt-3">
-		<div class="col-sm-12 col-md-4">
-			<div class="card bg-light my-1 py-1" id="rates">
+		<div class="col-sm-12 col-md-3">
+			<div class="card bg-light my-1 py-1" id="inc_exp">
 			<article class="card-body mx-auto">
-				<h4 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Add<br/>Rates</h4>
-				<p class="text-center mt-3"><i class="fa fa-money fa-4x" aria-hidden="true"></i></p>	
+				<h4 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Income<br/>Expense</h4>
+				<p class="text-center mt-3"><i class="fa fa-money fa-3x" aria-hidden="true"></i></p>	
 			</article>
 			</div>
 		</div>
-		<div class=" col-sm-12 col-md-4">
+		<div class=" col-sm-12 col-md-3">
 			<div class="card bg-light my-1 py-1" id="sales">
 			<article class="card-body mx-auto">
 				<h4 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Supply<br/>& Sales</h4>
-				<p class="text-center mt-3"><i class="fa fa-calculator fa-4x" aria-hidden="true"></i></p>
+				<p class="text-center mt-3"><i class="fa fa-calculator fa-3x" aria-hidden="true"></i></p>
 			</article>
 			</div>
 		</div>
-		<div class=" col-sm-12 col-md-4">
+		<div class=" col-sm-12 col-md-3">
 			<div class="card bg-light my-1 py-1" id="report">
 			<article class="card-body mx-auto">
 				<h3 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Reports<br/> &nbsp;&nbsp;</h3>
@@ -68,6 +77,32 @@
 			</div>
 		</div>
 	</div>
+	<!-- <div class="row mt-3">
+		<div class="col-sm-12 col-md-3">
+			<div class="card bg-light my-1 py-1" id="rates">
+			<article class="card-body mx-auto">
+				<h4 class="card-title text-center display-3 border-bottom border-danger py-2 my-2">Add<br/>Rates</h4>
+				<p class="text-center mt-3"><i class="fa fa-money fa-3x" aria-hidden="true"></i></p>	
+			</article>
+			</div>
+		</div>
+		<div class=" col-sm-12 col-md-4">
+			<div class="card bg-light my-1 py-1" id="sales">
+			<article class="card-body mx-auto">
+				<h4 class="card-title text-center display-3 border-bottom border-danger py-2 my-2">Supply<br/>& Sales</h4>
+				<p class="text-center mt-3"><i class="fa fa-calculator fa-3x" aria-hidden="true"></i></p>
+			</article>
+			</div>
+		</div>
+		<div class=" col-sm-12 col-md-4">
+			<div class="card bg-light my-1 py-1" id="report">
+			<article class="card-body mx-auto">
+				<h3 class="card-title text-center display-3 border-bottom border-danger py-2 my-2">Reports<br/> &nbsp;&nbsp;</h3>
+				<p class="text-center mt-3"><i class="fa fa-file-text-o fa-3x" aria-hidden="true"></i></p>
+			</article>
+			</div>
+		</div>
+	</div> -->
 	</div> 
 	
 	<form id="hidden_form" action="home" method="POST">
@@ -110,6 +145,10 @@
 
 		$("#report").click( e=>{
 			window.location.href ="report_panel";
+		});
+
+		$("#inc_exp").click( e=>{
+			window.location.href ="ledger_entries_screen";
 		});
 
 		$(document).ready( e=>{

@@ -41,7 +41,10 @@
  -->
 <body class=mt-1>
 	<div class="px-2 pb-2 m-auto" style="width:95%;">
-		<h4 class="border-bottom border-danger mt-1 mx-3 mb-3 pb-2 display-5" id="form_title">Deposite and Expense</h4>
+		<div class="row">
+			<h4 class="border-bottom border-danger mt-1 mx-3 mb-3 pb-2 display-5 col-8" id="form_title">Deposite and Expense</h4>
+			<div class="col-2 align-right ml-auto pl-5 mt-4 mr-5"><i id="home_icon" class="fa fa-home fa-2x" aria-hidden="true"></i></div>
+		</div>
 		<form method="POST" action="ledger_entries_screen" id="eledger">
 		   <!-- Patient Vitals -->
 		   <!--  <h4 class="border-bottom m-3 text-muted pb-2" id="form_title">Patient Report Card</h4>-->
@@ -253,8 +256,15 @@
 	<!--  <script src="${pageContext.request.contextPath}/static_resources/js/header_manipulate.js"></script>-->
 	<script>
 	// ------------------------------ Page Load Initialization -----------------------------------
-		$(document).ready(
-		);
+		$(document).ready( e=>{
+				$("#home_icon").hover( e => {
+					$("#home_icon").css({"cursor":"pointer"})
+				});
+
+				$("#home_icon").click( e =>{
+					window.location.href = "admin_panel";
+				});
+		});
 
 		// ------------------------------ Page Load Configuration End ---------------------------------
 		

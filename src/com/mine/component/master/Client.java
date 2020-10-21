@@ -32,6 +32,7 @@ public class Client {
 	private LocalDate creationDate;
 	
 	@ManyToOne
+	@JoinColumn(name="created_by")
 	private User createdBy;
 	
 	private LocalDate endDate;

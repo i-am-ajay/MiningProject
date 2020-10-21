@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.mine.component.master.Client;
 import com.mine.component.master.Company;
 import com.mine.component.master.Rate;
+import com.mine.component.master.User;
 import com.mine.component.master.Vehicle;
 import com.mine.service.MiningService;
 
@@ -53,12 +54,13 @@ public class MasterController {
 	}
 	
 	@RequestMapping("save_client")
-	public String clientSaved(@ModelAttribute Client client, BindingResult result, @RequestParam(value="client_type", required=false)int id, Model model) {
+	public String clientSaved(HttpSession session,@ModelAttribute Client client, BindingResult result, @RequestParam(value="client_type", required=false)int id, Model model) {
 		if(result.hasErrors()) {
 			System.out.println(result.toString());
 		}
 		else {
-			model.addAttribute("status",service.saveClient(client, id, userId, companyId,"admin"));
+			User user = (User)session.getAttribute("user");
+			model.addAttribute("status",service.saveClient(client, id,user, companyId,user.getRole()));
 		}
 		return "redirect:client_creation";
 	}
@@ -134,7 +136,7 @@ public class MasterController {
 	 * @return
 	 */
 	@RequestMapping("company_saved")
-	public String saveCompany(Model model,@ModelAttribute Company company, BindingResult companyResult) {
+	public String saveCompany(HttpSession session,Model model,@ModelAttribute Company company, BindingResult companyResult) {
 		/**
 		 * Check if passed values has some error.
 		 * Call company service with company, user id and user role parameters.
@@ -146,7 +148,8 @@ public class MasterController {
 			
 		}
 		else {
-			model.addAttribute("status",service.saveCompany(company,userId,"user"));
+			User user = (User)session.getAttribute("user");
+			model.addAttribute("status",service.saveCompany(company,user,user.getRole()));
 		}
 		return "redirect:company_creation";
 	}
@@ -193,12 +196,13 @@ public class MasterController {
 	}
 	
 	@RequestMapping("save_vehicle")
-	public String saveVehicle(Model model, @ModelAttribute("vehicle") Vehicle vehicle,BindingResult result, @RequestParam("client_name") int clientId) {
+	public String saveVehicle(HttpSession session,Model model, @ModelAttribute("vehicle") Vehicle vehicle,BindingResult result, @RequestParam("client_name") int clientId) {
 		if(result.hasErrors()) {
 			System.out.println("Got some errors");
 		}
 		else {
-			model.addAttribute("status",service.saveVehicle(vehicle, clientId, 1, userId,"admin"));
+			User user = (User)session.getAttribute("user");
+			model.addAttribute("status",service.saveVehicle(vehicle, clientId, 1, user,user.getRole()));
 		}
 		return "redirect:create_vehicle";
 	}
@@ -241,13 +245,14 @@ public class MasterController {
 	}
 	
 	@RequestMapping("save_rate")
-	public String saveRate(Model model, @ModelAttribute("rate") Rate rate, BindingResult result) {
+	public String saveRate(HttpSession session,Model model, @ModelAttribute("rate") Rate rate, BindingResult result) {
 		String page = null;
 		if(result.hasErrors()) {
 			
 		}
 		else {
-			model.addAttribute("status", service.saveRate(rate, 1,userId));
+			User user = (User)session.getAttribute("user");
+			model.addAttribute("status", service.saveRate(rate, 1,user));
 			
 		}
 		return "redirect:add_rate";

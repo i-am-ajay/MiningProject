@@ -14,7 +14,10 @@
 <body>
 	
 	<div class="container mt-4">
-	<h4 class="border-bottom border-danger mt-1 mx-3 mb-3 pb-2 display-5" id="form_title">Report Dashboard</h4>
+	<div class="row">
+		<h4 class="border-bottom border-danger mt-1 mx-3 mb-3 pb-2 display-5 col-8" id="form_title">Report Dashboard</h4>
+		<div class="col-2 align-right ml-auto pl-5 mt-2 mr-5"><i id="home_icon" class="fa fa-home fa-2x" aria-hidden="true"></i></div>
+	</div>
 	<div class="row mt-3">
 		<div class="col-sm-12 col-md-4">
 			<div class="card bg-light my-1 py-1" id="sales_report">
@@ -52,12 +55,12 @@
 			</div>
 		</div>
 		<div class=" col-sm-12 col-md-4">
-			<!-- <div class="card bg-light my-1 py-1" id="sales">
+			<div class="card bg-light my-1 py-1" id="ledger">
 			<article class="card-body mx-auto">
-				<h4 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Supply<br/>& Sales</h4>
+				<h4 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Ledger<br/>&nbsp;</h4>
 				<p class="text-center mt-3"><i class="fa fa-calculator fa-4x" aria-hidden="true"></i></p>
 			</article>
-			</div> -->
+			</div>
 		</div>
 		<div class=" col-sm-12 col-md-4">
 			<!-- <div class="card bg-light my-1 py-1" id="report">
@@ -108,9 +111,21 @@
 			window.location.href ="display_sales_page";
 		});
 
-		$(document).ready( e=>{
-			$("#home_icon").hide();
+		$("#ledger").click( e=>{
+			window.location.href ="ledger_report";
 		});
+
+		$(document).ready(e => {
+			$("#home_icon").hover( e => {
+				$("#home_icon").css({"cursor":"pointer"})
+			});
+
+			$("#home_icon").click( e =>{
+				window.location.href = "admin_panel";
+			});
+			$("#logout").hide();
+			}
+		);
 
 	</script>
 </body>
