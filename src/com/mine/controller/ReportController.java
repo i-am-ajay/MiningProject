@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -39,8 +41,11 @@ public class ReportController {
 	int companyId = 1;
 	// ------------------------------ Sales Control --------------------------------------
 	@RequestMapping("sales_report")
-	public String salesReport(Model model,@RequestParam(name="vehicle_no",required=false) String vehicleNumber,@RequestParam(name="material",required=false) String material,@RequestParam(name="quantity",required=false) String quantity
+	public String salesReport(HttpSession session,Model model,@RequestParam(name="vehicle_no",required=false) String vehicleNumber,@RequestParam(name="material",required=false) String material,@RequestParam(name="quantity",required=false) String quantity
 			, @RequestParam(name="payment_type", required=false) String paymentType, @RequestParam(name="f_date", required=false) @DateTimeFormat(iso = ISO.DATE)LocalDate fromDate, @RequestParam(name="t_date", required=false) @DateTimeFormat(iso = ISO.DATE)LocalDate toDate) {
+		if(session.getAttribute("username") == null || session.getAttribute("username").toString().length() == 0) {
+			return "login";
+		}
 		List<SupplyDetails> salesList = reportService.getSupplyDetails(vehicleNumber, quantity, material, paymentType, fromDate, toDate);
 		model.addAttribute("salesList",salesList);
 		model.addAttribute("material_lookup", miningService.getLookupMap("materialType"));
@@ -58,9 +63,12 @@ public class ReportController {
 	
 	// ------------------------------ Client Control --------------------------------------
 	@RequestMapping("client_report")
-	public String clientReport(Model model, @RequestParam(name="name",required=false) String name,@RequestParam(name="contact",required=false) String contact, 
+	public String clientReport(HttpSession session,Model model, @RequestParam(name="name",required=false) String name,@RequestParam(name="contact",required=false) String contact, 
 				 @RequestParam(name="belongs_to",required=false) String clientType ) {
-			List<Client> clientList = reportService.getClientList(name, contact, clientType != null ? Integer.parseInt(clientType) : 0);
+		if(session.getAttribute("username") == null || session.getAttribute("username").toString().length() == 0) {
+			return "login";
+		}	
+		List<Client> clientList = reportService.getClientList(name, contact, clientType != null ? Integer.parseInt(clientType) : 0);
 			model.addAttribute("clientList",clientList);
 			return "report/client_report";
 	}
@@ -69,9 +77,12 @@ public class ReportController {
 	
 	// ------------------------------ Vehicle Control --------------------------------------
 	@RequestMapping("vehicle_report")
-	public String vehicleReport(Model model, @RequestParam(name="vehicle_no",required=false) String vehicleNo,@RequestParam(name="client",required=false) String client, @RequestParam(name="vehicle_type",required=false) String vehicleType,
+	public String vehicleReport(HttpSession session,Model model, @RequestParam(name="vehicle_no",required=false) String vehicleNo,@RequestParam(name="client",required=false) String client, @RequestParam(name="vehicle_type",required=false) String vehicleType,
 				@RequestParam(name="tyre_type",required=false, defaultValue="0") int tyreType, @RequestParam(name="belongs_to",required=false) String clientType ) {
-			List<Vehicle> vehicleList = reportService.getVehicleList(vehicleNo, vehicleType, tyreType, client, clientType != null ? Integer.parseInt(clientType) : 0);
+		if(session.getAttribute("username") == null || session.getAttribute("username").toString().length() == 0) {
+			return "login";
+		}	
+		List<Vehicle> vehicleList = reportService.getVehicleList(vehicleNo, vehicleType, tyreType, client, clientType != null ? Integer.parseInt(clientType) : 0);
 			model.addAttribute("vehicleList",vehicleList);
 			model.addAttribute("client",miningService.getClientList(companyId, 0));
 			model.addAttribute("vehicle_lookup",miningService.getLookupMap("vehicleType"));
@@ -83,8 +94,11 @@ public class ReportController {
 	
 	// ------------------------------ Rate Report ------------------------------------------
 	@RequestMapping("rate_report")
-	public String vehicleReport(Model model, @RequestParam(name="material",required=false) String material,@RequestParam(name="quantity",required=false) String quantity, @RequestParam(name="vehicle_type",required=false) String vehicleType,
+	public String vehicleReport(HttpSession session,Model model, @RequestParam(name="material",required=false) String material,@RequestParam(name="quantity",required=false) String quantity, @RequestParam(name="vehicle_type",required=false) String vehicleType,
 				@RequestParam(name="tyre_type",required=false, defaultValue="0") int tyreType) {
+			if(session.getAttribute("username") == null || session.getAttribute("username").toString().length() == 0) {
+				return "login";
+			}
 			List<Rate> rateList = reportService.getRateList(vehicleType, tyreType, quantity, material);
 			model.addAttribute("vehicle_lookup",miningService.getLookupMap("vehicleType"));
 			model.addAttribute("tyre_lookup", miningService.getLookupMap("tyreType"));
@@ -157,7 +171,10 @@ public class ReportController {
 	
 	// ------------------------------ Report Panel ----------------------------------------
 	@RequestMapping("report_panel")
-	public String reportPanel() {
+	public String reportPanel(HttpSession session) {
+		if(session.getAttribute("username") == null || session.getAttribute("username").toString().length() == 0) {
+			return "login";
+		}
 		return "report/report_panel";
 	}
 	
@@ -184,17 +201,17 @@ public class ReportController {
 			strArray = new String[] {startDate.toString(),"Opening Balance","",Double.toString(openingBalance),""};
 		}
 		listOfRecords.add(strArray);
-		int count = 1;
+
 		for(Ledger ledger : ledgerEntries) {
 			strArray = new String[] {ledger.getEntryDate().toLocalDate().toString(),ledger.getSource()+" to "+ledger.getTarget(),Double.toString(ledger.getCreditAmount()),Double.toString(ledger.getDebitAmount()),""};
 			listOfRecords.add(strArray);
 		}
 		
 		if(closingBalance >= 0) {
-			strArray = new String[] {startDate.toString(),"Closing Balance",Double.toString(openingBalance),"",""};
+			strArray = new String[] {endDate.toString(),"Closing Balance",Double.toString(closingBalance),"",""};
 		}
 		else {
-			strArray = new String[] {startDate.toString(),"Closing Balance","",Double.toString(openingBalance),""};
+			strArray = new String[] {endDate.toString(),"Closing Balance","",Double.toString(closingBalance),""};
 		}
 		listOfRecords.add(strArray);
 		return listOfRecords;

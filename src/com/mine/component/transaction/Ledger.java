@@ -37,6 +37,9 @@ public class Ledger {
 	@Column(name="credit_amount")
 	protected double creditAmount;
 	
+	@Column(name="remarks")
+	protected String remarks;
+	
 	@OneToOne
 	@JoinColumn(name="cashbook_link")
 	protected CashBookRecord cashbookLinking;
@@ -44,6 +47,12 @@ public class Ledger {
 	@OneToOne
 	@JoinColumn(name="creditbook_link")
 	protected CreditRecord creditRecordLinking;
+	
+	@OneToOne
+	@JoinColumn(name="sales_id")
+	protected SupplyDetails salesLink;
+	
+	
 	
 
 	public LocalDateTime getEntryDate() {
@@ -112,5 +121,21 @@ public class Ledger {
 
 	public void setCreditRecordLinking(CreditRecord creditRecordLinking) {
 		this.creditRecordLinking = creditRecordLinking;
+	}
+
+	public SupplyDetails getSalesLink() {
+		return salesLink;
+	}
+
+	public void setSalesLink(SupplyDetails salesLink) {
+		this.salesLink = salesLink;
+	}
+
+	public String getRemarks() {
+		return remarks;
+	}
+
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
 	}
 }

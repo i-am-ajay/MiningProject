@@ -390,6 +390,7 @@ public class MineDAO {
 		User user = session.get(User.class, userId);
 		TypesAndCategories cashSale = DefineTypesAndCategories.cashSale; 
 		TypesAndCategories creditSale = DefineTypesAndCategories.creditSale;
+		TypesAndCategories bankSale = DefineTypesAndCategories.bankSale;
 		
 		// get vehicle and set it's linking.
 		Vehicle vehicle = session.get(Vehicle.class, details.getVehicle().getVehicleNo());
@@ -404,6 +405,7 @@ public class MineDAO {
 			cashRecord.setType(cashSale.getCashbookType());
 			cashRecord.setCategory(cashSale.getCashbookCategory());
 			cashRecord.setStatus(true);
+			cashRecord.setPaymentType("Cash");
 			
 			// ledger record
 			
@@ -413,12 +415,39 @@ public class MineDAO {
 			ledger.setTarget("Cash");
 			ledger.setType(cashSale.getLedgerType());
 			
+			
 			cashRecord.setLedger(ledger);
 			ledger.setCashbookLinking(cashRecord);
+			ledger.setSalesLink(details);
 			
 			session.save(ledger);
 			session.save(cashRecord);
 			
+		}
+		else if(details.getPaymentType().equalsIgnoreCase("bank")) {
+			CashBookRecord cashRecord = new CashBookRecord();
+			cashRecord.setAmount(details.getFinalRate());
+			cashRecord.setParty(vehicle.getClientId());
+			cashRecord.setSales(details);
+			cashRecord.setType(bankSale.getCashbookType());
+			cashRecord.setCategory(bankSale.getCashbookCategory());
+			cashRecord.setStatus(true);
+			cashRecord.setPaymentType("Bank");
+			
+			// ledger record
+			
+			Ledger ledger = new Ledger();
+			ledger.setCreditAmount(details.getFinalRate());
+			ledger.setSource("Sales");
+			ledger.setTarget("Bank");
+			ledger.setType(bankSale.getLedgerType());
+			
+			cashRecord.setLedger(ledger);
+			ledger.setCashbookLinking(cashRecord);
+			ledger.setSalesLink(details);
+			
+			session.save(ledger);
+			session.save(cashRecord);
 		}
 		else {
 			CreditRecord creditRecord = new CreditRecord();
@@ -436,6 +465,7 @@ public class MineDAO {
 			ledger.setTarget(vehicle.getClientId().getName());
 			ledger.setType(creditSale.getLedgerType());
 			ledger.setCreditRecordLinking(creditRecord);
+			ledger.setSalesLink(details);
 			
 			session.save(creditRecord);
 			session.save(ledger);
@@ -470,8 +500,10 @@ public class MineDAO {
 	
 	
 	// ---------------------------- Expense and Deposite related DAO -----------------------------
+	//natureOfTransaction - Cash/Bank/Credit
+	// SupplyDetails - If entry is made through Sale for contractor, sanchalan and driver return. Then pass sales details too.
 	@Transactional
-	public void addDepositeOrExpense(int clientId, double amount, String type, String cashbookType, String cashbookCategory, String creditType, String creditCategory, String ledgerType) {
+	public void addDepositeOrExpense(int clientId, double amount, String type, String cashbookType, String cashbookCategory, String creditType, String creditCategory, String ledgerType, String natureOfTransaction, SupplyDetails details, String remarks) {
 		CashBookRecord cashRecord = null;
 		Ledger ledger = null;
 		CreditRecord creditRecord = null;
@@ -486,6 +518,8 @@ public class MineDAO {
 			cashRecord.setType(cashbookType);
 			cashRecord.setStatus(true);
 			cashRecord.setParty(client);
+			cashRecord.setSales(details);
+			cashRecord.setPaymentType(natureOfTransaction);
 			
 			// credit book entry -  if it's a cash deposite an entry will be sent to credit records too.
 			creditRecord = new CreditRecord();
@@ -495,14 +529,22 @@ public class MineDAO {
 			creditRecord.setStatus(true);
 			creditRecord.setClient(client);
 			creditRecord.setCashbookDepositeLink(cashRecord);
+			creditRecord.setSales(details);
 			
 			// ledger entry
 			ledger = new Ledger();
 			ledger.setCreditAmount(amount);
 			ledger.setSource(client.getName());
-			ledger.setTarget("Cash");
+			if(natureOfTransaction.equalsIgnoreCase("bank")) {
+				ledger.setTarget("Bank");
+			}
+			else {
+				ledger.setTarget("Cash");
+			}
 			ledger.setType(ledgerType);
 			ledger.setCashbookLinking(cashRecord);
+			ledger.setSalesLink(details);
+			ledger.setRemarks(remarks);
 			
 			cashRecord.setLedger(ledger);
 			cashRecord.setCreditRecord(creditRecord);
@@ -516,13 +558,14 @@ public class MineDAO {
 			System.out.println("Expense");
 			System.out.println(type);
 			if(type.equalsIgnoreCase("CashExpense")) {
-				System.out.println("Cash Expense");
 				cashRecord = new CashBookRecord();
 				cashRecord.setAmount(amount * -1);
 				cashRecord.setCategory(cashbookCategory);
 				cashRecord.setType(cashbookType);
 				cashRecord.setParty(client);
 				cashRecord.setStatus(true);
+				cashRecord.setPaymentType(natureOfTransaction);
+				cashRecord.setSales(details);
 				
 				/*// credit book entry -  if it's a cash deposite an entry will be sent to credit records too.
 				creditRecord = new CreditRecord();
@@ -536,10 +579,17 @@ public class MineDAO {
 				// ledger entry
 				ledger = new Ledger();
 				ledger.setDebitAmount(amount);
-				ledger.setSource("Cash");
+				if(natureOfTransaction.equalsIgnoreCase("bank")) {
+					ledger.setSource("Bank");
+				}
+				else {
+					ledger.setSource("Cash");
+				}
 				ledger.setTarget(client.getName());
 				ledger.setType(ledgerType);
 				ledger.setCashbookLinking(cashRecord);
+				ledger.setSalesLink(details);
+				ledger.setRemarks(remarks);
 				
 				cashRecord.setLedger(ledger);
 				
@@ -554,6 +604,7 @@ public class MineDAO {
 				creditRecord.setType(creditType);
 				creditRecord.setStatus(true);
 				creditRecord.setClient(client);
+				creditRecord.setSales(details);
 				
 				// ledger entry
 				ledger = new Ledger();
@@ -562,6 +613,8 @@ public class MineDAO {
 				ledger.setTarget("Expense");
 				ledger.setType(ledgerType);
 				ledger.setCreditRecordLinking(creditRecord);
+				ledger.setSalesLink(details);
+				ledger.setRemarks(remarks);
 				
 				creditRecord.setLedgerLinking(ledger);
 				session.save(ledger);
@@ -654,4 +707,31 @@ public class MineDAO {
 	}
 	
 	// ------------------------------------- End Token DAO Methods ------------------------------------
+	
+	
+	// ------------------------------ User authnetication DAO ---------------------------------
+	@Transactional()
+	// get user details for databse user table.
+	public User getUser(String userName) {
+		Session session = factory.getCurrentSession();
+		User user = session.get(User.class, userName);
+		return user;
+	}
+	
+	@Transactional()
+	public void saveUser(User user) {
+		Session session = factory.getCurrentSession();
+		session.saveOrUpdate(user);
+		session.flush();
+	}
+	
+	@Transactional()
+	public void updatePassword(User user) {
+		Session session = factory.getCurrentSession();
+		session.update(user);
+		session.flush();
+	}
+	
+	
+	// ------------------------------ End User Authentication DAO -----------------------------
 }

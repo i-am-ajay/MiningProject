@@ -3,6 +3,9 @@ package com.mine.controller;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
+
+import javax.servlet.http.HttpSession;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.mine.component.master.User;
 import com.mine.component.master.Client;
 import com.mine.component.master.Vehicle;
 import com.mine.component.transaction.SupplyDetails;
@@ -29,12 +33,18 @@ public class MainController {
 	@Autowired
 	ReportService reportService;
 	
+	@Autowired
+	ReportController reportController;
+	
 	int companyId = 1;
 	
 	int userId = 1;
 	//------------------------------ Home Page Control --------------------------------
 	@RequestMapping({"/","home"})
-	public String home(Model model) {
+	public String home(Model model, HttpSession session) {
+		if(session.getAttribute("username") == null || session.getAttribute("username").toString().length() == 0) {
+			return "login";
+		}
 		System.out.print("hello");
 		return "index";
 	}
@@ -44,7 +54,10 @@ public class MainController {
 	
 	//-------------------------------- Sales Control ------------------------------------
 	@RequestMapping("display_sales_page")
-	public String renderSales(Model model){
+	public String renderSales(Model model, HttpSession session){
+		if(session.getAttribute("username") == null || session.getAttribute("username").toString().length() == 0) {
+			return "login";
+		}
 		SupplyDetails details = new SupplyDetails();
 		details.setNrl(0.0);
 		details.setDriverReturn(0.0);
@@ -59,8 +72,11 @@ public class MainController {
 	}
 	
 	@RequestMapping("save_supply")
-	public String saveSales(Model model,@ModelAttribute("supply") SupplyDetails details, 
+	public String saveSales(HttpSession session,Model model,@ModelAttribute("supply") SupplyDetails details, 
 			BindingResult result) {
+		if(session.getAttribute("username") == null || session.getAttribute("username").toString().length() == 0) {
+			return "login";
+		}
 		String page = null;
 		if(result.hasErrors()) {
 			System.out.println(result.toString());
@@ -68,8 +84,6 @@ public class MainController {
 		String token = TokenManager.giveToken(service);
 		System.out.println(token);
 		details.setToken(token);
-		System.out.println("Driver Return"+ details.getDriverReturn());
-		System.out.println("NRL"+details.getNrl());
 		service.saveSupplyDetails(details, userId);
 		page = "redirect:display_sales_page";
 		return page;
@@ -91,18 +105,24 @@ public class MainController {
 	
 	//-------------------------------- Expense and Deposite Control ---------------------------
 	@RequestMapping("ledger_entries_screen")
-	public String ledgerEntries(Model model,@RequestParam(name="party", required=false) String partyName, @RequestParam(name="amount",required=false, defaultValue="0.0") double amount, 
+	public String ledgerEntries(HttpSession session,Model model,@RequestParam(name="party", required=false) String partyName, @RequestParam(name="amount",required=false, defaultValue="0.0") double amount, 
 			@RequestParam(name="type", required=false) String type, @RequestParam(name="expense_type", required=false) String expenseType, 
 			@RequestParam(name="remarks", required=false) String remarks) {
+		if(session.getAttribute("username") == null || session.getAttribute("username").toString().length() == 0) {
+			return "login";
+		}
 		if (partyName != null && amount != 0.0) {
 			service.ledgerEntries(partyName, amount, type, expenseType, remarks);
 		}
 		
 		model.addAttribute("party_list",service.getClientList(companyId, 0));
 		model.addAttribute("subtype_list",service.getLookupMap("SubType"));
-		LocalDateTime startDate = LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0));
-		LocalDateTime endDate = LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 59));
-		List<String[]> stringList = reportService.getLedgerEntries("Cash", startDate, endDate);
+
+		LocalDate startDate = LocalDate.now();
+		LocalDate endDate = LocalDate.now();
+		List<String[]> stringList = reportController.getPartyLedgerEntries("Cash", startDate, endDate);
+		model.addAttribute("ledger_records",stringList);
+		System.out.println(stringList.size());
 		return "ledger_entries";
 	}
 	
@@ -135,4 +155,90 @@ public class MainController {
 		return stringObj;
 	}	
 	//---------------------------------- End Of Control -----------------------------------
+	
+	// --------------------------------- User authentication Control ----------------------
+	
+	@RequestMapping("authenticate_user")
+	public String authenticateUser(Model model,HttpSession session, @RequestParam(name="username") String userName, @RequestParam(name="password") String password ) {
+		String page = "login";
+		userName = userName.toLowerCase();
+		User user = service.getUser(userName);
+		if( user != null && user.isActive()) {
+			if(user.getPassword().equals(password.trim())) {
+				String role = user.getRole();
+				session.setAttribute("username", user.getUsername());
+				session.setAttribute("role", role);
+				
+				role = role.toLowerCase();
+				if(role.equals("admin")) {
+					page="redirect:admin_panel";
+				}
+				else if(role.equals("user")) {
+					page = "redirect:admin_panel";
+				}
+				else {
+					page = "login";
+				}
+			}
+		}
+		return page;
+	}
+	
+	@RequestMapping("change_password")
+	public String changePassword(HttpSession session, Model model,  @RequestParam(name="password", required=false)String password,@RequestParam(name="rpassword", required=false)String rpassword) {
+		if(session.getAttribute("username") == null || session.getAttribute("username").toString().length() == 0) {
+			return "login";
+		}
+		model.addAttribute("username",session.getAttribute("username"));
+		User user = service.getUser(session.getAttribute("username").toString());
+		if(password != null && password.length() > 0 ) {
+			user.setPassword(password);
+			service.updatePassword(user);
+			model.addAttribute("status", "updated");
+		}
+		
+		return "password_change";
+	}
+	
+	// Create User
+	@RequestMapping("create_user")
+	public String createUser(Model model, @RequestParam("username") String username, @RequestParam("password") String password, 
+			@RequestParam("role") String role, @RequestParam(name="inactive", required=false) boolean activeStatus, HttpSession session) {
+		if(session.getAttribute("username") == null || session.getAttribute("username").toString().length() == 0) {
+			return "login";
+		}
+		if(!session.getAttribute("role").toString().equalsIgnoreCase("Admin")) {
+			return "admin_panel";
+		}
+		String requestStatus = null;
+		boolean active = true;
+		if(activeStatus == true) {
+			active = false;
+		}
+		boolean status = service.createUser(username, password, role, session.getAttribute("username").toString(), active);
+		if(status == true) {
+			requestStatus = "success";
+		}
+		else {
+			requestStatus = "exists";
+		}
+		model.addAttribute("status",requestStatus);
+		return "registration";
+	}
+	
+	// fetch user details.
+	@RequestMapping("user_load")
+	public @ResponseBody String userSearch(@RequestParam("user")String username) {
+		User user = service.getUser(username);
+		JSONObject obj = null;
+		if(user != null) {
+		obj = new JSONObject();
+		obj.put("user", user.getUsername());
+		obj.put("password", user.getPassword());
+		obj.put("role", user.getRole());
+		obj.put("deactive", !user.isActive());
+		}
+		return obj.toString();
+	}
+	// ---------------------------------End User authentication control -------------------
 }

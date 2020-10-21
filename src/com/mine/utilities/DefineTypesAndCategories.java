@@ -4,11 +4,15 @@ public class DefineTypesAndCategories {
 	// For cash sale
 	static public TypesAndCategories cashSale = new TypesAndCategories("Sale", "Income",null, null, "Cash Sale"); 
 	
+	static public TypesAndCategories bankSale = new TypesAndCategories("Sale", "Income",null, null, "Bank Sale"); 
+	
+	// Cash Or Bank
 	static public TypesAndCategories deposite = new TypesAndCategories("Deposite","Income","Client Deposite", "Deposite", "Client Deposite");
 	
 	static public TypesAndCategories otherDeposite = new TypesAndCategories("Deposite","Income","Other Deposite", "Deposite", "Other Deposite");
 	
 	
+	// Expense Cash Or Bank
 	static public TypesAndCategories cashExpenseOffice = new TypesAndCategories("Expense Office", "Expense", null, null, "Expense Office");
 	
 	static public TypesAndCategories cashExpenseSanchalan = new TypesAndCategories("Expense Sanchalan","Expense", "Deposite","Expense Sanchalan Paid","Expense Sanchalan");

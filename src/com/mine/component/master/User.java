@@ -1,60 +1,78 @@
 package com.mine.component.master;
 
-import java.time.LocalDate;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.JoinTable;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
+import org.springframework.stereotype.Component;
 
 @Entity
-@Table(name="users")
-public class User {
+@Table(name="user")
+public class User{
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int id;
+	private String username;
 	
-	@Column
-	private int username;
+	@Column(nullable=false)
+	private String password;
 	
-	@Column
-	private int password;
+	@Column(nullable=false, name="created_by")
+	private String createdBy;
 	
-	@Column(name="creation_date")
+	@Column(nullable=false)
+	private boolean active;
+	
 	@Generated(GenerationTime.INSERT)
+	@Column(nullable=false, insertable=false, updatable=false, name="creation_date")
 	private LocalDate creationDate;
 	
-	@Column(name="end_date")
-	private byte endDate;
+	private String role;
 	
-	@Column(columnDefinition="tinyint(1)")
-	private boolean Status;
-	
-	@ManyToOne
-	@JoinColumn(name="created_by")
-	private User createdBy;
 
-	public int getUsername() {
+	public String getUsername() {
 		return username;
 	}
 
-	public void setUsername(int username) {
+	public void setUsername(String username) {
 		this.username = username;
 	}
 
-	public int getPassword() {
+	public String getPassword() {
 		return password;
 	}
 
-	public void setPassword(int password) {
+	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 
 	public LocalDate getCreationDate() {
@@ -65,33 +83,11 @@ public class User {
 		this.creationDate = creationDate;
 	}
 
-	public byte getEndDate() {
-		return endDate;
+	public String getRole(){
+		return role;
 	}
 
-	public void setEndDate(byte endDate) {
-		this.endDate = endDate;
+	public void setRole(String role) {
+		this.role = role;
 	}
-
-	public boolean isStatus() {
-		return Status;
-	}
-
-	public void setStatus(boolean status) {
-		Status = status;
-	}
-
-	public User getCreatedBy() {
-		return createdBy;
-	}
-
-	public void setCreatedBy(User createdBy) {
-		this.createdBy = createdBy;
-	}
-
-	public int getId() {
-		return id;
-	}
-	
-	
 }

@@ -62,10 +62,11 @@
 					    </div>
 					    <div id="expense_type" class="col-2">
 					    	<div class="form-group">
-					      		<label class="font-weight-bold">Expense Type</label>
-					      		<select id="e_type" class="form-control form-control-sm" name="expense_type" disabled>
+					      		<label class="font-weight-bold">Sub Type</label>
+					      		<select id="e_type" class="form-control form-control-sm" name="expense_type">
 					      			<option value="cash_expense">Cash</option>
-					      			<option value="credit_expense">Credit</option>
+					      			<option value="bank">Bank</option>
+					      			<!-- <option id="credit_id" value="credit_expense">Credit</option> -->
 					      		</select>
 					    	</div>
 					    </div>
@@ -112,8 +113,93 @@
 	<input type="hidden" id="role" value="${role}" />
 	</form>
 	</div>
-	<div id="table_section">
-		<table id="data_table" class="table table-striped table-sm display mx-auto" style="width:95%; font-size:13px;">
+	<div id="table_section" class="row">
+		<div class="col" id="credit_table">
+			<table id="data_table" class="table table-striped table-sm display mx-auto col" style="width:95%; font-size:13px;">
+		        <thead class="thead-dark">
+		            <tr class="text-center">
+		            	<th>Date</th>
+		                <th>Particulars</th>
+		                <th>Credit Amount</th>
+		                <th>Remarks</th>
+		            </tr>
+		        </thead>
+		        <tbody id="table_body">
+			        	<c:forEach var="record" items="${ledger_records}">
+			        		<c:choose>
+			        			<c:when test="${(record[1].equalsIgnoreCase('opening balance') || record[1].equalsIgnoreCase('closing balance')) &&  !record[2].equalsIgnoreCase('')}">
+			        				<tr class="table-success">
+				        				<td>${record[0]}</td>
+				        				<td class="text-success font-weight-bold">${record[1]}</td>
+				        				<td class="font-weight-bold">${record[2]}</td>
+				        				<td>${record[4]}</td>
+			        				</tr>
+			        			</c:when>
+			        			<c:when test="${!record[2].equalsIgnoreCase('') && !record[2].equalsIgnoreCase('0.0')}">
+			        				<tr class="table-success">
+				        				<td>${record[0]}</td>
+				        				<td>${record[1]}</td>
+				        				<td>${record[2]}</td>
+				        				<td>${record[4]}</td>
+			        				</tr>
+			        			</c:when>
+			        		</c:choose>
+			        		<%-- <c:if test="${!record[2].equalsIgnoreCase('')}">
+			        			<tr class="table-success">
+			        				<td>${record[0]}</td>
+			        				<td>${record[1]}</td>
+			        				<td>${record[2]}</td>
+			        				<td>${record[4]}</td>
+			        			</tr>
+			        		</c:if> --%>
+			        	</c:forEach>
+			    </tbody>
+		 	</table>
+		</div>
+		<div class="col" id="debit_table">
+			<table id="data_table" class="table table-striped table-sm display mx-auto col" style="width:95%; font-size:13px;">
+		        <thead class="thead-dark">
+		            <tr class="text-center">
+		            	<th>Date</th>
+		                <th>Particulars</th>
+		                <th>Debit Amount</th>
+		                <th>Remarks</th>
+		            </tr>
+		        </thead>
+		        <tbody id="table_body">
+			        	<c:forEach var="record" items="${ledger_records}">
+			        		<c:choose>
+			        			<c:when test="${(record[1].equalsIgnoreCase('opening balance') || record[1].equalsIgnoreCase('closing balance')) &&  (!record[3].equalsIgnoreCase(''))}">
+			        				<tr class="table-danger">
+				        				<td>${record[0]}</td>
+				        				<td class="text-danger font-weight-bold">${record[1]}</td>
+				        				<td class="font-weight-bold">${record[3]}</td>
+				        				<td>${record[4]}</td>
+			        				</tr>
+			        			</c:when>
+			        			<c:when test="${!record[3].equalsIgnoreCase('') && !record[3].equalsIgnoreCase('0.0')}">
+			        				<tr class="table-danger">
+				        				<td>${record[0]}</td>
+				        				<td>${record[1]}</td>
+				        				<td>${record[3]}</td>
+				        				<td>${record[4]}</td>
+			        				</tr>
+			        			</c:when>
+			        		</c:choose>
+			        		<%-- <c:if test="${!record[3].equalsIgnoreCase('')}">
+			        			<tr class="table-danger">
+			        				<td>${record[0]}</td>
+			        				<td>${record[1]}</td>
+			        				<td>${record[3]}</td>
+			        				<td>${record[4]}</td>
+			        			</tr>
+			        		</c:if> --%>
+			        	</c:forEach>
+			    </tbody>
+		 	</table>
+		</div>
+		<%-- <div class="col-6" id="debit_table"></div>
+		<table id="data_table" class="table table-striped table-sm display mx-auto col" style="width:95%; font-size:13px;">
         <thead class="thead-dark">
             <tr class="text-center">
             	<th>Date</th>
@@ -128,12 +214,17 @@
             </tr>
         </thead>
         <tbody id="table_body">
+        	<tr>
+	        	<c:forEach var="record" items="${stringList}">
+	        		
+	        	</c:forEach>
+        	</tr>
 	            <tr>
 	            	<td>Hello</td>
 	            	<td>Bollo</td>
 	           </tr>
 	           </tbody>
-	             <%--	<td>${item.token}</td>
+	             	<td>${item.token}</td>
 	                <td>${item.driverName}</td>
 	                <td>${item.driverNumber}</td>
 	                <td>${item.vehicle.vehicleNo}</td>
@@ -149,9 +240,9 @@
 	                <td>${item.driverReturn}</td>
 	                <td>${item.salesDate}</td>
 	            </tr>
-            </c:forEach> --%>
+            </c:forEach>
         </tbody>
-        </table>
+        </table> --%>
 	</div>
 	<!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
@@ -162,7 +253,8 @@
 	<!--  <script src="${pageContext.request.contextPath}/static_resources/js/header_manipulate.js"></script>-->
 	<script>
 	// ------------------------------ Page Load Initialization -----------------------------------
-		$(document).ready();
+		$(document).ready(
+		);
 
 		// ------------------------------ Page Load Configuration End ---------------------------------
 		
@@ -170,10 +262,10 @@
 		// If type changed to expense then show expense type option i.e cash / credit.
 		$("#type_id").change(e=>{
 			if($("#type_id").val().toLowerCase() == "expense"){
-				$("#e_type").attr("disabled",false);
+				$("#e_type").append('<option value="credit_expense">Credit</option>');
 			}
 			else{
-				$("#e_type").attr("disabled",true);
+				$("#e_type").find('option[value="credit_expense"]').remove();
 			}
 		})
 		

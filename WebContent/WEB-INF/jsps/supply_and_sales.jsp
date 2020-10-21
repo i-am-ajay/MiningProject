@@ -90,7 +90,7 @@
 					      		<f:select class="form-control form-control-sm" id="payment_type" placeholder="Choose Payment" path="paymentType" >
 					      			<f:option value="cash">Cash</f:option>
 					      			<f:option value="credit">Credit</f:option>
-					      			<f:option value="credit">Bank</f:option>
+					      			<f:option value="bank">Bank</f:option>
 					      		</f:select>
 					    	</div>
 					    </div>

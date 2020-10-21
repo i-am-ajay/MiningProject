@@ -2,6 +2,8 @@ package com.mine.controller;
 
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -39,7 +41,10 @@ public class MasterController {
 	// --------------------- Client Controls ---------------------------------------------
 	// Creates a new Client
 	@RequestMapping("client_creation")
-	public String createClient(Model model, @ModelAttribute("status") String status) {
+	public String createClient(HttpSession session,Model model, @ModelAttribute("status") String status) {
+		if(session.getAttribute("username") == null || session.getAttribute("username").toString().length() == 0) {
+			return "login";
+		}
 		Client client = new Client();
 		client.setCompany(company);
 		model.addAttribute("client",client);
@@ -111,7 +116,10 @@ public class MasterController {
 	 * @return
 	 */
 	@RequestMapping("company_creation")
-	public String companyCreation(Model model, @ModelAttribute("status") String status) {
+	public String companyCreation(HttpSession session,Model model, @ModelAttribute("status") String status) {
+		if(session.getAttribute("username") == null || session.getAttribute("username").toString().length() == 0) {
+			return "login";
+		}
 		Company company = new Company();
 		model.addAttribute("company",company);
 		return "company";
@@ -170,7 +178,10 @@ public class MasterController {
 	
 	// -------------------------------- Vehicle Controls --------------------------------
 	@RequestMapping("create_vehicle")
-	public String createVehicle(Model model, @ModelAttribute("status") String status) {
+	public String createVehicle(HttpSession session,Model model, @ModelAttribute("status") String status) {
+		if(session.getAttribute("username") == null || session.getAttribute("username").toString().length() == 0) {
+			return "login";
+		}
 		Vehicle vehicle = new Vehicle();
 		vehicle.setCompanyId(company);
 		vehicle.setDiscount(0.0);
@@ -216,7 +227,10 @@ public class MasterController {
 	
 	// ----------------------------------- Rate Controls ----------------------------------------
 	@RequestMapping("add_rate")
-	public String addRate(Model model, @ModelAttribute("status") String status) {
+	public String addRate(HttpSession session,Model model, @ModelAttribute("status") String status) {
+		if(session.getAttribute("username") == null || session.getAttribute("username").toString().length() == 0) {
+			return "login";
+		}
 		Rate rate = new Rate();
 		model.addAttribute("rate", rate);
 		model.addAttribute("tyre_lookup", service.getLookupMap("tyreType"));
@@ -241,7 +255,10 @@ public class MasterController {
 	// ------------------------------------- End Rate Controls ---------------------------------
 	// Admin panel control.
 	@RequestMapping("admin_panel")
-	public String admin() {
+	public String admin(HttpSession session) {
+		if(session.getAttribute("username") == null || session.getAttribute("username").toString().length() == 0) {
+			return "login";
+		}
 		return "admin_panel";
 	}
 	
