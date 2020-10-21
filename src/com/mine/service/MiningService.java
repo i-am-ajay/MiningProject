@@ -125,7 +125,7 @@ public class MiningService {
 		// If it is comission agent vehicle add comission expense too. if vehicle is not a free vehicle.
 		if(client.getClientType().getDescription().equalsIgnoreCase("Contractor")) {
 			if(supplyDetails.getFinalRate() != 0.0) {
-				dao.addDepositeOrExpense(client.getClientId(), supplyDetails.getFinalRate(), 
+				dao.addDepositeOrExpense(client.getClientId(), supplyDetails.getVehicle().getClientId().getComission(), 
 						"Expense", DefineTypesAndCategories.creditExpenseComission.getCashbookType(), 
 						DefineTypesAndCategories.creditExpenseComission.getCashbookCategory(), 
 						DefineTypesAndCategories.creditExpenseComission.getCreditType(), 
