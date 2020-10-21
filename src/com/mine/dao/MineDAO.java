@@ -46,7 +46,7 @@ public class MineDAO {
 	
 	// ------------------------- Vehicle Related DAO Methods -------------------------------------
 	@Transactional
-	public String saveVehicle(Vehicle vehicle, int clientId, int companyId, int createdBy, String role) {
+	public String saveVehicle(Vehicle vehicle, int clientId, int companyId, User createdBy, String role) {
 		Session session = null;
 		Client client = null;
 		Company company = null;
@@ -108,7 +108,7 @@ public class MineDAO {
 	
 	// ------------------------------ Company Related DAO Methods -------------------------------
 	@Transactional
-	public String saveCompany(Company company,int user, String role) {
+	public String saveCompany(Company company,User user, String role) {
 		/**
 		 * Checks if client already exists.
 		 * If client exists and role is 'user' then change status to exits and return.
@@ -186,7 +186,7 @@ public class MineDAO {
 	 * @return
 	 */
 	@Transactional
-	public String saveClient(Client client, int lookupId,int companyId, int createdBy, String role) {
+	public String saveClient(Client client, int lookupId,int companyId, User createdBy, String role) {
 		/**
 		 * Check if client objects already exists. If yes:
 		 	a) If role is user then set status to exists and return.
@@ -307,7 +307,7 @@ public class MineDAO {
 	
 	// ------------------------------- Rate DAO Methods --------------------------------------
 	@Transactional
-	public String addRate(Rate rate, int companyId, int user) {
+	public String addRate(Rate rate, int companyId, User user) {
 		if(getRate(rate.getTyreType(),rate.getTruckType(), rate.getMaterialType(), rate.getQuantity(), companyId) != 0.0d) {
 			System.out.println("System.");
 			return "exists";

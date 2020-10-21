@@ -30,7 +30,10 @@ public class Client {
 	private String clientAddress;
 	private String clientContact;
 	private LocalDate creationDate;
-	private Integer createdBy;
+	
+	@ManyToOne
+	private User createdBy;
+	
 	private LocalDate endDate;
 	private Integer endedBy;
 	
@@ -74,11 +77,11 @@ public class Client {
 		this.creationDate = creationDate;
 	}
 
-	public int getCreatedBy() {
+	public User getCreatedBy() {
 		return createdBy;
 	}
 
-	public void setCreatedBy(int createdBy) {
+	public void setCreatedBy(User createdBy) {
 		this.createdBy = createdBy;
 	}
 

@@ -35,7 +35,7 @@ public class Vehicle {
 	
 	private LocalDate endDate;
 	
-	private Integer createdById;
+	private User createdById;
 	
 	private Integer endedById;
 
@@ -95,11 +95,11 @@ public class Vehicle {
 		this.endDate = endDate;
 	}
 
-	public int getCreatedById() {
+	public User getCreatedById() {
 		return createdById;
 	}
 
-	public void setCreatedById(int createdById) {
+	public void setCreatedById(User createdById) {
 		this.createdById = createdById;
 	}
 

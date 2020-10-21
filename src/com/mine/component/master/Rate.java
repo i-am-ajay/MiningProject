@@ -35,7 +35,8 @@ public class Rate {
 	
 	private LocalDate endDate;
 	
-	private Integer createdById;
+	@ManyToOne
+	private User createdById;
 	
 	private Integer endedById;
 
@@ -95,11 +96,11 @@ public class Rate {
 		this.endDate = endDate;
 	}
 
-	public Integer getCreatedById() {
+	public User getCreatedById() {
 		return createdById;
 	}
 
-	public void setCreatedById(Integer createdById) {
+	public void setCreatedById(User createdById) {
 		this.createdById = createdById;
 	}
 
@@ -119,8 +120,8 @@ public class Rate {
 		this.rate = rate;
 	}
 
-	public void setCreatedById(int createdById) {
-		this.createdById = createdById;
+	public void getEndedById() {
+		return this.endedById;
 	}
 
 	public void setEndedById(int endedById) {

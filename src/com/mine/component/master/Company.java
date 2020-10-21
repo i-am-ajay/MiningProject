@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 @Entity
@@ -29,7 +30,10 @@ public class Company {
 	private String companyEmail;
 	
 	private LocalDate creationDate;
-	private Integer createdBy;
+	
+	@ManyToOne
+	private User createdBy;
+	
 	private LocalDate endDate;
 	private Integer endedBy;
 	
@@ -99,11 +103,11 @@ public class Company {
 		this.creationDate = creationDate;
 	}
 
-	public int getCreatedBy() {
+	public User getCreatedBy() {
 		return createdBy;
 	}
 
-	public void setCreatedBy(int createdBy) {
+	public void setCreatedBy(User createdBy) {
 		this.createdBy = createdBy;
 	}
 

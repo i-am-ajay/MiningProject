@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
@@ -19,7 +20,9 @@ public class GeneralData {
 	private String category;
 	private String description;
 	private LocalDate createdOn;
-	private Integer createdBy;
+	
+	@ManyToOne
+	private User createdBy;
 	private LocalDate endDate;
 	private Integer endedBy;
 	public String getCategory() {
@@ -40,10 +43,10 @@ public class GeneralData {
 	public void setCreatedOn(LocalDate createdOn) {
 		this.createdOn = createdOn;
 	}
-	public int getCreatedBy() {
+	public User getCreatedBy() {
 		return createdBy;
 	}
-	public void setCreatedBy(int createdBy) {
+	public void setCreatedBy(User createdBy) {
 		this.createdBy = createdBy;
 	}
 	public LocalDate getEndDate() {
