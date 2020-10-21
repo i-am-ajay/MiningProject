@@ -101,7 +101,8 @@ public class MainController {
 		model.addAttribute("party_list",service.getClientList(companyId, 0));
 		model.addAttribute("subtype_list",service.getLookupMap("SubType"));
 		LocalDateTime startDate = LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0));
-		List<String[]> stringList = reportService.getLedgerEntries("Cash", LocalDateTime.of(LocalDate.now(), time), )
+		LocalDateTime endDate = LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 59));
+		List<String[]> stringList = reportService.getLedgerEntries("Cash", startDate, endDate);
 		return "ledger_entries";
 	}
 	
