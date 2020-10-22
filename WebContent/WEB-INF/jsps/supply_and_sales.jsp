@@ -166,6 +166,7 @@
             	<th>Token No</th>
                 <th>Driver Name</th>
                 <th>Driver Contact</th>
+                <th>Vehicle Of</th>
                 <th>Vehicle No</th>
                 <th>Vehicle Type</th>
                 <th>Vehicle Tyre</th>
@@ -186,6 +187,7 @@
 	            	<td>${item.token}</td>
 	                <td>${item.driverName}</td>
 	                <td>${item.driverNumber}</td>
+	                <td>${item.vehicle.clientId.name}
 	                <td>${item.vehicle.vehicleNo}</td>
 	                <td>${item.vehicle.vehicleType}</td>
 	                <td>${item.vehicle.tyreType}</td>
