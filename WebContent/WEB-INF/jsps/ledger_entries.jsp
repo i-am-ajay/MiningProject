@@ -103,7 +103,7 @@
 					    <div class="col-2">
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Remark</label>
-					      		<input type="text" id="remark" class="form-control form-control-sm" placeholder="Remark If Any" name="remark" />
+					      		<input type="text" id="remark" class="form-control form-control-sm" placeholder="Remark If Any" name="remarks" />
 					    	</div>
 					    </div>
 				 	</div>

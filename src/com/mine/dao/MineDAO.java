@@ -395,6 +395,7 @@ public class MineDAO {
 		Vehicle vehicle = session.get(Vehicle.class, details.getVehicle().getVehicleNo());
 		details.setVehicle(vehicle);
 		details.setUser(user);
+		details.setStatus(true);
 		
 		if(details.getPaymentType().equalsIgnoreCase("cash")) {
 			CashBookRecord cashRecord = new CashBookRecord();
@@ -414,6 +415,7 @@ public class MineDAO {
 			ledger.setTarget("Cash");
 			ledger.setType(cashSale.getLedgerType());
 			ledger.setCreatedBy(user);
+			ledger.setStatus(true);
 			
 			
 			cashRecord.setLedger(ledger);
@@ -442,6 +444,7 @@ public class MineDAO {
 			ledger.setTarget("Bank");
 			ledger.setType(bankSale.getLedgerType());
 			ledger.setCreatedBy(user);
+			ledger.setStatus(true);
 			
 			cashRecord.setLedger(ledger);
 			ledger.setCashbookLinking(cashRecord);
@@ -468,6 +471,7 @@ public class MineDAO {
 			ledger.setCreditRecordLinking(creditRecord);
 			ledger.setSalesLink(details);
 			ledger.setCreatedBy(user);
+			ledger.setStatus(true);
 			
 			session.save(creditRecord);
 			session.save(ledger);
@@ -493,9 +497,9 @@ public class MineDAO {
 		CriteriaQuery<SupplyDetails> query = builder.createQuery(SupplyDetails.class);
 		Root<SupplyDetails> from = query.from(SupplyDetails.class);
 		query.where(builder.between(from.get("salesDate"), startDate, endDate)).orderBy(builder.desc(from.get("salesDate")));
+		//builder.equal(from.get("status"), true)
 		
 		TypedQuery<SupplyDetails> details = session.createQuery(query);
-		details.setMaxResults(10);
 		return details.getResultList();
 	}
 	// ---------------------------- End Sales DAO Methods ----------------------------------------
@@ -537,6 +541,7 @@ public class MineDAO {
 			ledger = new Ledger();
 			ledger.setCreditAmount(amount);
 			ledger.setSource(client.getName());
+			ledger.setStatus(true);
 			if(natureOfTransaction.equalsIgnoreCase("bank")) {
 				ledger.setTarget("Bank");
 			}
@@ -580,6 +585,7 @@ public class MineDAO {
 				// ledger entry
 				ledger = new Ledger();
 				ledger.setDebitAmount(amount);
+				ledger.setStatus(true);
 				if(natureOfTransaction.equalsIgnoreCase("bank")) {
 					ledger.setSource("Bank");
 				}
@@ -599,7 +605,6 @@ public class MineDAO {
 				session.save(cashRecord);
 			}
 			else {
-				System.out.println("Credit Expense");
 				creditRecord = new CreditRecord();
 				creditRecord.setAmount(amount);
 				creditRecord.setCategory(creditCategory);
@@ -618,6 +623,7 @@ public class MineDAO {
 				ledger.setSalesLink(details);
 				ledger.setRemarks(remarks);
 				ledger.setCreatedBy(user);
+				ledger.setStatus(true);
 				
 				creditRecord.setLedgerLinking(ledger);
 				session.save(ledger);
@@ -630,7 +636,62 @@ public class MineDAO {
 	
 	// ---------------------------- End Expense and Deposite related DAO -------------------------
 	
+	// ---------------------------- Entry Cancellation DAO ---------------------------------------
 	
+	@Transactional
+	public boolean cancleEntry(String type, int salesId) {
+		Session session = factory.getCurrentSession();
+		boolean status = false;
+		String updateCashbook = null;
+		String updateCreditBook = null;
+		String updateLedger = null;
+		
+		String updateSales = "UPDATE supplydetails SET status = 0 WHERE id = :id";
+		if(type.equals("sales")) {
+			updateCashbook = "UPDATE cashbook_table SET status = 0 WHERE sales_id = :id";
+			updateCreditBook = "UPDATE credit_table SET status = 0 WHERE sales_id = :id";
+			updateLedger = "UPDATE ledger SET status = 0 WHERE sales_id = :id";
+		}
+		else if(type.equals("cash")) {
+			updateCashbook = "UPDATE cashbook_table SET status = 0 WHERE id = :id";
+			updateCreditBook = "UPDATE credit_table SET status = 0 WHERE cashbook_link_for_deposite = :id";
+			updateLedger = "UPDATE ledger SET status = 0 WHERE cashbook_link = :id";
+		}
+		else if(type.equals("credit")) {
+			updateCreditBook = "UPDATE credit_table SET status = 0 WHERE id = :id";
+			updateLedger = "UPDATE ledger SET status = 0 WHERE creditbook_link = :id";
+		}
+		
+		
+		Query query = null;
+		// cancel sales;
+		if(type.equals("sales")) {
+			query = session.createNativeQuery(updateSales);
+			query.setParameter("id", salesId);
+			query.executeUpdate();
+		}
+		// cancel cashbook entry
+		if(type.equals("sales") || type.equals("cash")) {
+			query = session.createNativeQuery(updateCashbook);
+			query.setParameter("id", salesId);
+			query.executeUpdate();
+		}
+		
+		// cancel credit entry
+		query = session.createNativeQuery(updateCreditBook);
+		query.setParameter("id", salesId);
+		query.executeUpdate();
+		
+		// cancel ledger entry
+		query = session.createNativeQuery(updateLedger);
+		query.setParameter("id", salesId);
+		query.executeUpdate();
+		status = true;
+		
+		return status;	
+	}
+	
+	// ---------------------------------- End Entry Cancellation DAO ------------------------------
 
 	
 	// ---------------------------- Misc DAO Methods ---------------------------------------------
@@ -644,7 +705,6 @@ public class MineDAO {
 		Parameters parameter = null;
 		try {
 			parameter = parameterQuery.getSingleResult();
-			System.out.println(parameter.getRoyalty());
 		}
 		catch(Exception ex) {
 			System.out.println(ex);

@@ -184,6 +184,7 @@ public class ReportDAO {
 			LocalDateTime toDateTime = LocalDateTime.of(toDate, LocalTime.of(11, 59));
 			predicateList.add(builder.lessThanOrEqualTo(from.get("salesDate"), toDateTime));
 		}
+		predicateList.add(builder.equal(from.get("status"), true));
 		if(initiateSearch) {
 			criteria.where(builder.and(predicateList.toArray(new Predicate[predicateList.size()])));
 			TypedQuery<SupplyDetails> salesQuery = session.createQuery(criteria);
@@ -205,8 +206,9 @@ public class ReportDAO {
 		predicateList.add(builder.equal(from.get("source"), name));
 		predicateList.add(builder.equal(from.get("target"), name));
 		predicateList.add(builder.between(from.get("entryDate"), startDate, endDate));
+		predicateList.add(builder.equal(from.get("status"),true));
 		//query.where(builder.and(predicateList.toArray(new Predicate[predicateList.size()]))).orderBy(builder.desc(from.get("entryDate")));
-		query.where(builder.and(builder.or(builder.equal(from.get("source"), name),builder.equal(from.get("target"), name)),builder.between(from.get("entryDate"), startDate, endDate)));
+		query.where(builder.and(builder.or(builder.equal(from.get("source"), name),builder.equal(from.get("target"), name)),builder.between(from.get("entryDate"), startDate, endDate),builder.equal(from.get("status"), true)));
 		TypedQuery<Ledger> ledgerQuery = session.createQuery(query);
 		return ledgerQuery.getResultList();
 	}
@@ -215,10 +217,10 @@ public class ReportDAO {
 	public Double[] getBalances(String name, LocalDateTime startDate, LocalDateTime endDate) {
 		Session session = factory.getCurrentSession();
 		String openingBalanceQuery = "SELECT SUM(l.creditAmount)-SUM(l.debitAmount) FROM Ledger l WHERE "
-				+ "(l.target = :name OR l.source= :name) AND l.entryDate < :sDate";
+				+ "(l.target = :name OR l.source= :name) AND l.entryDate < :sDate and status = 1";
 		
 		String rangeBalanceQuery = "SELECT SUM(l.creditAmount)-SUM(l.debitAmount) FROM Ledger l WHERE "
-				+ "(l.target = :name OR l.source= :name) AND (l.entryDate BETWEEN :sDate AND :eDate)";
+				+ "(l.target = :name OR l.source= :name) AND (l.entryDate BETWEEN :sDate AND :eDate) AND status = 1";
 		TypedQuery<Double> creditDebitAmount = session.createQuery(openingBalanceQuery,Double.class);
 		creditDebitAmount.setParameter("name", name);
 		creditDebitAmount.setParameter("sDate", startDate);
@@ -242,9 +244,6 @@ public class ReportDAO {
 		catch(Exception ex) {
 			ex.printStackTrace();
 		}
-		System.out.println(selectedRecordsBalance);
-		System.out.println(startDate);
-		System.out.println(endDate);
 		return new Double[]{openingBalance != null ? openingBalance : 0.0, selectedRecordsBalance != null ? selectedRecordsBalance : 0.0};
 	}
 	

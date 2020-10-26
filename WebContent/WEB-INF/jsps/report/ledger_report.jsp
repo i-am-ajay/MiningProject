@@ -95,16 +95,31 @@
 		                <th>Credit Amount</th>
 		                <th>Debit Amout</th>
 		                <th>Remarks</th>
+		                <c:if test="${allow_cancel == true }">
+		                	<th>Cancel Record</th>
+		                </c:if>
 		            </tr>
 		        </thead>
 		        <tbody id="table_body">
 			        <c:forEach var="record" items="${ledger_records}">
-			        	<tr>
+			        	<tr id="b_${record[6]}">
 	        				<td>${record[0]}</td>
 	        				<td>${record[1]}</td>
 	        				<td class="table-success">${record[2]}</td>
 	        				<td class="table-danger">${record[3]}</td>
 	        				<td>${record[4]}</td>
+	        				<c:if test="${allow_cancel == true }">
+	        					<td>
+	        						<c:choose>
+	        							<c:when test="${record[5].equals('f') }">
+	        								<button class="btn btn-danger cancel_btn" id="${record[6]}" disabled></button>
+	        							</c:when>
+	        							<c:otherwise>
+	        								<button class="btn btn-danger cancel_btn" id="${record[6]}"></button>
+	        							</c:otherwise>
+	        						</c:choose>
+	        					</td>
+	        				</c:if>
         				</tr>
 			        	</c:forEach>
 			    </tbody>
@@ -138,50 +153,32 @@
 
 		// submit button click validations
 		$("#save_btn").click(e =>{});
+		
+		$(".cancel_btn").click(function(){
+			let id = this.id;
+			let rowId = "#b_"+id;
+			cancelEntry(id, rowId)
+		})
 		//------------------------------------ On Page Action End --------------------------------------
 		
-		// ----------------------------------- Ajax Calls from Page -------------------------------------
-
-		// will populate ledger table.
-		// call an ajax function on client selection
-		/* $("#party_name").focusout(e =>{
-			let val = $("#party_type").val();
+		// ----------------------------------- Ajax Calls from Page ----------------------------------
+		 function cancelEntry(id, rowId){
 			$.ajax({
-				type: "POST",
-				url : "${home}get_party_ledger",
-				data : {"name":$("#party_name").val()},
+				type : 'POST',
+				url : "${home}cancel_entries",
+				data: {"id":id},
 				success: function(result, status, xhr){
-					console.log("success");
-					//console.log(result);
-					//console.log(status);
-					$("#table_body").empty();
 					if(result){
-						let array = JSON.parse(result);
-						console.log(array);
-						array.forEach(e =>{
-							let row = "<tr>"+
-										"<td class='table-success'>"+e.date+"</td>"+
-										"<td class='table-success'>"+e.cParticular+"</td>"+
-										"<td class='table-success'>"+e.creditAmount+"</td>"+
-										"<td class='table-success'>"+e.cRemarks+"</td>"+
-										"<td>&emsp;</td>"+
-										"<td class='table-danger'>"+e.date+"</td>"+
-										"<td class='table-danger'>"+e.dParticular+"</td>"+
-										"<td class='table-danger'>"+e.debitAmount+"</td>"+
-										"<td class='table-danger'>"+e.dRemarks+"</td>"+
-										"<tr>"
-							$("#table_body").append(row);
-						})
-						
+						$(rowId).hide();
 					}
 				},
-				error: function(result, status, xhr){
-					console.log("error");
-					console.log(result);
+				error: function(resut, status, xhr){
+					
 				}
-			})
-		}); */
-
+			});
+		}
+		//------------------------------------ End Ajax Calls ----------------------------------------
+		
 	// --------------------------- Support Methods ----------------------------------------
 	
 	

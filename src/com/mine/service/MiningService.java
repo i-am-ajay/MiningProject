@@ -1,6 +1,8 @@
 package com.mine.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -134,27 +136,33 @@ public class MiningService {
 			}
 		}
 		// if driver wapsi is there then it will be a cash expense. 
-		double driverReturnAmount = supplyDetails.getDriverReturn();
-		if(driverReturnAmount > 0.0) {
-			Client driverReturn = dao.clientExists("Driver Return");
-			dao.addDepositeOrExpense(driverReturn.getClientId(), driverReturnAmount, 
-					"CashExpense", DefineTypesAndCategories.cashExpenseDriverReturn.getCashbookType(), 
-					DefineTypesAndCategories.cashExpenseDriverReturn.getCashbookCategory(), 
-					DefineTypesAndCategories.cashExpenseDriverReturn.getCreditType(), 
-					DefineTypesAndCategories.cashExpenseDriverReturn.getCreditCategory(), 
-					DefineTypesAndCategories.cashExpenseDriverReturn.getLedgerType(),"Cash",supplyDetails, "Driver Return Paid",user);
-		}
+		/*
+		 * double driverReturnAmount = supplyDetails.getDriverReturn();
+		 * if(driverReturnAmount > 0.0) { Client driverReturn =
+		 * dao.clientExists("Driver Return");
+		 * dao.addDepositeOrExpense(driverReturn.getClientId(), driverReturnAmount,
+		 * "CashExpense",
+		 * DefineTypesAndCategories.cashExpenseDriverReturn.getCashbookType(),
+		 * DefineTypesAndCategories.cashExpenseDriverReturn.getCashbookCategory(),
+		 * DefineTypesAndCategories.cashExpenseDriverReturn.getCreditType(),
+		 * DefineTypesAndCategories.cashExpenseDriverReturn.getCreditCategory(),
+		 * DefineTypesAndCategories.cashExpenseDriverReturn.getLedgerType(),"Cash",
+		 * supplyDetails, "Driver Return Paid",user); }
+		 */
 	}
 	
 	// get data of supply
 	
 	public List<SupplyDetails> getTop10Records(){
-		LocalDateTime startDate = LocalDateTime.now().minusDays(1);
-		LocalDateTime endDate = LocalDateTime.now();
-		return dao.getSaleData(8, startDate, endDate);
+		LocalDateTime startDate = LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0));
+		LocalDateTime endDate = LocalDateTime.of(LocalDate.now(), LocalTime.of(23, 59));
+		return dao.getSaleData(0, startDate, endDate);
 		
 	}
 	
+	public boolean cancleSales(int salesId) {
+		return dao.cancleEntry("sales", salesId);
+	}
 	// ----------------------------- End Supply Service ------------------------------------
 	
 	
@@ -246,6 +254,10 @@ public class MiningService {
 		}
 	}
 	
+	public boolean cancelEntries(String id) {
+		String [] idParts = id.split("_");
+		return dao.cancleEntry(idParts[0], Integer.parseInt(idParts[1]));
+	}
 	
 	// ----------------------------- End Ledger Entries ------------------------------------
 	

@@ -43,7 +43,7 @@ public class MasterController {
 	// Creates a new Client
 	@RequestMapping("client_creation")
 	public String createClient(HttpSession session,Model model, @ModelAttribute("status") String status) {
-		if(session.getAttribute("username") == null || session.getAttribute("username").toString().length() == 0) {
+		if(session.getAttribute("user") == null) {
 			return "login";
 		}
 		Client client = new Client();
@@ -119,7 +119,7 @@ public class MasterController {
 	 */
 	@RequestMapping("company_creation")
 	public String companyCreation(HttpSession session,Model model, @ModelAttribute("status") String status) {
-		if(session.getAttribute("username") == null || session.getAttribute("username").toString().length() == 0) {
+		if(session.getAttribute("user") == null) {
 			return "login";
 		}
 		Company company = new Company();
@@ -182,7 +182,7 @@ public class MasterController {
 	// -------------------------------- Vehicle Controls --------------------------------
 	@RequestMapping("create_vehicle")
 	public String createVehicle(HttpSession session,Model model, @ModelAttribute("status") String status) {
-		if(session.getAttribute("username") == null || session.getAttribute("username").toString().length() == 0) {
+		if(session.getAttribute("user") == null) {
 			return "login";
 		}
 		Vehicle vehicle = new Vehicle();
@@ -232,7 +232,7 @@ public class MasterController {
 	// ----------------------------------- Rate Controls ----------------------------------------
 	@RequestMapping("add_rate")
 	public String addRate(HttpSession session,Model model, @ModelAttribute("status") String status) {
-		if(session.getAttribute("username") == null || session.getAttribute("username").toString().length() == 0) {
+		if(session.getAttribute("user") == null) {
 			return "login";
 		}
 		Rate rate = new Rate();
@@ -261,7 +261,7 @@ public class MasterController {
 	// Admin panel control.
 	@RequestMapping("admin_panel")
 	public String admin(HttpSession session) {
-		if(session.getAttribute("username") == null || session.getAttribute("username").toString().length() == 0) {
+		if(session.getAttribute("user") == null) {
 			return "login";
 		}
 		return "admin_panel";

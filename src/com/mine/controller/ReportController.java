@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.mine.component.master.Client;
 import com.mine.component.master.Company;
 import com.mine.component.master.Rate;
+import com.mine.component.master.User;
 import com.mine.component.master.Vehicle;
 import com.mine.component.transaction.Ledger;
 import com.mine.component.transaction.SupplyDetails;
@@ -43,7 +44,7 @@ public class ReportController {
 	@RequestMapping("sales_report")
 	public String salesReport(HttpSession session,Model model,@RequestParam(name="vehicle_no",required=false) String vehicleNumber,@RequestParam(name="material",required=false) String material,@RequestParam(name="quantity",required=false) String quantity
 			, @RequestParam(name="payment_type", required=false) String paymentType, @RequestParam(name="f_date", required=false) @DateTimeFormat(iso = ISO.DATE)LocalDate fromDate, @RequestParam(name="t_date", required=false) @DateTimeFormat(iso = ISO.DATE)LocalDate toDate) {
-		if(session.getAttribute("username") == null || session.getAttribute("username").toString().length() == 0) {
+		if(session.getAttribute("user") == null) {
 			return "login";
 		}
 		List<SupplyDetails> salesList = reportService.getSupplyDetails(vehicleNumber, quantity, material, paymentType, fromDate, toDate);
@@ -65,7 +66,7 @@ public class ReportController {
 	@RequestMapping("client_report")
 	public String clientReport(HttpSession session,Model model, @RequestParam(name="name",required=false) String name,@RequestParam(name="contact",required=false) String contact, 
 				 @RequestParam(name="belongs_to",required=false) String clientType ) {
-		if(session.getAttribute("username") == null || session.getAttribute("username").toString().length() == 0) {
+		if(session.getAttribute("user") == null) {
 			return "login";
 		}	
 		List<Client> clientList = reportService.getClientList(name, contact, clientType != null ? Integer.parseInt(clientType) : 0);
@@ -96,7 +97,7 @@ public class ReportController {
 	@RequestMapping("rate_report")
 	public String vehicleReport(HttpSession session,Model model, @RequestParam(name="material",required=false) String material,@RequestParam(name="quantity",required=false) String quantity, @RequestParam(name="vehicle_type",required=false) String vehicleType,
 				@RequestParam(name="tyre_type",required=false, defaultValue="0") int tyreType) {
-			if(session.getAttribute("username") == null || session.getAttribute("username").toString().length() == 0) {
+		if(session.getAttribute("user") == null) {
 				return "login";
 			}
 			List<Rate> rateList = reportService.getRateList(vehicleType, tyreType, quantity, material);
@@ -172,21 +173,40 @@ public class ReportController {
 	public String ledgerReport(HttpSession session,Model model,@RequestParam(name="party", required=false)String partyName, 
 			@RequestParam(name="f_date", required=false) @DateTimeFormat(iso=ISO.DATE)LocalDate startDate,
 			@RequestParam(name="t_date", required=false) @DateTimeFormat(iso=ISO.DATE)LocalDate endDate) {
+		if(session.getAttribute("user") == null) {
+			return "login";
+		}
 		if(startDate == null) {
 			startDate = LocalDate.now();
 		}
 		if(endDate == null) {
 			endDate = LocalDate.now();
 		}
-		if(session.getAttribute("username") == null || session.getAttribute("username").toString().length() == 0) {
-			return "login";
-		}
+		
+		User user = (User)session.getAttribute("user");
+		boolean allowCancel = false;
+		String role = user.getRole();
+		LocalDate todayDate = LocalDate.now();
 		List<String[]> stringArray = null;
+		
+		/** check if user should be allowed to cancel record.
+		 *  If role is admin then user can edit the record.
+		 *  If role is user then user can edit record only for todays date. 
+		 * */
+		if(role.equalsIgnoreCase("admin")) {
+			allowCancel = true;
+		}
+		
+		else if(role.equalsIgnoreCase("user") && startDate == todayDate && endDate == todayDate) {
+			allowCancel = true;
+		}
+		
 		if(partyName != null && partyName.length() > 0) {
 			stringArray = getPartyLedgerEntries(partyName,startDate,endDate);
 		}
 		model.addAttribute("party_list",miningService.getClientList(companyId, 0));
 		model.addAttribute("ledger_records",stringArray);
+		model.addAttribute("allow_cancel",allowCancel);
 		return "report/ledger_report";
 	}
 	// ------------------------------ End Ledger Control ----------------------------------
@@ -194,15 +214,26 @@ public class ReportController {
 	// ------------------------------ Report Panel ----------------------------------------
 	@RequestMapping("report_panel")
 	public String reportPanel(HttpSession session) {
-		if(session.getAttribute("username") == null || session.getAttribute("username").toString().length() == 0) {
+		if(session.getAttribute("user") == null) {
 			return "login";
 		}
 		return "report/report_panel";
 	}
-	
-	
-	
 	// -------------------------------End Report Panel -----------------------------------
+	
+	
+	// ------------------------------- Cancel Entries ------------------------------------
+	
+	@RequestMapping("cancel_entries")
+	public @ResponseBody String cancelEntries(@RequestParam("id")String id) {
+		this.miningService.cancelEntries(id);
+		return "success";
+	}
+	
+	
+	// ------------------------------ End Cancel Entries --------------------------------
+	
+	
 	
 	// ------------------------------- Support Methods -----------------------------------
 	
@@ -214,27 +245,49 @@ public class ReportController {
 		Double[] balances = reportService.getBalances(partyName, startDateTime, endDateTime);
 		double openingBalance = balances[0];
 		double closingBalance = balances[1]+balances[0];
+
 		List<String[]> listOfRecords = new ArrayList<>();
 		
 		String [] strArray = null;
 		if(openingBalance >= 0) {
-			strArray = new String[] {startDate.toString(),"Opening Balance",Double.toString(openingBalance),"",""};
+			strArray = new String[] {startDate.toString(),"Opening Balance",Double.toString(openingBalance),"","","f",""};
 		}
 		else {
-			strArray = new String[] {startDate.toString(),"Opening Balance","",Double.toString(openingBalance),""};
+			strArray = new String[] {startDate.toString(),"Opening Balance","",Double.toString(openingBalance),"","f",""};
 		}
 		listOfRecords.add(strArray);
-
+		
+		String buttonEnableFlag = "f";
+		String cashbookLinking = null;
+		String creditLink = null;
+		String salesLink = null;
+		String rowId = null;
+		
 		for(Ledger ledger : ledgerEntries) {
-			strArray = new String[] {ledger.getEntryDate().toLocalDate().toString(),ledger.getSource()+" to "+ledger.getTarget(),Double.toString(ledger.getCreditAmount()),Double.toString(ledger.getDebitAmount()),""};
+			buttonEnableFlag = "f";
+			cashbookLinking = ledger.getCashbookLinking() != null? Integer.toString(ledger.getCashbookLinking().getId()) : "";
+			creditLink = ledger.getCreditRecordLinking() != null? Integer.toString(ledger.getCreditRecordLinking().getId()) : "";
+			salesLink = ledger.getSalesLink() != null? Integer.toString(ledger.getSalesLink().getId()) : "";
+			if(!salesLink.equals("")) {
+				buttonEnableFlag = "f";
+			}
+			else if(!cashbookLinking.equals("")) {
+				buttonEnableFlag = "t";
+				rowId = "cash_"+cashbookLinking;
+			}
+			else if(!creditLink.equals("")) {
+				buttonEnableFlag = "t";
+				rowId = "credit_"+creditLink;
+			}
+			strArray = new String[] {ledger.getEntryDate().toLocalDate().toString(),ledger.getSource()+" to "+ledger.getTarget(),Double.toString(ledger.getCreditAmount()),Double.toString(ledger.getDebitAmount()),ledger.getRemarks(),buttonEnableFlag, rowId};
 			listOfRecords.add(strArray);
 		}
 		
 		if(closingBalance >= 0) {
-			strArray = new String[] {endDate.toString(),"Closing Balance",Double.toString(closingBalance),"",""};
+			strArray = new String[] {endDate.toString(),"Closing Balance",Double.toString(closingBalance),"","","f",""};
 		}
 		else {
-			strArray = new String[] {endDate.toString(),"Closing Balance","",Double.toString(closingBalance),""};
+			strArray = new String[] {endDate.toString(),"Closing Balance","",Double.toString(closingBalance),"","f",""};
 		}
 		listOfRecords.add(strArray);
 		return listOfRecords;

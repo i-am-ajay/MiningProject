@@ -41,11 +41,10 @@ public class MainController {
 	//------------------------------ Home Page Control --------------------------------
 	@RequestMapping({"/","home"})
 	public String home(Model model, HttpSession session) {
-		if(session.getAttribute("username") == null || session.getAttribute("username").toString().length() == 0) {
+		if(session.getAttribute("user") == null) {
 			return "login";
 		}
-		System.out.print("hello");
-		return "index";
+		return "admin_panel";
 	}
 	
 	//------------------------------ End of Home Page Control ---------------------------
@@ -54,9 +53,10 @@ public class MainController {
 	//-------------------------------- Sales Control ------------------------------------
 	@RequestMapping("display_sales_page")
 	public String renderSales(Model model, HttpSession session){
-		if(session.getAttribute("username") == null || session.getAttribute("username").toString().length() == 0) {
+		if(session.getAttribute("user") == null){
 			return "login";
 		}
+		User user = (User)session.getAttribute("user");
 		SupplyDetails details = new SupplyDetails();
 		details.setNrl(0.0);
 		details.setDriverReturn(0.0);
@@ -67,13 +67,14 @@ public class MainController {
 		model.addAttribute("quantity_lookup", service.getLookupMap("quantity"));
 		model.addAttribute("data_list",service.getTop10Records());
 		model.addAttribute("parameter",service.getParameters());
+		model.addAttribute("role",user.getRole());
 		return "supply_and_sales";
 	}
 	
 	@RequestMapping("save_supply")
 	public String saveSales(HttpSession session,Model model,@ModelAttribute("supply") SupplyDetails details, 
 			BindingResult result) {
-		if(session.getAttribute("username") == null || session.getAttribute("username").toString().length() == 0) {
+		if(session.getAttribute("user") == null) {
 			return "login";
 		}
 		String page = null;
@@ -81,7 +82,6 @@ public class MainController {
 			System.out.println(result.toString());
 		}
 		String token = TokenManager.giveToken(service);
-		System.out.println(token);
 		details.setToken(token);
 		User user = (User)session.getAttribute("user");
 		service.saveSupplyDetails(details, user);
@@ -100,6 +100,16 @@ public class MainController {
 		obj.put("rate", rate);
 		return obj.toString();
 	}
+	
+	@RequestMapping("cancel_sales")
+	public @ResponseBody String cancleSales(@RequestParam("sales_id")int id) {
+		String status = "";
+		boolean flag = service.cancleSales(id);
+		if(flag) {
+			status = "table-danger";
+		}
+		return status;
+	}
 	// -------------------------------- End Of Sales Page Control -----------------------------
 	
 	
@@ -108,7 +118,7 @@ public class MainController {
 	public String ledgerEntries(HttpSession session,Model model,@RequestParam(name="party", required=false) String partyName, @RequestParam(name="amount",required=false, defaultValue="0.0") double amount, 
 			@RequestParam(name="type", required=false) String type, @RequestParam(name="expense_type", required=false) String expenseType, 
 			@RequestParam(name="remarks", required=false) String remarks) {
-		if(session.getAttribute("username") == null || session.getAttribute("username").toString().length() == 0) {
+		if(session.getAttribute("user") == null){
 			return "login";
 		}
 		User user = (User)session.getAttribute("user");
@@ -140,6 +150,7 @@ public class MainController {
 			JSONObject object = new JSONObject();
 			object.put("vehicle_type", vehicle.getVehicleType());
 			object.put("tyre_type", vehicle.getTyreType());
+			object.put("vehicle_of", vehicle.getClientId().getName());
 			// Discount logic 
 			Client client = vehicle.getClientId();
 			//String clientDescription = client.getClientType().getDescription();
@@ -188,7 +199,7 @@ public class MainController {
 	
 	@RequestMapping("change_password")
 	public String changePassword(HttpSession session, Model model,  @RequestParam(name="password", required=false)String password,@RequestParam(name="rpassword", required=false)String rpassword) {
-		if(session.getAttribute("username") == null || session.getAttribute("username").toString().length() == 0) {
+		if(session.getAttribute("user") == null) {
 			return "login";
 		}
 		model.addAttribute("username",session.getAttribute("username"));
@@ -206,7 +217,7 @@ public class MainController {
 	@RequestMapping("create_user")
 	public String createUser(Model model, @RequestParam("username") String username, @RequestParam("password") String password, 
 			@RequestParam("role") String role, @RequestParam(name="inactive", required=false) boolean activeStatus, HttpSession session) {
-		if(session.getAttribute("username") == null || session.getAttribute("username").toString().length() == 0) {
+		if(session.getAttribute("user") == null){
 			return "login";
 		}
 		if(!session.getAttribute("role").toString().equalsIgnoreCase("Admin")) {
@@ -243,4 +254,13 @@ public class MainController {
 		return obj.toString();
 	}
 	// ---------------------------------End User authentication control -------------------
+	
+	// --------------------------------- Print token -------------------------------
+	
+	@RequestMapping("print_token")
+	public String printToken() {
+		return "print_token";
+	}
+	
+	//---------------------------------- End Print Token ---------------------------
 }

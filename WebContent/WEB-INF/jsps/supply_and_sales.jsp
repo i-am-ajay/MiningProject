@@ -116,7 +116,10 @@
 			  				</div>
 			  			</div>
 			  			<div class="col-2">
-			  				
+			  				<div class="form-group">
+					    		<label class="font-weight-bold">Vehicle Of</label>
+					     		<input id="vehicle_of" class="form-control form-control-sm" placeholder="" name="vehicleOf"/>
+			  				</div>
 			  			</div>
 				  </div>
 				  <div class="row">
@@ -138,7 +141,7 @@
 				  		<div class="form-group">
 					    		<label class="font-weight-bold form-check-label">Driver Return</label>
 					     		<input type="checkbox" id="driver_return" class="form-check-input mx-4 mt-2" value=true/>
-					     		<f:input type="hidden" id="driver_return_save" path = "driverReturn" />
+					     		<%-- <f:input type="hidden" id="driver_return_save" path = "driverReturn" /> --%>
 					     		<input type="hidden" id="hidden_driver_return" value="${parameter.driverReturn}" />
 			  			</div>
 				  	</div>
@@ -179,11 +182,21 @@
                 <th>NRL</th>
                 <th>Driver Return</th>
                 <th>Date</th>
+                <c:if test="${role.equalsIgnoreCase('admin')}">
+                	<th>Cancel Sale</th>
+                </c:if>
             </tr>
         </thead>
         <tbody>
         	<c:forEach var="item" items="${data_list}">
-	            <tr>
+        	<c:choose>
+        		<c:when test="${item.status == false}">
+	            	<tr class="table-danger">
+	            </c:when>
+	            <c:otherwise>
+	            	<tr>
+	            </c:otherwise>
+	        </c:choose>
 	            	<td>${item.token}</td>
 	                <td>${item.driverName}</td>
 	                <td>${item.driverNumber}</td>
@@ -200,6 +213,11 @@
 	                <td>${item.nrl}</td>
 	                <td>${item.driverReturn}</td>
 	                <td>${item.salesDate}</td>
+	                 <c:if test="${role.equalsIgnoreCase('admin')}">
+                		<td>
+                		<c:if test="${role.equalsIgnoreCase('admin') && item.status == true}">
+                		<button class="btn btn-sm btn-danger cancel_btn" id="${item.id}">&nbsp;&nbsp;&nbsp;</button></c:if></td>
+                	</c:if>
 	            </tr>
             </c:forEach>
         </tbody>
@@ -221,6 +239,7 @@
 				$("#driver_number").attr("required","true");
 				$("#address").attr("required","true");
 				$("#final_rate").attr("readonly",true);
+				$("#vehicle_of").attr("readonly",true);
 
 				let quantityType = $("#quantity").val();
 				quantityType = quantityType.toLowerCase();
@@ -266,6 +285,12 @@
 				return -1;
 			}
 		});
+		
+		// cancel button logic
+		$(".cancel_btn").click( function(){
+			console.log(this.id);
+			cancelSales(this.id);
+		})
 		//------------------------------------ On Page Action End --------------------------------------
 		
 		// ----------------------------------- Ajax Calls from Page -------------------------------------
@@ -285,6 +310,7 @@
 						
 						$("#vehicle_type").attr("readonly",true);
 						$("#tyre_type").attr("readonly",true);
+						$("#vehicle_of").val(json['vehicle_of']);
 
 					}
 					else{
@@ -303,7 +329,8 @@
 			e.preventDefault();
 			// make sure all the required fields are populated. 
 			let vehicleType = $("#vehicle_type").val();
-			let tyreType = $("#tyre_type").val();	
+			let tyreType = $("#tyre_type").val();
+			let driverReturn = driverReturnLogic();
 			if(!(vehicleType) || !(tyreType)){
 				alert("Please select a Vehicle.");
 				return 1; 
@@ -351,11 +378,28 @@
 							$("#sales_form").trigger("reset");
 							return 1;
 						}
+						finalRate = finalRate - driverReturn; 
 						$("#final_rate").val(finalRate);
 					}
 				}
 			});
 		});
+		
+		function cancelSales(id){
+			$.ajax({
+				url : "${home}cancel_sales",
+				data: {"row_id":id},
+				success: function(result, status, xhr){
+					if(result){
+						console.log(result);
+						$("#"+id).addClass(result);
+					}
+				},
+				error: function(resut, status, xhr){
+					
+				}
+			});
+		}
 		/*
 		$('input[type="radio"][name="belongsTo"]').change( function(){
 				$("#client").attr("disabled",false);
@@ -390,20 +434,17 @@
 	
 	$("#driver_return").click(e =>{
 		driverReturnLogic();
-		/* if($("#driver_return").prop("checked")){
-			driverReturnRemoved = false;
-		}
-		else{
-			driverReturnRemoved = true;
-		} */
 	});
 
 	// --------------------------- Support Methods ----------------------------------------
 	function driverReturnLogic(){
+		let driverReturnAmount = 0.0;
 		if($("#driver_return").prop("checked")){
-			$("#driver_return_save").val($("#hidden_driver_return").val());
-			alert($("#driver_return_save").val());
+			//$("#driver_return_save").val($("#hidden_driver_return").val());
+			driverReturnAmount = $("#hidden_driver_return").val();
 		}
+		return driverReturnAmount;
+		
 		
 		
 		/* if($("#discount").val() != 0){
@@ -423,8 +464,6 @@
 			}
 		} */
 	}
-	
-	
 	// --------------------------- Support Methods End -----------------------------------
 	
 	

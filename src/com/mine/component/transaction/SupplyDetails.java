@@ -43,6 +43,8 @@ public class SupplyDetails {
 	private double discount;
 	private double rate;
 	
+	private boolean status;
+	
 	@Column(name="final_rate")
 	private double finalRate;
 	
@@ -155,5 +157,11 @@ public class SupplyDetails {
 	}
 	public void setUser(User user) {
 		this.user = user;
+	}
+	public boolean isStatus() {
+		return status;
+	}
+	public void setStatus(boolean status) {
+		this.status = status;
 	}	
 }

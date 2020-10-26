@@ -59,9 +59,8 @@ public class Ledger {
 	@JoinColumn(name="sales_id")
 	protected SupplyDetails salesLink;
 	
+	protected boolean status;
 	
-	
-
 	public LocalDateTime getEntryDate() {
 		return entryDate;
 	}
@@ -151,5 +150,13 @@ public class Ledger {
 	}
 	public void setCreatedBy(User createdBy) {
 		this.createdBy = createdBy;
+	}
+	
+	public void setStatus(boolean status) {
+		this.status = status;
+	}
+	
+	public boolean getStatus() {
+		return this.status;
 	}
 }
