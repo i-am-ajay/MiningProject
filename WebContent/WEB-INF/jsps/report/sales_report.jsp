@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Patient Feedback Report</title>
+<title>Sales Report</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/static_resources/css/style.css" >
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/static_resources/css/bootstrap_min.css" >
@@ -95,6 +95,7 @@
 		            	<th>Token No</th>
 		                <th>Driver Name</th>
 		                <th>Driver Contact</th>
+		                <th>Vehicle Of</th>
 		                <th>Vehicle No</th>
 		                <th>Vehicle Type</th>
 		                <th>Vehicle Tyre</th>
@@ -115,6 +116,7 @@
 		            	<td>${item.token}</td>
 		                <td>${item.driverName}</td>
 		                <td>${item.driverNumber}</td>
+		                <td>${item.vehicle.clientId.name}</td>
 		                <td>${item.vehicle.vehicleNo}</td>
 		                <td>${item.vehicle.vehicleType}</td>
 		                <td>${item.vehicle.tyreType}</td>

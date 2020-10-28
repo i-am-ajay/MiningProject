@@ -388,7 +388,7 @@
 		function cancelSales(id){
 			$.ajax({
 				url : "${home}cancel_sales",
-				data: {"row_id":id},
+				data: {"sales_id":id},
 				success: function(result, status, xhr){
 					if(result){
 						console.log(result);

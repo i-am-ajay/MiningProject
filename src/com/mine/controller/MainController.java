@@ -85,7 +85,8 @@ public class MainController {
 		details.setToken(token);
 		User user = (User)session.getAttribute("user");
 		service.saveSupplyDetails(details, user);
-		page = "redirect:display_sales_page";
+		model.addAttribute("supply",details);
+		page = "print_token";
 		return page;
 	}
 	
@@ -104,6 +105,7 @@ public class MainController {
 	@RequestMapping("cancel_sales")
 	public @ResponseBody String cancleSales(@RequestParam("sales_id")int id) {
 		String status = "";
+		System.out.println("IDDDDDDDDDD"+id);
 		boolean flag = service.cancleSales(id);
 		if(flag) {
 			status = "table-danger";
@@ -258,8 +260,13 @@ public class MainController {
 	// --------------------------------- Print token -------------------------------
 	
 	@RequestMapping("print_token")
-	public String printToken() {
-		return "print_token";
+	public String printToken(HttpSession session, Model model, @ModelAttribute("supply") SupplyDetails details) {
+		if(session.getAttribute("user") == null){
+			return "login";
+		}
+		model.addAttribute("supply", details);
+		//return "print_token";
+		return "redirect:display_sales_page";
 	}
 	
 	//---------------------------------- End Print Token ---------------------------
