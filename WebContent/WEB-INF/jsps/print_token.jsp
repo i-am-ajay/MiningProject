@@ -66,7 +66,7 @@
 	</div> -->
 	
 	<div class="section-3 my-3 mb-5 border p-1">
-		<div class="row" style="font-size: .85em;">
+		<div class="row" style="font-size: .90em;">
 		<div class="col-6">
 			<div class="header mb-2 row">
 			<div class="col-6 text-left border-bottom border-dark w-50"><h4>Mining Token</h4></div>
@@ -108,7 +108,7 @@
 			<div class="col font-weight-bold">Vehicle Tyre: <span class="pl-2 font-weight-normal">12</span></div> -->
 		</div>
 		</div>
-		<div class="col-6 mt-5">
+		<div class="col mt-5">
 		<div class="header mb-2 row">
 			<div class="col-7 text-left border-bottom border-dark w-50"><h4>Mining Token <span style="font-size:.5em;">(Office Copy)</span></h4></div>
 			<div class="col-4">Date: <span>2020-10-20</span></div>
@@ -121,10 +121,10 @@
 			<div class="col-2 font-weight-bold">Vehicle Tyre: <span class="pl-2 font-weight-normal">12</span></div>
 		</div>
 		<div class="row p-1">
-			<div class="col-2 font-weight-bold p-1">Vehicle Type: <span class="pl-2 font-weight-normal">OCT-1</span></div>
-			<div class="col-2 font-weight-bold p-1">Material Type: <span class="pl-2 font-weight-normal">Shyam</span></div>
-			<div class="col-2 font-weight-bold p-1">Quantity: <span class="pl-2 font-weight-normal">768976854</span></div>
-			<div class="col-2 font-weight-bold p-1">Rate: <span class="pl-2 font-weight-normal">20000</span></div>
+			<div class="col-2 font-weight-bold">Vehicle Type: <span class="pl-2 font-weight-normal">OCT-1</span></div>
+			<div class="col-2 font-weight-bold">Material Type: <span class="pl-2 font-weight-normal">Shyam</span></div>
+			<div class="col-2 font-weight-bold">Quantity: <span class="pl-2 font-weight-normal">768976854</span></div>
+			<div class="col-2 font-weight-bold">Rate: <span class="pl-2 font-weight-normal">20000</span></div>
 			<!-- <div class="col font-weight-bold">Vehicle Tyre: <span class="pl-2 font-weight-normal">12</span></div> -->
 		</div>
 		</div>

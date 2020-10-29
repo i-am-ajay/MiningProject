@@ -258,7 +258,7 @@ public class MainController {
 	// --------------------------------- Print token -------------------------------
 	
 	@RequestMapping("print_token")
-	public String printToken() {
+	public String printToken(Model model) {
 		return "print_token";
 	}
 	
