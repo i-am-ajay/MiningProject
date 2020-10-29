@@ -161,6 +161,7 @@ public class MiningService {
 	}
 	
 	public boolean cancleSales(int salesId) {
+		System.out.println(salesId);
 		return dao.cancleEntry("sales", salesId);
 	}
 	// ----------------------------- End Supply Service ------------------------------------
