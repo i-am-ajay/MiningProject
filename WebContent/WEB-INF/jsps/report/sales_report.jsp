@@ -112,28 +112,35 @@
 	        	</thead>
 	        	<tbody>
 	        		<c:forEach var="item" items="${salesList}">
-	            	<tr>
-		            	<td>${item.token}</td>
-		                <td>${item.driverName}</td>
-		                <td>${item.driverNumber}</td>
-		                <td>${item.vehicle.clientId.name}</td>
-		                <td>${item.vehicle.vehicleNo}</td>
-		                <td>${item.vehicle.vehicleType}</td>
-		                <td>${item.vehicle.tyreType}</td>
-		                <td>${item.material }</td>
-		                <td>${item.quantity}</td>
-		                <td>${item.paymentType }</td>
-		                <td>${item.rate}</td>
-		                <td>${item.discount}</td>
-		                <td>${item.finalRate}</td>
-		                <td>${item.nrl}</td>
-		                <td>${item.driverReturn}</td>
-		                <td>${item.salesDate}</td>
-		              </tr>
+		            	<%-- <c:choose>
+	        				<c:when test="${item.status == false}">
+		            			<tr class="table-danger">
+		            		</c:when>
+		            		<c:otherwise>
+		            			<tr>
+		            		</c:otherwise>
+		       			 </c:choose> --%>
+		       			 	<tr class="${item.status ? '' : 'table-danger'}">
+			            		<td>${item.token}</td>
+				                <td>${item.driverName}</td>
+				                <td>${item.driverNumber}</td>
+				                <td>${item.vehicle.clientId.name}</td>
+				                <td>${item.vehicle.vehicleNo}</td>
+				                <td>${item.vehicle.vehicleType}</td>
+				                <td>${item.vehicle.tyreType}</td>
+				                <td>${item.material }</td>
+				                <td>${item.quantity}</td>
+				                <td>${item.paymentType }</td>
+				                <td>${item.rate}</td>
+				                <td>${item.discount}</td>
+				                <td>${item.finalRate}</td>
+				                <td>${item.nrl}</td>
+				                <td>${item.driverReturn ? 'Yes' : 'No'}</td>
+				                <td>${item.salesDate}</td>
+		              		</tr>
 		             </c:forEach>
 	        	</tbody>
     		</table>
-    		
 		</div>
 	</div>
 	<!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
@@ -145,8 +152,8 @@
 	<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.21/af-2.3.5/b-1.6.3/b-html5-1.6.3/datatables.min.js"></script>
 	<script>
 	var table = null;
-		$(document).ready(function() {
-			table = $('#example').DataTable( {
+		$(document).ready(function(){
+			table = $('#example').DataTable({
 		        "scrollY": 230,
 		        "scrollX" : true,
 		        "info" : false,
@@ -169,10 +176,5 @@
 			$("#report").hide();
 		});
 	</script>
-	
-	
- 
-
-	
 </body>
 </html>

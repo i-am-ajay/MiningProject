@@ -59,7 +59,7 @@ public class MainController {
 		User user = (User)session.getAttribute("user");
 		SupplyDetails details = new SupplyDetails();
 		details.setNrl(0.0);
-		details.setDriverReturn(0.0);
+		details.setDriverReturn(false);
 		Vehicle vehicle = new Vehicle();
 		details.setVehicle(vehicle);
 		model.addAttribute("supply", details);
@@ -86,7 +86,7 @@ public class MainController {
 		User user = (User)session.getAttribute("user");
 		service.saveSupplyDetails(details, user);
 		model.addAttribute("supply",details);
-		page = "print_token";
+		page = "redirect:display_sales_page";
 		return page;
 	}
 	
@@ -105,7 +105,6 @@ public class MainController {
 	@RequestMapping("cancel_sales")
 	public @ResponseBody String cancleSales(@RequestParam("sales_id")int id) {
 		String status = "";
-		System.out.println("IDDDDDDDDDD"+id);
 		boolean flag = service.cancleSales(id);
 		if(flag) {
 			status = "table-danger";
@@ -247,11 +246,11 @@ public class MainController {
 		User user = service.getUser(username);
 		JSONObject obj = null;
 		if(user != null) {
-		obj = new JSONObject();
-		obj.put("user", user.getUsername());
-		obj.put("password", user.getPassword());
-		obj.put("role", user.getRole());
-		obj.put("deactive", !user.isActive());
+			obj = new JSONObject();
+			obj.put("user", user.getUsername());
+			obj.put("password", user.getPassword());
+			obj.put("role", user.getRole());
+			obj.put("deactive", !user.isActive());
 		}
 		return obj.toString();
 	}
@@ -264,9 +263,8 @@ public class MainController {
 		if(session.getAttribute("user") == null){
 			return "login";
 		}
-		model.addAttribute("supply", details);
-		//return "print_token";
-		return "redirect:display_sales_page";
+		System.out.println("Hello from token.");
+		return "print_token";
 	}
 	
 	//---------------------------------- End Print Token ---------------------------

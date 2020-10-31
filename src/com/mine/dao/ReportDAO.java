@@ -184,7 +184,7 @@ public class ReportDAO {
 			LocalDateTime toDateTime = LocalDateTime.of(toDate, LocalTime.of(11, 59));
 			predicateList.add(builder.lessThanOrEqualTo(from.get("salesDate"), toDateTime));
 		}
-		predicateList.add(builder.equal(from.get("status"), true));
+		//predicateList.add(builder.equal(from.get("status"), true));
 		if(initiateSearch) {
 			criteria.where(builder.and(predicateList.toArray(new Predicate[predicateList.size()])));
 			TypedQuery<SupplyDetails> salesQuery = session.createQuery(criteria);

@@ -39,7 +39,7 @@ public class SupplyDetails {
 	private String tyreType;
 	
 	private String paymentType;
-	private double driverReturn;
+	private boolean driverReturn;
 	private double discount;
 	private double rate;
 	
@@ -94,10 +94,10 @@ public class SupplyDetails {
 	public void setPaymentType(String paymentType) {
 		this.paymentType = paymentType;
 	}
-	public double getDriverReturn() {
+	public boolean getDriverReturn() {
 		return driverReturn;
 	}
-	public void setDriverReturn(double driverReturn) {
+	public void setDriverReturn(boolean driverReturn) {
 		this.driverReturn = driverReturn;
 	}
 	public double getDiscount() {

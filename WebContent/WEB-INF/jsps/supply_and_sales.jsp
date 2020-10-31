@@ -140,7 +140,7 @@
 				  	<div class="col-2">
 				  		<div class="form-group">
 					    		<label class="font-weight-bold form-check-label">Driver Return</label>
-					     		<input type="checkbox" id="driver_return" class="form-check-input mx-4 mt-2" value=true/>
+					     		<f:checkbox id="driver_return" class="form-check-input mx-4 mt-2" path="driverReturn"/>
 					     		<%-- <f:input type="hidden" id="driver_return_save" path = "driverReturn" /> --%>
 					     		<input type="hidden" id="hidden_driver_return" value="${parameter.driverReturn}" />
 			  			</div>
@@ -151,7 +151,7 @@
 				  		<button id="rate_calc_btn" class="btn btn-sm btn-success btn-block mx-auto">Calculate Rate</button>
 				  	</div>
 				  	<div class="col-2">
-				  		<input type="submit" id="save_btn" class="btn btn-sm btn-secondary btn-block mx-auto" value="Save"/> 
+				  		<input type="submit" id="save_btn" class="btn btn-sm btn-secondary btn-block mx-auto" onclick="printPage('${pageContext.request.contextPath}/print_token');" value="Save"/> 
 				  	</div>
 				  </div>
 			  	</div>
@@ -211,7 +211,7 @@
 	                <td>${item.discount}</td>
 	                <td>${item.finalRate}</td>
 	                <td>${item.nrl}</td>
-	                <td>${item.driverReturn}</td>
+	                <td>${item.driverReturn ? 'Yes' :'No' }</td>
 	                <td>${item.salesDate}</td>
 	                 <c:if test="${role.equalsIgnoreCase('admin')}">
                 		<td>
@@ -466,7 +466,31 @@
 	}
 	// --------------------------- Support Methods End -----------------------------------
 	
+	// --------------------------- Print Method ------------------------------------------
+		function closePrint () {
+		  document.body.removeChild(this.__container__);
+		}
 	
+		function setPrint () {
+		  this.contentWindow.__container__ = this;
+		  this.contentWindow.onbeforeunload = closePrint;
+		  this.contentWindow.onafterprint = closePrint;
+		  this.contentWindow.focus(); // Required for IE
+		  this.contentWindow.print();
+		}
+
+		function printPage (sURL) {
+		  var oHiddFrame = document.createElement("iframe");
+		  oHiddFrame.onload = setPrint;
+		  oHiddFrame.style.position = "fixed";
+		  oHiddFrame.style.right = "0";
+		  oHiddFrame.style.bottom = "0";
+		  oHiddFrame.style.width = "0";
+		  oHiddFrame.style.height = "0";
+		  oHiddFrame.style.border = "0";
+		  oHiddFrame.src = sURL;
+		  document.body.appendChild(oHiddFrame);
+		}
 	</script>
 </body>
 </html>
