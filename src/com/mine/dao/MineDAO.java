@@ -356,6 +356,8 @@ public class MineDAO {
 		}
 		
 		catch(NoResultException | NonUniqueResultException | IllegalStateException ex) { 
+			System.out.println("tyreType"+tyreType +"MT: "+materialType+"TT: "+truckType+"quantity"+quantity);
+			ex.printStackTrace();
 		}
 		return rate;
 	}

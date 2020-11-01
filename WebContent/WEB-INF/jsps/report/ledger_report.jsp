@@ -61,6 +61,7 @@
 					      		<datalist id="party">
 					      		<option>Cash</option>
 					      		<option>Credit</option>
+					      		<option>Bank</option>
 					      		<c:forEach var="party" items="${party_list}"> 
 					      			<option>${party.value}</option>
 					      		</c:forEach>

@@ -348,6 +348,7 @@
 				success: function(result, status, xhr){
 					if(result != null || result != ''){
 						result = JSON.parse(result);
+						console.log(result);
 						let rate = result.rate;
 						let quantity = $("#quantity").val();
 						quantity = quantity.toLowerCase();
@@ -369,6 +370,7 @@
 						if(rate <= 0){
 							alert("Rate can not be 0 or -ve. Kindly select your parameters again.");
 							$("#sales_form").trigger("reset");
+							$("#numberofDiv").show();
 							return 1;
 						}
 						
@@ -376,6 +378,7 @@
 						if(finalRate < 0){
 							alert("Final Rate can't be negative, Kindly select your parameters again.");
 							$("#sales_form").trigger("reset");
+							$("#numberofDiv").show();
 							return 1;
 						}
 						finalRate = finalRate - driverReturn; 
