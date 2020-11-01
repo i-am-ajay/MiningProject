@@ -360,6 +360,17 @@ public class MineDAO {
 		return rate;
 	}
 	
+	@Transactional
+	public double updateRate(int id, double rate) {
+		double tempRate = rate;
+		Session session = factory.getCurrentSession();
+		Rate dbRate = session.get(Rate.class, id);
+		dbRate.setRate(rate);
+		session.update(dbRate);
+		tempRate = dbRate.getRate();
+		return tempRate;
+	}
+	
 	/*@Transactional
 	public double getRate(String tyreType, String truckType, String materialType, String qty) {
 		Session session = factory.getCurrentSession();
@@ -699,21 +710,6 @@ public class MineDAO {
 	 * will pull that record which doesn't have an end date.
 	 */
 	@Transactional
-	public Parameters getParameters() {
-		Session session = factory.getCurrentSession();
-		TypedQuery<Parameters> parameterQuery = session.createQuery("FROM Parameters p WHERE p.endDate is null", Parameters.class);
-		Parameters parameter = null;
-		try {
-			parameter = parameterQuery.getSingleResult();
-		}
-		catch(Exception ex) {
-			System.out.println(ex);
-			// write code to check why their are multiple active parameters and disable parameter except latest one.
-		}
-		return parameter;
-	}
-	
-	@Transactional
 	public List<GeneralData> getLookupMap(String category){
 		Session session = factory.getCurrentSession();
 		CriteriaBuilder builder = session.getCriteriaBuilder();
@@ -794,7 +790,37 @@ public class MineDAO {
 		session.update(user);
 		session.flush();
 	}
-	
-	
 	// ------------------------------ End User Authentication DAO -----------------------------
+	
+	// ------------------------------ Parameters DAO ------------------------------------
+	@Transactional
+	public boolean updateParameters(Parameters param) {
+		Session session = factory.getCurrentSession();
+		System.out.println(param.getDriverReturn());
+		System.out.println(param.getId());
+		boolean status = false;
+		try {
+				session.update(param);
+				status = true;
+		}
+		catch(Exception ex) {}
+		return status;
+	}
+	
+	@Transactional
+	public Parameters getParameters() {
+		Session session = factory.getCurrentSession();
+		TypedQuery<Parameters> parameterQuery = session.createQuery("FROM Parameters p WHERE p.endDate is null", Parameters.class);
+		Parameters parameter = null;
+		try {
+			parameter = parameterQuery.getSingleResult();
+		}
+		catch(Exception ex) {
+			System.out.println(ex);
+			// write code to check why their are multiple active parameters and disable parameter except latest one.
+		}
+		System.out.println("Id" +parameter.getId());
+		return parameter;
+	}
+	// ------------------------------ End Parameter DAO --------------------------------
 }

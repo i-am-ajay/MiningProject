@@ -109,6 +109,15 @@ public class ReportController {
 			return "report/rate_report";
 	}
 	
+	@RequestMapping("rate_update_report")
+	public String updateRateList(HttpSession session, Model model) {
+		if(session.getAttribute("user") == null) {
+			return "login";
+		}
+		List<Rate> rateList = reportService.getRateList(null, 0, null, null);
+		model.addAttribute("rateList",rateList);
+		return "report/update_rate";
+	}
 	// ------------------------------ End Rate Report --------------------------------------
 	
 	

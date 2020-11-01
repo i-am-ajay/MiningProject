@@ -17,6 +17,7 @@ import org.hibernate.annotations.GenerationTime;
 public class Parameters {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(insertable=false, updatable=false)
 	protected int id;
 	
 	protected double royalty;
@@ -42,6 +43,8 @@ public class Parameters {
 	protected double sanchalanHigh;
 	
 	protected double sanchalanLow;
+	
+	protected double sanchalanTrolly;
 	
 	@Generated(GenerationTime.ALWAYS)
 	@Column(name="creation_date", insertable=false, updatable=false)
@@ -84,6 +87,10 @@ public class Parameters {
 
 	public int getId() {
 		return id;
+	}
+	
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public double getDriverReturn() {
@@ -140,5 +147,13 @@ public class Parameters {
 
 	public void setSanchalanLow(double sanchalanLow) {
 		this.sanchalanLow = sanchalanLow;
+	}
+
+	public double getSanchalanTrolly() {
+		return sanchalanTrolly;
+	}
+
+	public void setSanchalanTrolly(double sanchalanTrolly) {
+		this.sanchalanTrolly = sanchalanTrolly;
 	}	
 }

@@ -15,6 +15,7 @@ import javax.persistence.ManyToOne;
 public class Rate {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(insertable=false, updatable=false)
 	private int rateId;
 	
 	private String tyreType;
@@ -116,6 +117,10 @@ public class Rate {
 
 	public int getRateId() {
 		return rateId;
+	}
+	
+	public void setRateId(int rateId){
+		this.rateId = rateId;
 	}
 
 	public void setRate(double rate) {

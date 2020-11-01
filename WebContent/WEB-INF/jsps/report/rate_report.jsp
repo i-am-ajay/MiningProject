@@ -71,8 +71,11 @@
 			      	<label for="tDate" class="font-weight-bold">To Date</label>
 			      	<input type="date" class="form-control form-control-sm" id="tDate" name="t_date" />
 			    </div>	 -->
-			    <div class="col-md-2">
+			    <div class="col-md-2 mt-3">
 			    	 <input id="button" type="submit" class=" btn btn-secondary btn-sm btn-block w-50 mt-2 mx-auto text-center" value="search" />
+			    </div>
+			    <div class="col-md-2 mt-3">
+			    	<a href="${pageContext.request.contextPath}/rate_update_report" class=" btn btn-danger btn-sm btn-block w-75 mt-2 mx-auto text-center">Rate Update</a>
 			    </div>
 			   </div>
 			    <!-- <input id="button" type="submit" class=" btn btn-secondary btn-sm btn-block w-50 mt-2 mx-auto text-center" value="search" /> -->
