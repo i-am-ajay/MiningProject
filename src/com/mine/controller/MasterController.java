@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.mine.component.master.Client;
 import com.mine.component.master.Company;
+import com.mine.component.master.Parameters;
 import com.mine.component.master.Rate;
 import com.mine.component.master.User;
 import com.mine.component.master.Vehicle;
@@ -257,7 +258,14 @@ public class MasterController {
 		}
 		return "redirect:add_rate";
 	}
+	
+	@RequestMapping("update_rate")
+	public @ResponseBody String updateRate(@RequestParam("rate_id") int id, @RequestParam("rate") double rate) {
+		return Double.toString(service.updateRate(id, rate));
+	}
 	// ------------------------------------- End Rate Controls ---------------------------------
+	
+	// ------------------------------------ Administrative Controls ----------------------------
 	// Admin panel control.
 	@RequestMapping("admin_panel")
 	public String admin(HttpSession session) {
@@ -267,9 +275,42 @@ public class MasterController {
 		return "admin_panel";
 	}
 	
+	@RequestMapping("parameter_display")
+	public String parametersUpdate(HttpSession session, Model model, @ModelAttribute("status") String status) {
+		User user = (User)session.getAttribute("user");
+		String page = "admin_panel";
+		if(user == null) {
+			return "login";
+		}
+		else if(user.getRole().equalsIgnoreCase("admin")) {
+			Parameters param = service.getParameters();
+			model.addAttribute("parameters",param);
+			System.out.println("Fetched Id "+param.getId());
+			page = "parameters";
+		}
+		else {
+			System.out.println(user.getRole());
+			page = "admin_panel";
+		}
+		return page;
+	}
+	
+	@RequestMapping("update_parameters")
+	public String updateParameters(Model model, @ModelAttribute("parameters")Parameters param, BindingResult result) {
+		if(result.hasErrors()) {
+			System.out.println(result.getObjectName());
+		}
+		System.out.println("Id For update"+param.getId());
+		System.out.println("Driver Return For update"+param.getDriverReturn());
+		model.addAttribute("status",service.updateParameters(param));
+		return "redirect:parameter_display";
+	}
+	
 	/*@ExceptionHandler(Exception.class)
 	public String handleAnyError() {
 			String page = "redirect:admin_panel";
 		return page;
 	}*/
+	
+	//----------------------------------- End Administrative Controls -----------------------------
 }

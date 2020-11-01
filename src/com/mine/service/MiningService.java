@@ -54,7 +54,7 @@ public class MiningService {
 	
 	// ------------------------------- Company Service -----------------------------------------
 	/**
-	 *  Update of save company. 
+	 *  Update or save company. 
 	 * @param company
 	 * @param user
 	 * @param role - role will decide if user may update company or not
@@ -90,6 +90,10 @@ public class MiningService {
 	public String saveRate(Rate rate, int companyId, User user) {
 		return dao.addRate(rate, companyId, user);
 		
+	}
+	
+	public double updateRate(int id, double rate) {
+		return dao.updateRate(id, rate);
 	}
 	
 	public double getRate(String tyreType, String materialType, String truckType, String quantity, int companyId) {
@@ -333,4 +337,16 @@ public class MiningService {
 	}
 	
 	// ---------------------------- End Misc Service -------------------------------------
+	
+	// ---------------------------- Parameters Service -----------------------------------
+	public String updateParameters(Parameters parameters) {
+		boolean flag =  dao.updateParameters(parameters);
+		String status = "fails";
+		if(flag) {
+			status = "updated";
+		}
+		return status;
+	}
+	
+	// ----------------------------- End Parameters Service ------------------------------
 }
