@@ -86,7 +86,7 @@ public class MainController {
 		User user = (User)session.getAttribute("user");
 		service.saveSupplyDetails(details, user);
 		model.addAttribute("supply",details);
-		page = "redirect:display_sales_page";
+		page = "print_token";
 		return page;
 	}
 	
@@ -263,7 +263,8 @@ public class MainController {
 		if(session.getAttribute("user") == null){
 			return "login";
 		}
-		System.out.println("Hello from token.");
+		System.out.println(details.getDriverName());
+		model.addAttribute("supply",details);
 		return "print_token";
 	}
 	

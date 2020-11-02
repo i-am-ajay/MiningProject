@@ -151,7 +151,7 @@
 				  		<button id="rate_calc_btn" class="btn btn-sm btn-success btn-block mx-auto">Calculate Rate</button>
 				  	</div>
 				  	<div class="col-2">
-				  		<input type="submit" id="save_btn" class="btn btn-sm btn-secondary btn-block mx-auto" onclick="printPage('${pageContext.request.contextPath}/print_token');" value="Save"/> 
+				  		<input type="submit" id="save_btn" class="btn btn-sm btn-secondary btn-block mx-auto" value="Save"/> <%-- onclick="printPage('${pageContext.request.contextPath}/print_token');" --%> 
 				  	</div>
 				  </div>
 			  	</div>
