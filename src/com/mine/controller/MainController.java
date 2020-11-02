@@ -96,6 +96,7 @@ public class MainController {
 												@RequestParam("material_type")String materialType, 
 												@RequestParam("vehicle_type")String truckType, 
 												@RequestParam("quantity")String quantity) {
+		System.out.println("tyreType"+tyreType +"MT: "+materialType+"TT: "+truckType+"quantity"+quantity);
 		double rate = service.getRate(tyreType, materialType, truckType, quantity, companyId);
 		JSONObject obj = new JSONObject();
 		obj.put("rate", rate);
