@@ -59,7 +59,7 @@ public class MainController {
 		User user = (User)session.getAttribute("user");
 		SupplyDetails details = new SupplyDetails();
 		details.setNrl(0.0);
-		details.setDriverReturn(false);
+		details.setDriverReturn(0.0);
 		Vehicle vehicle = new Vehicle();
 		details.setVehicle(vehicle);
 		model.addAttribute("supply", details);
@@ -97,7 +97,7 @@ public class MainController {
 												@RequestParam("vehicle_type")String truckType, 
 												@RequestParam("quantity")String quantity) {
 		System.out.println("tyreType"+tyreType +"MT: "+materialType+"TT: "+truckType+"quantity"+quantity);
-		double rate = service.getRate(tyreType, materialType, truckType, quantity, companyId);
+		double rate = service.getRate(tyreType, materialType, truckType.translateEscapes(), quantity, companyId);
 		JSONObject obj = new JSONObject();
 		obj.put("rate", rate);
 		return obj.toString();

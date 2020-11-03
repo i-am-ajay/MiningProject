@@ -118,7 +118,7 @@
 			  			<div class="col-2">
 			  				<div class="form-group">
 					    		<label class="font-weight-bold">Vehicle Of</label>
-					     		<input id="vehicle_of" class="form-control form-control-sm" placeholder="" name="vehicleOf"/>
+					     		<f:input id="vehicle_of" class="form-control form-control-sm" path="clientName"/>
 			  				</div>
 			  			</div>
 				  </div>
@@ -140,8 +140,8 @@
 				  	<div class="col-2">
 				  		<div class="form-group">
 					    		<label class="font-weight-bold form-check-label">Driver Return</label>
-					     		<f:checkbox id="driver_return" class="form-check-input mx-4 mt-2" path="driverReturn"/>
-					     		<%-- <f:input type="hidden" id="driver_return_save" path = "driverReturn" /> --%>
+					     		<input type="checkbox" id="driver_return" class="form-check-input mx-4 mt-2"/>
+					     		<f:input type="hidden" id="driver_return_save" path = "driverReturn" />
 					     		<input type="hidden" id="hidden_driver_return" value="${parameter.driverReturn}" />
 			  			</div>
 				  	</div>
@@ -200,7 +200,7 @@
 	            	<td>${item.token}</td>
 	                <td>${item.driverName}</td>
 	                <td>${item.driverNumber}</td>
-	                <td>${item.vehicle.clientId.name}
+	                <td>${item.clientName}
 	                <td>${item.vehicle.vehicleNo}</td>
 	                <td>${item.vehicle.vehicleType}</td>
 	                <td>${item.vehicle.tyreType}</td>
@@ -211,7 +211,7 @@
 	                <td>${item.discount}</td>
 	                <td>${item.finalRate}</td>
 	                <td>${item.nrl}</td>
-	                <td>${item.driverReturn ? 'Yes' :'No' }</td>
+	                <td>${item.driverReturn}</td>
 	                <td>${item.salesDate}</td>
 	                 <c:if test="${role.equalsIgnoreCase('admin')}">
                 		<td>
@@ -443,7 +443,7 @@
 	function driverReturnLogic(){
 		let driverReturnAmount = 0.0;
 		if($("#driver_return").prop("checked")){
-			//$("#driver_return_save").val($("#hidden_driver_return").val());
+			$("#driver_return_save").val($("#hidden_driver_return").val());
 			driverReturnAmount = $("#hidden_driver_return").val();
 		}
 		return driverReturnAmount;

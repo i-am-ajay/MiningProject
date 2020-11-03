@@ -158,8 +158,9 @@ public class MiningService {
 	// get data of supply
 	
 	public List<SupplyDetails> getTop10Records(){
-		LocalDateTime startDate = LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0));
-		LocalDateTime endDate = LocalDateTime.of(LocalDate.now(), LocalTime.of(23, 59));
+		LocalDateTime endDate = LocalDateTime.now();
+		LocalDateTime startDate = endDate.minusDays(1);
+		
 		return dao.getSaleData(0, startDate, endDate);
 		
 	}

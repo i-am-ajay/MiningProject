@@ -1,25 +1,7 @@
-* Add a sanchalak - System allows only 1 sanchalak more than 1 sanchalak will result in error.
-
-* Add a driver return 
-
-Both entries will be in client screen. 
-
-// Updation.
-
-Sales Report 
-Parameter - Owner Name
-
-In Fields show - Owner Name
-
-Report Is not working properly.
-
-
--- Contractor -- 
-Wrong entry in ledger for.
-
-Supply Screen owner name. 
-
-Remove Driver return alert.
-
-Sales Report Not working property.
--- 
+* Add fields in database tables.
+	supply_details - clientName varchar
+	parameters - sanchalanTrolly
+	
+	
+* Update column
+	driverReturn in supply table to double.

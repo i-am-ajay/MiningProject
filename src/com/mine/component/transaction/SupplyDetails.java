@@ -31,6 +31,7 @@ public class SupplyDetails {
 	private Vehicle vehicle;
 	private String driverName;
 	private String driverNumber;
+	private String clientName;
 	private String quantity;
 	private String material;
 	@Transient
@@ -39,7 +40,7 @@ public class SupplyDetails {
 	private String tyreType;
 	
 	private String paymentType;
-	private boolean driverReturn;
+	private double driverReturn;
 	private double discount;
 	private double rate;
 	
@@ -94,10 +95,10 @@ public class SupplyDetails {
 	public void setPaymentType(String paymentType) {
 		this.paymentType = paymentType;
 	}
-	public boolean getDriverReturn() {
+	public double getDriverReturn() {
 		return driverReturn;
 	}
-	public void setDriverReturn(boolean driverReturn) {
+	public void setDriverReturn(double driverReturn) {
 		this.driverReturn = driverReturn;
 	}
 	public double getDiscount() {
@@ -163,5 +164,13 @@ public class SupplyDetails {
 	}
 	public void setStatus(boolean status) {
 		this.status = status;
+	}
+	public String getClientName() {
+		return clientName;
+	}
+	public void setClientName(String clientName) {
+		this.clientName = clientName;
 	}	
+	
+	
 }

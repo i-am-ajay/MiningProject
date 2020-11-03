@@ -124,7 +124,7 @@
 			            		<td>${item.token}</td>
 				                <td>${item.driverName}</td>
 				                <td>${item.driverNumber}</td>
-				                <td>${item.vehicle.clientId.name}</td>
+				                <td>${item.clientName}</td>
 				                <td>${item.vehicle.vehicleNo}</td>
 				                <td>${item.vehicle.vehicleType}</td>
 				                <td>${item.vehicle.tyreType}</td>
@@ -135,7 +135,7 @@
 				                <td>${item.discount}</td>
 				                <td>${item.finalRate}</td>
 				                <td>${item.nrl}</td>
-				                <td>${item.driverReturn ? 'Yes' : 'No'}</td>
+				                <td>${item.driverReturn}</td>
 				                <td>${item.salesDate}</td>
 		              		</tr>
 		             </c:forEach>
