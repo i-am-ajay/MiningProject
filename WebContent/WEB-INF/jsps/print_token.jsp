@@ -6,9 +6,8 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Supply and Sales</title>
+<title>Print Sales Token</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="${pageContext.request.contextPath}/static_resources/css/style.css" >
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/static_resources/css/style.css" >
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
@@ -20,53 +19,9 @@
 	
  -->
 <body class="mt-1 p-1 m-1">
-	<div class="main-section mx-auto">
-	<!-- <div class="section-1 my-3 mb-5 mx-3 border p-2">
-		<div class="header mb-2 row">
-			<div class="col-2"></div>
-			<div class="col-8 text-center border-bottom border-dark w-50"><h4>Mining Token</h4></div>
-			<div class="col-2">Date: <span>2020-10-20</span></div>
-		</div>
-		<div class="row mb-3">
-			<div class="col-2 font-weight-bold">Token No: <span class="pl-2 font-weight-normal">OCT-1</span></div>
-			<div class="col-2 font-weight-bold">Driver Name: <span class="pl-2 font-weight-normal">Shyam</span></div>
-			<div class="col-2 font-weight-bold">Driver Contact: <span class="pl-2 font-weight-normal">768976854</span></div>
-			<div class="col-2 font-weight-bold">Vehicle No: <span class="pl-2 font-weight-normal">MH-1222</span></div>
-			<div class="col-2 font-weight-bold">Vehicle Tyre: <span class="pl-2 font-weight-normal">12</span></div>
-		</div>
-		<div class="row">
-			<div class="col-2 font-weight-bold">Vehicle Type: <span class="pl-2 font-weight-normal">OCT-1</span></div>
-			<div class="col-2 font-weight-bold">Material Type: <span class="pl-2 font-weight-normal">Shyam</span></div>
-			<div class="col-2 font-weight-bold">Quantity: <span class="pl-2 font-weight-normal">768976854</span></div>
-			<div class="col font-weight-bold">Vehicle No: <span class="pl-2 font-weight-normal">MH-1222</span></div>
-			<div class="col font-weight-bold">Vehicle Tyre: <span class="pl-2 font-weight-normal">12</span></div>
-		</div>
-	</div>
-	
-	<div class="section-2 my-3 mb-5 mx-3 border p-2">
-		<div class="header mb-2 row">
-			<div class="col-2"></div>
-			<div class="col-8 text-center border-bottom border-dark w-50"><h4>Mining Token</h4></div>
-			<div class="col-2">Date: <span>2020-10-20</span></div>
-		</div>
-		<div class="row mb-3">
-			<div class="col-2 font-weight-bold">Token No: <span class="pl-2 font-weight-normal">OCT-1</span></div>
-			<div class="col-2 font-weight-bold">Driver Name: <span class="pl-2 font-weight-normal">Shyam</span></div>
-			<div class="col-2 font-weight-bold">Driver Contact: <span class="pl-2 font-weight-normal">768976854</span></div>
-			<div class="col-2 font-weight-bold">Vehicle No: <span class="pl-2 font-weight-normal">MH-1222</span></div>
-			<div class="col-2 font-weight-bold">Vehicle Tyre: <span class="pl-2 font-weight-normal">12</span></div>
-		</div>
-		<div class="row">
-			<div class="col-2 font-weight-bold">Vehicle Type: <span class="pl-2 font-weight-normal">OCT-1</span></div>
-			<div class="col-2 font-weight-bold">Material Type: <span class="pl-2 font-weight-normal">Shyam</span></div>
-			<div class="col-2 font-weight-bold">Quantity: <span class="pl-2 font-weight-normal">768976854</span></div>
-			<div class="col font-weight-bold">Vehicle No: <span class="pl-2 font-weight-normal">MH-1222</span></div>
-			<div class="col font-weight-bold">Vehicle Tyre: <span class="pl-2 font-weight-normal">12</span></div>
-		</div>
-	</div> -->
-	
+	<!-- <div class="main-section mx-auto">-->
 	<div class="section-3 my-3 ml-3 mb-5 p-1">
-		<div class="row" style="font-size: 1em;">
+		<div class="row" style="font-size: 1.2em;">
 		<div class="col-6">
 			<div class="header mb-2 row">
 			<div class="col-6 text-left border-bottom border-dark w-50"><h4>Mining Token</h4></div>
@@ -83,7 +38,7 @@
 			<div class="col-3 font-weight-bold px-2">Vehicle Tyre: <span class="font-weight-normal">${supply.vehicle.tyreType}</span></div>
 			<div class="col-3 font-weight-bold px-2">Vehicle Type: <span class="font-weight-normal">${supply.vehicle.vehicleType}</span></div>
 			<div class="col-3 font-weight-bold px-2">Material Type: <span class="font-weight-normal">${supply.material}</span></div>
-			<div class="col-3 font-weight-bold px-2">Quantity: <span class="font-weight-normal">${supply.quantity}</span></div>
+			<div class="col-3 font-weight-bold px-2">Quantity: <span class="font-weight-normal">${qty}</span></div>
 			<!-- <div class="col font-weight-bold">Vehicle No: <span class="pl-2 font-weight-normal">MH-1222</span></div>
 			<div class="col font-weight-bold">Vehicle Tyre: <span class="pl-2 font-weight-normal">12</span></div> -->
 		</div>
@@ -105,14 +60,14 @@
 			<div class="col-3 font-weight-bold px-2">Vehicle Tyre: <span class="font-weight-normal">${supply.vehicle.tyreType}</span></div>
 			<div class="col-3 font-weight-bold px-2">Vehicle Type: <span class="font-weight-normal">${supply.vehicle.vehicleType}</span></div>
 			<div class="col-3 font-weight-bold px-2">Material Type: <span class="font-weight-normal">${supply.material}</span></div>
-			<div class="col-3 font-weight-bold px-2">Quantity: <span class="font-weight-normal">${supply.quantity}</span></div>
+			<div class="col-3 font-weight-bold px-2">Quantity: <span class="font-weight-normal">${qty}</span></div>
 			<!-- <div class="col font-weight-bold">Vehicle No: <span class="pl-2 font-weight-normal">MH-1222</span></div>
 			<div class="col font-weight-bold">Vehicle Tyre: <span class="pl-2 font-weight-normal">12</span></div> -->
 		</div>
 		</div>
 		</div>
 		<div class="row">
-		<div class="col-6 mt-5">
+		<div class="col-6 mt-5" style="font-size: 1.2em;">
 		<div class="header mb-2 row">
 			<div class="col-7 text-left border-bottom border-dark w-50"><h4>Mining Token <span style="font-size:.5em;">(Office Copy)</span></h4></div>
 			<div class="col-4">Date: <span>${supply.salesDate}</span></div>
@@ -127,11 +82,11 @@
 		<div class="px-2 col-3 font-weight-bold">Vehicle Tyre: <span class="font-weight-normal">${supply.vehicle.tyreType}</span></div>
 			<div class="px-2 col-3 font-weight-bold p-1">Vehicle Type: <span class="font-weight-normal">${supply.vehicle.vehicleType}</span></div>
 			<div class="px-2 col-3 font-weight-bold p-1">Material Type: <span class="font-weight-normal">${supply.material}</span></div>
-			<div class="px-2 col-3 font-weight-bold p-1">Quantity: <span class="font-weight-normal">${supply.quantity}</span></div>
+			<div class="px-2 col-3 font-weight-bold p-1">Quantity: <span class="font-weight-normal">${qty}</span></div>
 			<!-- <div class="col ont-weight-bold">Vehicle Tyre: <span class="pl-2 font-weight-normal">12</span></div> -->
 		</div>
 		<div class="row p-1">
-			<div class="px-2 col-3 font-weight-bold p-1">Rate: <span class="font-weight-normal">${supply.rate}</span></div>
+			<div class="px-2 col-3 font-weight-bold p-1">Rate: <span class="font-weight-normal">${supply.finalRate}</span></div>
 			<div class="px-2 col-3 font-weight-bold p-1">Vehicle Of:<span class="font-weight-normal">&nbsp;${supply.vehicle.clientId.name}</span></div>
 		</div>
 		</div>

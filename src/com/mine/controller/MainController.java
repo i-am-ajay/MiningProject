@@ -86,6 +86,20 @@ public class MainController {
 		User user = (User)session.getAttribute("user");
 		service.saveSupplyDetails(details, user);
 		model.addAttribute("supply",details);
+		if((details.getQuantity().equalsIgnoreCase("foot")) || (details.getQuantity().equalsIgnoreCase("bucket")) ||
+				(details.getQuantity().equalsIgnoreCase("ton"))) {
+			System.out.println("In print quantity test");
+			double rate = service.getRate(details.getTyreType(), details.getMaterial(), details.getVehicleType(), details.getQuantity(), companyId);
+			double quantity = details.getRate() / rate;
+			System.out.println("476284632876876867Rate"+rate);
+			System.out.println("Quantity"+quantity);
+			
+			model.addAttribute("qty",Long.toString(Math.round(quantity)).concat(" ").concat(details.getQuantity()));
+		}
+		else {
+			System.out.println("Test quantity");
+			model.addAttribute("qty",details.getQuantity());
+		}
 		page = "print_token";
 		return page;
 	}
@@ -97,7 +111,8 @@ public class MainController {
 												@RequestParam("vehicle_type")String truckType, 
 												@RequestParam("quantity")String quantity) {
 		System.out.println("tyreType"+tyreType +"MT: "+materialType+"TT: "+truckType+"quantity"+quantity);
-		double rate = service.getRate(tyreType, materialType, truckType.translateEscapes(), quantity, companyId);
+		System.out.println();
+		double rate = service.getRate(tyreType, materialType, truckType, quantity, companyId);
 		JSONObject obj = new JSONObject();
 		obj.put("rate", rate);
 		return obj.toString();
@@ -265,7 +280,10 @@ public class MainController {
 			return "login";
 		}
 		System.out.println(details.getDriverName());
+		
 		model.addAttribute("supply",details);
+		
+		
 		return "print_token";
 	}
 	
