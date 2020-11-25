@@ -17,6 +17,7 @@
 	<div class="row">
 			<h4 class=" col-8 border-bottom border-danger mt-1 mx-3 mb-3 pb-2 display-5" id="form_title">Update Rates</h4>
 			<div class="col-2 align-right ml-auto pl-5 mr-5"><i id="home_icon" class="fa fa-home fa-x" aria-hidden="true"></i></div>
+			<div class="col-1"><a class="btn btn-danger btn-sm" style="font-size: .5em;" href="${pageContext.request.contextPath}/logout">Logout</a></div>
 	</div> 
 	<!-- <h6 class="border-bottom mb-1 text-muted pb-2" id="form_title">Update Rates</h6> -->
 		<div id="table" class="mx-auto container">

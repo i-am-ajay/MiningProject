@@ -44,6 +44,7 @@
 		<div class="row">
 			<h4 class="border-bottom border-danger mt-1 mx-3 mb-3 pb-2 display-5 col-8" id="form_title">Deposite and Expense</h4>
 			<div class="col-2 align-right ml-auto pl-5 mt-4 mr-5"><i id="home_icon" class="fa fa-home fa-2x" aria-hidden="true"></i></div>
+			<div class="col-1"><a class="btn btn-danger btn-sm mt-4" style="font-size: .6em;" href="${pageContext.request.contextPath}/logout">Logout</a></div>
 		</div>
 		<form method="POST" action="ledger_entries_screen" id="eledger">
 		   <!-- Patient Vitals -->
@@ -107,7 +108,7 @@
 					    	</div>
 					    </div>
 				 	</div>
-				 	<input type="submit" class="btn btn-sm btn-success btn-block w-50 mx-auto" value="submit"/>
+				 	<input type="submit" class="btn btn-sm btn-success btn-block w-50 mx-auto" onclick="this.disabled=true;" value="submit"/>
 			  	</div>
 			</div>
 		</div>

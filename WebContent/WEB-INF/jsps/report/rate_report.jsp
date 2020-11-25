@@ -19,6 +19,7 @@
 		<div class="row">
 			<h6 class="border-bottom mx-1 text-muted pb-2" id="form_title">Rate Report</h6>
 			<div class="col-2 align-right ml-auto pl-5 mr-5"><i id="home_icon" class="fa fa-home fa-x" aria-hidden="true"></i></div>
+			<div class="col-1"><a class="btn btn-danger btn-sm" style="font-size: .5em;" href="${pageContext.request.contextPath}/logout">Logout</a></div>
 		</div>
 		<div  class="mt-3 bg-light p-1">
 			<form action="rate_report" method="POST">

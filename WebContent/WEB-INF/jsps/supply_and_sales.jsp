@@ -20,11 +20,12 @@
 		based on these quantities. 
 	
  -->
-<body class=mt-1>
+<body class=mt-1 onload="noBack();" onpageshow="if(event.persisted) noBack();" onunload="">
 	<div class="px-2 pb-2 m-auto" style="width:95%;">
 		<div class="row">
 			<h4 class="border-bottom border-danger mt-1 mx-3 mb-3 pb-2 display-5 col-8" id="form_title">Supply And Sales</h4>
 			<div class="col-2 align-right ml-auto pl-5 mt-2 mr-5"><i id="home_icon" class="fa fa-home fa-2x" aria-hidden="true"></i></div>
+			<div class="col-1"><a class="btn btn-danger btn-sm mt-2" style="font-size: .6em;" href="${pageContext.request.contextPath}/logout">Logout</a></div>
 		</div>
 		<f:form method="POST" modelAttribute="supply" action="save_supply" id="sales_form">
 		   <!-- Patient Vitals -->
@@ -232,6 +233,7 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 	<script src="https://use.fontawesome.com/80a486f3d9.js"></script>
 	<!--  <script src="${pageContext.request.contextPath}/static_resources/js/header_manipulate.js"></script>-->
+	</script>
 	<script>
 	// ------------------------------ Page Load Initialization -----------------------------------
 		$(document).ready(
@@ -261,6 +263,10 @@
 			}
 		);
 
+
+		window.history.forward();
+		function noBack(){window.history.forward()}
+		
 		// ------------------------------ Page Load Configuration End ---------------------------------
 		
 		// ------------------------------ On Page Actions ------------------------------------------
@@ -286,6 +292,12 @@
 				alert("Calculate Rate, before saving.");
 				return -1;
 			}
+			return true;
+		});
+		// disable submit button on submit.
+		$('form').submit(function () {
+		    //$(this).find(':submit').attr('disabled', 'disabled');
+		    $('#save_btn').attr('disabled','disabled');
 		});
 		
 		// cancel button logic

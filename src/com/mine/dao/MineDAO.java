@@ -336,7 +336,7 @@ public class MineDAO {
 		List<Predicate> predicateList = new ArrayList<>();
 		if(!quantity.equalsIgnoreCase("bucket") && !quantity.equalsIgnoreCase("ton") && !quantity.equalsIgnoreCase("foot")) {
 			predicateList.add(builder.equal(from.get("tyreType"), tyreType));
-			predicateList.add(builder.equal(from.get("truckType"), truckType.strip()));
+			predicateList.add(builder.equal(from.get("truckType"), truckType));
 		}
 		else {
 			predicateList.add(builder.isNull(from.get("tyreType")));

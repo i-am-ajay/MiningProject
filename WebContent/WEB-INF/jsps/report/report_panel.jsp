@@ -17,6 +17,7 @@
 	<div class="row">
 		<h4 class="border-bottom border-danger mt-1 mx-3 mb-3 pb-2 display-5 col-8" id="form_title">Report Dashboard</h4>
 		<div class="col-2 align-right ml-auto pl-5 mt-2 mr-5"><i id="home_icon" class="fa fa-home fa-2x" aria-hidden="true"></i></div>
+		<div class="col-1"><a class="btn btn-danger btn-sm mt-2" style="font-size: .5em;" href="${pageContext.request.contextPath}/logout">Logout</a></div>
 	</div>
 	<div class="row mt-3">
 		<div class="col-sm-12 col-md-4">

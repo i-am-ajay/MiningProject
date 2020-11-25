@@ -86,6 +86,16 @@ public class MainController {
 		User user = (User)session.getAttribute("user");
 		service.saveSupplyDetails(details, user);
 		model.addAttribute("supply",details);
+		if((details.getQuantity().equalsIgnoreCase("foot")) || (details.getQuantity().equalsIgnoreCase("bucket")) ||
+				(details.getQuantity().equalsIgnoreCase("ton"))) {
+			//System.out.println("In print quantity test");
+			double rate = service.getRate(details.getTyreType(), details.getMaterial(), details.getVehicleType(), details.getQuantity(), companyId);
+			double quantity = details.getRate() / rate;
+			model.addAttribute("qty",Long.toString(Math.round(quantity)).concat(" ").concat(details.getQuantity()));
+		}
+		else {
+			model.addAttribute("qty",details.getQuantity());
+		}
 		page = "print_token";
 		return page;
 	}
@@ -96,8 +106,9 @@ public class MainController {
 												@RequestParam("material_type")String materialType, 
 												@RequestParam("vehicle_type")String truckType, 
 												@RequestParam("quantity")String quantity) {
-		System.out.println("tyreType"+tyreType +"MT: "+materialType+"TT: "+truckType+"quantity"+quantity);
-		double rate = service.getRate(tyreType, materialType, truckType.translateEscapes(), quantity, companyId);
+		//System.out.println("tyreType"+tyreType +"MT: "+materialType+"TT: "+truckType+"quantity"+quantity);
+		//System.out.println();
+		double rate = service.getRate(tyreType, materialType, truckType, quantity, companyId);
 		JSONObject obj = new JSONObject();
 		obj.put("rate", rate);
 		return obj.toString();
@@ -135,7 +146,7 @@ public class MainController {
 		LocalDate endDate = LocalDate.now();
 		List<String[]> stringList = reportController.getPartyLedgerEntries("Cash", startDate, endDate);
 		model.addAttribute("ledger_records",stringList);
-		System.out.println(stringList.size());
+		//System.out.println(stringList.size());
 		return "ledger_entries";
 	}
 	
@@ -255,6 +266,12 @@ public class MainController {
 		}
 		return obj.toString();
 	}
+	
+	@RequestMapping("logout")
+	public String logout(HttpSession session) {
+		session.invalidate();
+		return "login";
+	}
 	// ---------------------------------End User authentication control -------------------
 	
 	// --------------------------------- Print token -------------------------------
@@ -264,7 +281,6 @@ public class MainController {
 		if(session.getAttribute("user") == null){
 			return "login";
 		}
-		System.out.println(details.getDriverName());
 		model.addAttribute("supply",details);
 		return "print_token";
 	}
