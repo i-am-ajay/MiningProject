@@ -25,6 +25,7 @@
 		<div class="row">
 			<h4 class="border-bottom border-danger mt-1 mx-3 mb-3 pb-2 display-5 col-8" id="form_title">Supply And Sales</h4>
 			<div class="col-2 align-right ml-auto pl-5 mt-2 mr-5"><i id="home_icon" class="fa fa-home fa-2x" aria-hidden="true"></i></div>
+			<div class="col-1"><a class="btn btn-danger btn-sm mt-2" style="font-size: .6em;" href="${pageContext.request.contextPath}/logout">Logout</a></div>
 		</div>
 		<f:form method="POST" modelAttribute="supply" action="save_supply" id="sales_form">
 		   <!-- Patient Vitals -->
@@ -258,6 +259,13 @@
 			$("#logout").hide();
 			}
 		);
+		// disable back button
+		$(document).ready(function() {
+      		window.history.pushState(null, "", window.location.href);        
+      		window.onpopstate = function() {
+          	window.history.pushState(null, "", window.location.href);
+      		};
+  		});
 
 		// ------------------------------ Page Load Configuration End ---------------------------------
 		
@@ -284,6 +292,12 @@
 				alert("Calculate Rate, before saving.");
 				return -1;
 			}
+			return true;
+		});
+		// disable submit button on submit.
+		$('form').submit(function () {
+		    //$(this).find(':submit').attr('disabled', 'disabled');
+		    $('#save_btn').attr('disabled','disabled');
 		});
 		
 		// cancel button logic

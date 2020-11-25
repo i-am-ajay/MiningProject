@@ -285,11 +285,9 @@ public class MasterController {
 		else if(user.getRole().equalsIgnoreCase("admin")) {
 			Parameters param = service.getParameters();
 			model.addAttribute("parameters",param);
-			System.out.println("Fetched Id "+param.getId());
 			page = "parameters";
 		}
 		else {
-			System.out.println(user.getRole());
 			page = "admin_panel";
 		}
 		return page;
@@ -300,8 +298,6 @@ public class MasterController {
 		if(result.hasErrors()) {
 			System.out.println(result.getObjectName());
 		}
-		System.out.println("Id For update"+param.getId());
-		System.out.println("Driver Return For update"+param.getDriverReturn());
 		model.addAttribute("status",service.updateParameters(param));
 		return "redirect:parameter_display";
 	}
