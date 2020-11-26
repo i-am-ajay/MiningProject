@@ -169,6 +169,13 @@ public class MiningService {
 		System.out.println(salesId);
 		return dao.cancleEntry("sales", salesId);
 	}
+	
+	// One Day Sale Count
+	public long getTodaySaleCount() {
+		long count = dao.getSaleCount();
+		System.out.println(count);
+		return count;
+	}
 	// ----------------------------- End Supply Service ------------------------------------
 	
 	

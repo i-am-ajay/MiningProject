@@ -10,6 +10,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/static_resources/css/style.css" >
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/static_resources/css/bootstrap_min.css" >
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/static_resources/css/datatable_min.css" >
 	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
 	
 </head>
@@ -49,11 +50,12 @@
 		</div>
 	</div>
 	<!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
-	<script src="${pageContext.request.contextPath}/static_resources/js/jquery_3.5.1_min.js"></script>
+<script src="${pageContext.request.contextPath}/static_resources/js/jquery_3.5.1_min.js"></script>
 	<script src="${pageContext.request.contextPath}/static_resources/js/bootstrap_min.js"></script>
 	<script src="${pageContext.request.contextPath}/static_resources/js/popper.js"></script>
 	<script src="${pageContext.request.contextPath}/static_resources/js/bootstrap_max_cdn_min.js"></script>
 	<script src="${pageContext.request.contextPath}/static_resources/js/font_awesome.js"></script>
+	<script src="${pageContext.request.contextPath}/static_resources/js/data_table.js"></script>
 	<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.21/af-2.3.5/b-1.6.3/b-html5-1.6.3/datatables.min.js"></script>
 	<script>
 		$(document).ready(e =>{

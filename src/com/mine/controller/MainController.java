@@ -68,6 +68,7 @@ public class MainController {
 		model.addAttribute("data_list",service.getTop10Records());
 		model.addAttribute("parameter",service.getParameters());
 		model.addAttribute("role",user.getRole());
+		model.addAttribute("sale_count",service.getTodaySaleCount());
 		return "supply_and_sales";
 	}
 	
@@ -282,6 +283,7 @@ public class MainController {
 			return "login";
 		}
 		model.addAttribute("supply",details);
+		System.out.println("Called Printing page *************** $$$$$$$$");
 		return "print_token";
 	}
 	
