@@ -188,6 +188,7 @@
                 <th>NRL</th>
                 <th>Driver Return</th>
                 <th>Date</th>
+                <th>Reprint Token</th>
                 <c:if test="${role.equalsIgnoreCase('admin')}">
                 	<th>Cancel Sale</th>
                 </c:if>
@@ -219,6 +220,7 @@
 	                <td>${item.nrl}</td>
 	                <td>${item.driverReturn}</td>
 	                <td>${item.salesDate}</td>
+	                <td><button class="btn btn-sm btn-sucess reprint_btn" id="p${item.id}">&nbsp;&nbsp;&nbsp;</button></td>
 	                 <c:if test="${role.equalsIgnoreCase('admin')}">
                 		<td>
                 		<c:if test="${role.equalsIgnoreCase('admin') && item.status == true}">
@@ -426,6 +428,23 @@
 					
 				}
 			});
+		}
+		
+		function reprintToken(id){
+			window.location.href = "reprint_token"
+			/* $.ajax({
+				url : "${home}reprint_token",
+				data: {"sales_id":id},
+				success: function(result, status, xhr){
+					if(result){
+						console.log(result);
+						$("#"+id).addClass(result);
+					}
+				},
+				error: function(resut, status, xhr){
+					
+				}
+			}); */
 		}
 		/*
 		$('input[type="radio"][name="belongsTo"]').change( function(){
