@@ -822,8 +822,6 @@ public class MineDAO {
 	@Transactional
 	public boolean updateParameters(Parameters param) {
 		Session session = factory.getCurrentSession();
-		System.out.println(param.getDriverReturn());
-		System.out.println(param.getId());
 		boolean status = false;
 		try {
 				session.update(param);

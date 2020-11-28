@@ -59,7 +59,7 @@
 			<div class="card bg-light my-1 py-1" id="inc_exp">
 			<article class="card-body mx-auto">
 				<h4 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Income<br/>Expense</h4>
-				<p class="text-center mt-3"><i class="fa fa-money fa-3x" aria-hidden="true"></i></p>	
+				<p class="text-center mt-3"><i class="fa fa-laptop fa-3x" aria-hidden="true"></i></p>	
 			</article>
 			</div>
 		</div>
@@ -75,7 +75,7 @@
 			<div class="card bg-light my-1 py-1" id="params">
 			<article class="card-body mx-auto">
 				<h4 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Parameters<br/>&nbsp;</h4>
-				<p class="text-center mt-3"><i class="fa fa-calculator fa-3x" aria-hidden="true"></i></p>
+				<p class="text-center mt-3"><i class="fa fa-plus fa-3x" aria-hidden="true"></i></p>
 			</article>
 			</div>
 		</div>

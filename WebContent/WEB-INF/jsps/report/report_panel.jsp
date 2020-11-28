@@ -26,7 +26,7 @@
 			<div class="card bg-light my-1 py-1" id="sales_report">
 			<article class="card-body mx-auto">
 				<h4 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Sales<br/>Report</h4>
-				<p class="text-center mt-3"><i class="fa fa-building fa-4x" aria-hidden="true"></i></i></p>	
+				<p class="text-center mt-3"><i class="fa fa-line-chart fa-4x" aria-hidden="true"></i></i></p>	
 			</article>
 			</div>
 		</div>
@@ -34,7 +34,7 @@
 			<div class="card bg-light my-1 py-1" id="client">
 			<article class="card-body mx-auto">
 				<h4 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Client<br/> Report</h4>
-				<p class="text-center mt-3"><i class="fa fa-user-plus fa-4x" aria-hidden="true"></i></p>
+				<p class="text-center mt-3"><i class="fa fa-user fa-4x" aria-hidden="true"></i></p>
 			</article>
 			</div>
 		</div>

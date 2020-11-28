@@ -22,27 +22,20 @@ public class Parameters {
 	
 	protected double royalty;
 	
-	@Column(name="driver_return")
-	protected double driverReturn;
+	@Column(name="driver_return_normal")
+	protected double driverReturnNormal;
 	
-	@Column(name="royalty_changed")
-	protected boolean royaltyChanged;
-	
-	@Column(name="driver_return_changed")
-	protected boolean driverReturnChanged;
+	@Column(name="driver_return_small_vehicle")
+	protected double driverReturnSmallVehicle;
 	
 	// FinalRate <= freeLimit : Sanchalan will be equal to sanchalanOnFree.
 	protected double freeLimit;
 	
-	// Number of Vehicle Filled < thresholdLimit : sanchalanHigh : sanchalanLow 
-	protected int threshholdLimit;
-	
 	protected double sanchalanOnFree;
 	
 	// when vehicle filled is less than threshhold
-	protected double sanchalanHigh;
-	
-	protected double sanchalanLow;
+	@Column(name="sanchalan_normal")
+	protected double sanchalanNormal;
 	
 	protected double sanchalanTrolly;
 	
@@ -59,14 +52,6 @@ public class Parameters {
 
 	public void setRoyalty(double royalty) {
 		this.royalty = royalty;
-	}
-
-	public boolean isRoyaltyChanged() {
-		return royaltyChanged;
-	}
-
-	public void setRoyaltyChanged(boolean royaltyChanged) {
-		this.royaltyChanged = royaltyChanged;
 	}
 
 	public LocalDate getCreationDate() {
@@ -93,20 +78,20 @@ public class Parameters {
 		this.id = id;
 	}
 
-	public double getDriverReturn() {
-		return driverReturn;
+	public double getDriverReturnNormal() {
+		return driverReturnNormal;
 	}
 
-	public void setDriverReturn(double driverReturn) {
-		this.driverReturn = driverReturn;
+	public void setDriverReturnNormal(double driverReturn) {
+		this.driverReturnNormal = driverReturn;
 	}
 
-	public boolean isDriverReturnChanged() {
-		return driverReturnChanged;
+	public double getDriverReturnSmallVehicle() {
+		return driverReturnSmallVehicle;
 	}
 
-	public void setDriverReturnChanged(boolean driverReturnChanged) {
-		this.driverReturnChanged = driverReturnChanged;
+	public void setDriverReturnSmallVehicle(double driverReturnChanged) {
+		this.driverReturnSmallVehicle = driverReturnChanged;
 	}
 
 	public double getFreeLimit() {
@@ -117,14 +102,6 @@ public class Parameters {
 		this.freeLimit = freeLimit;
 	}
 
-	public int getThreshholdLimit() {
-		return threshholdLimit;
-	}
-
-	public void setThreshholdLimit(int threshholdLimit) {
-		this.threshholdLimit = threshholdLimit;
-	}
-
 	public double getSanchalanOnFree() {
 		return sanchalanOnFree;
 	}
@@ -133,20 +110,12 @@ public class Parameters {
 		this.sanchalanOnFree = sanchalanOnFree;
 	}
 
-	public double getSanchalanHigh() {
-		return sanchalanHigh;
+	public double getSanchalanNormal() {
+		return sanchalanNormal;
 	}
 
-	public void setSanchalanHigh(double sanchalanHigh) {
-		this.sanchalanHigh = sanchalanHigh;
-	}
-
-	public double getSanchalanLow() {
-		return sanchalanLow;
-	}
-
-	public void setSanchalanLow(double sanchalanLow) {
-		this.sanchalanLow = sanchalanLow;
+	public void setSanchalanNormal(double sanchalanHigh) {
+		this.sanchalanNormal = sanchalanHigh;
 	}
 
 	public double getSanchalanTrolly() {

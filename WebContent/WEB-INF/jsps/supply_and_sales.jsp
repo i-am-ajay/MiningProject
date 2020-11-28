@@ -22,8 +22,7 @@
 	2) For these quantities rate based on number of bucket,ton or foot and material type.
 	3) When user select any of these quantities, user has to enter a number too, rate calculation will be 
 		based on these quantities. 
-	
- -->
+-->
 <body class=mt-1>
 	<div class="px-2 pb-2 m-auto" style="width:95%;">
 		<div class="row">
@@ -33,7 +32,7 @@
 		</div>
 		<f:form method="POST" modelAttribute="supply" action="save_supply" id="sales_form">
 		   <!-- Patient Vitals -->
-		   <!--  <h4 class="border-bottom m-3 text-muted pb-2" id="form_title">Patient Report Card</h4>-->
+		   <!--  <h4 class="border-bottom m-3 text-muted pb-2" id="form_title">Patient Report Card</h4> -->
 		   <!-- Card Vitals -->
 		   <div class="row pt-1">
 		   <div class="col">
@@ -147,7 +146,8 @@
 					    		<label class="font-weight-bold form-check-label">Driver Return</label>
 					     		<input type="checkbox" id="driver_return" class="form-check-input mx-4 mt-2"/>
 					     		<f:input type="hidden" id="driver_return_save" path = "driverReturn" />
-					     		<input type="hidden" id="hidden_driver_return" value="${parameter.driverReturn}" />
+					     		<input type="hidden" id="hidden_driver_return" value="${parameter.driverReturnNormal}" />
+					     		<input type="hidden" id="hidden_driver_return_small" value="${parameter.driverReturnSmallVehicle}" />
 			  			</div>
 				  	</div>
 				  	<div class="col-2">
@@ -235,16 +235,8 @@
 	
 	<script src="${pageContext.request.contextPath}/static_resources/js/bootstrap_min.js"></script>
 	<script src="${pageContext.request.contextPath}/static_resources/js/jquery_3.5.1_min.js"></script>
-	<script src="${pageContext.request.contextPath}/static_resources/js/popper.js"></script
-	
-	
-	<!-- <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script> -->
+	<script src="${pageContext.request.contextPath}/static_resources/js/popper.js"></script>
 	<script src="https://use.fontawesome.com/80a486f3d9.js"></script>
-	<!--  <script src="${pageContext.request.contextPath}/static_resources/js/header_manipulate.js"></script>-->
-	</script>
 	<script>
 	// ------------------------------ Page Load Initialization -----------------------------------
 		$(document).ready(
@@ -479,19 +471,39 @@
 	//var driverReturnRemoved = false;
 	
 	$("#driver_return").click(e =>{
-		driverReturnLogic();
+		let vehicleNo = $('#vehicle_no').val()
+		if( vehicleNo == null || vehicleNo == ""){
+			alert("Select a vehicle.");
+			$("#driver_return").prop("checked",false);
+		}
+		else{
+			driverReturnLogic();
+		}
 	});
 
 	// --------------------------- Support Methods ----------------------------------------
 	function driverReturnLogic(){
 		let driverReturnAmount = 0.0;
+		let vehicle_type = $("#vehicle_type").val();
 		if($("#driver_return").prop("checked")){
-			$("#driver_return_save").val($("#hidden_driver_return").val());
-			driverReturnAmount = $("#hidden_driver_return").val();
+			console.log(vehicle_type);
+			if(vehicle_type.toLowerCase() == 'tralla' || vehicle_type.toLowerCase() == "trolly"){
+				
+				$("#driver_return_save").val($("#hidden_driver_return_small").val());
+				driverReturnAmount = $("#hidden_driver_return_small").val();
+				console.log(driverReturnAmount);
+				console.log("small vehicle");
+			}
+			else{
+				$("#driver_return_save").val($("#hidden_driver_return").val());
+				driverReturnAmount = $("#hidden_driver_return").val();
+				console.log(driverReturnAmount);
+			}
+			
 		}
 		return driverReturnAmount;
 		
-		
+	}
 		
 		/* if($("#discount").val() != 0){
 			$("#driver_return").attr("disabled",true);
@@ -509,7 +521,6 @@
 				$("#driver_return_save").val($("#hidden_driver_return").val());
 			}
 		} */
-	}
 	// --------------------------- Support Methods End -----------------------------------
 	
 	// --------------------------- Print Method ------------------------------------------
