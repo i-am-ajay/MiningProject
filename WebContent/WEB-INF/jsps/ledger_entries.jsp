@@ -108,7 +108,7 @@
 					    	</div>
 					    </div>
 				 	</div>
-				 	<input type="submit" class="btn btn-sm btn-success btn-block w-50 mx-auto" onclick="this.disabled=true;" value="submit"/>
+				 	<input type="submit" class="btn btn-sm btn-success btn-block w-50 mx-auto" value="submit"/>
 			  	</div>
 			</div>
 		</div>
