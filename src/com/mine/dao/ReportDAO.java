@@ -176,12 +176,12 @@ public class ReportDAO {
 		}
 		if(fromDate != null) {
 			initiateSearch = true;
-			LocalDateTime fromDateTime = LocalDateTime.of(fromDate, LocalTime.of(0, 0));
+			LocalDateTime fromDateTime = LocalDateTime.of(fromDate, LocalTime.of(0, 0,0));
 			predicateList.add(builder.greaterThanOrEqualTo(from.get("salesDate"), fromDateTime));
 		}
 		if(toDate != null) {
 			initiateSearch = true;
-			LocalDateTime toDateTime = LocalDateTime.of(toDate, LocalTime.of(11, 59));
+			LocalDateTime toDateTime = LocalDateTime.of(toDate, LocalTime.of(23, 59, 59));
 			predicateList.add(builder.lessThanOrEqualTo(from.get("salesDate"), toDateTime));
 		}
 		//predicateList.add(builder.equal(from.get("status"), true));

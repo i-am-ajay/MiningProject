@@ -173,4 +173,13 @@ public class SupplyDetails {
 	}	
 	
 	
+	public String getQuantityDetail(double unitRate) {
+		String qty = quantity;
+		if(quantity.equalsIgnoreCase("foot") || quantity.equalsIgnoreCase("bucket") ||
+				quantity.equalsIgnoreCase("ton")){
+			int q = (int)(rate / unitRate);
+			qty = (Integer.toString(q).concat(" ")).concat(quantity);
+		}
+		return qty;
+	}
 }

@@ -5,3 +5,9 @@
 	
 * Update column
 	driverReturn in supply table to double.
+	
+
+* New Columns
+	driver_return_normal
+	driver_return_small_vehicle
+	sanchalan_normal

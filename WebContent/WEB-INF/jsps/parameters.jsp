@@ -9,8 +9,9 @@
 <title>Update Parameters</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/static_resources/css/style.css" >
-	<link rel="stylesheet" href="${pageContext.request.contextPath}/static_resources/css/style.css" >
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/static_resources/css/bootstrap_min.css" >
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/static_resources/css/datatable_min.css" >
+
 </head>
 <body class=mt-1>
 	<div class="container p-2 m-auto">
@@ -66,8 +67,14 @@
   					<div class="row">
   						<div class="col-3">
 					    	<div class="form-group">
-					      		<label class="font-weight-bold">Driver Return</label>
-					      		<f:input class="form-control form-control-sm" id="driverReturn" path="driverReturn"/>
+					      		<label class="font-weight-bold">Driver Return <sup>Normal</sup></label>
+					      		<f:input class="form-control form-control-sm" id="driverReturn" path="driverReturnNormal"/>
+					    	</div>
+					    </div>	
+					    <div class="col-3">
+					    	<div class="form-group">
+					      		<label class="font-weight-bold">Driver Return <sup>Small Vehicle</sup></label>
+					      		<f:input class="form-control form-control-sm" id="driverReturnSm" path="driverReturnSmallVehicle"/>
 					    	</div>
 					    </div>	
 					    <div class="col-3">	
@@ -84,49 +91,24 @@
 					      		<f:input class="form-control form-control-sm" id="freeAmount" path="freeLimit"/>
 					    	</div>
 					    </div>
-					    <div class="col-3">
-					    	<div class="form-group">
-					    		<div>
-					      			<label class="font-weight-bold">Vehicle No Limit <sup>(Sanchalan Change)</sup></label>
-					      		</div>
-					      		<f:input class="form-control form-control-sm" id="limit" path="threshholdLimit"/>
-				    		</div>
-				    	</div>
 					</div>    
 				    <div class="row">
 				    	<div class="col-3">
 					    	<div class="form-group">
 					    		<div>
-					      			<label class="font-weight-bold">Sanchalan Amount Before Limit</label>
+					      			<label class="font-weight-bold">Sanchalan Amount&nbsp;<sup>Normal</sup></label>
 					      		</div>
-					      		<f:input class="form-control form-control-sm" id="amountBeforeLimit" path="sanchalanHigh"/>
+					      		<f:input class="form-control form-control-sm" id="amountBeforeLimit" path="sanchalanNormal"/>
 				    		</div>
 				    	</div>
 					    <div class="col-3">	
 					    	<div class="form-group">
 					    		<div>
-					      			<label class="font-weight-bold">Sanchalan Amount After Limit</label>
+					      			<label class="font-weight-bold">Sanchalan Amount&nbsp;<sup>Small Vehicle</sup></label>
 					      		</div>
-					      		<f:input class="form-control form-control-sm" id="amountAfterLimit" path="sanchalanLow"/>
+					      		<f:input class="form-control form-control-sm" id="amountAfterLimit" path="sanchalanTrolly"/>
 					    	</div>
 					    </div>
-					    
-					    <div class="col-3">
-					    	<div class="form-group">
-					    		<div>
-					      			<label class="font-weight-bold">Sanchalan On Free</label>
-					      		</div>
-					      		<f:input class="form-control form-control-sm" id="freeAmount" path="sanchalanOnFree"/>
-					    	</div>
-					    </div>	
-					    <div class="col-3">
-					    	<div class="form-group">
-					    		<div>
-					      			<label class="font-weight-bold">Sanchalan On Trall/Trolly</label>
-					      		</div>
-					      		<f:input class="form-control form-control-sm" id="tAmount" path="sanchalanTrolly"/>
-					    	</div>
-					    </div>	
 		  			</div>
 			 
 			  	</div>
@@ -139,20 +121,12 @@
 	</f:form>
 	</div>
 	<!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
-	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+	<script src="${pageContext.request.contextPath}/static_resources/js/bootstrap_min.js"></script>
+	<script src="${pageContext.request.contextPath}/static_resources/js/jquery_3.5.1_min.js"></script>
+	<script src="${pageContext.request.contextPath}/static_resources/js/popper.js"></script>
 	<script src="https://use.fontawesome.com/80a486f3d9.js"></script>
 	<!--  <script src="${pageContext.request.contextPath}/static_resources/js/header_manipulate.js"></script>-->
 	<script>
-		$(document).ready(
-			function(){
-				$("#name").attr("required","true");
-				$("#phone").attr("required","true");
-				$("#address").attr("required","true");
-				$("#comission").attr("readonly","true");
-			});
 		$(document).ready(e => {
 			$("#home_icon").hover( e => {
 				$("#home_icon").css({"cursor":"pointer"})
@@ -170,59 +144,8 @@
 			manageDisscount_Commission();
 		});
 
-		// on registration focus out get employee details through ajax call 
-		$("#name").focusout( e =>{
-			$.ajax({
-				type: "POST",
-				url : "${home}get_client",
-				data : {"name":$("#name").val()},
-				success: function(result, status, xhr){
-					console.log(result);
-					if(result != null && result != ""){
-						let json = JSON.parse(result);
-						console.log(json.name)
-						$("#name").attr("readonly","true");
-						$("#name").val(json.name);
-						$("#phone").val(json.contact);
-						$("#address").val(json.address);
-						$("#discount").val(json.discount);
-						$("#comission").val(json.comission);
-						/* if(json.type_desc == 'Contractor'){
-							$("#comission").attr("readonly",false);
-						} */
-						manageDisscount_Commission(json.type_desc);
-
-						// select value of select box.
-
-						$("#type").find("option[value='"+json.client_type+"']").attr("selected","selected");
-					}
-				},
-				error : function(result,status,xhr){
-					$("#name").attr("disabled","false");
-					$("#phone").attr("disabled","false");
-					$("#fgender").attr("disabled","false");
-					$("#mgender").attr("disabled","false");
-				}
-			});
-		});
-
 		//----------------------------- Support Method -----------------------------------
 		
-		function manageDisscount_Commission(val){
-			if(!val){
-				val = $("#type option:selected").text() == "Contractor"
-			}
-			if(val){
-				$("#comission").attr("readonly",false);
-				$("#discount").val(0.0);
-				$("#discount").attr("readonly",true);
-			}
-			else{
-				$("#comission").val(0.0);
-				$("#comission").attr("readonly",true);
-				$("#discount").attr("readonly",false);
-			}
-		}
 		//----------------------------- End Support Method -------------------------------
 	
 	</script>

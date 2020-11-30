@@ -22,6 +22,7 @@ import com.mine.component.master.Vehicle;
 import com.mine.component.transaction.SupplyDetails;
 import com.mine.dao.MineDAO;
 import com.mine.utilities.DefineTypesAndCategories;
+import com.mine.utilities.ParameterValueFetcher;
 
 @Service
 public class MiningService {
@@ -118,7 +119,7 @@ public class MiningService {
 		 * if threshold is not crossed then an entry will be passed to add addition price in expense.
 		 * */
 		Client client = supplyDetails.getVehicle().getClientId();
-		double sanchalanAmount = supplyDetails.getFinalRate() <= params.getFreeLimit()  ? params.getSanchalanOnFree() : params.getSanchalanLow(); 
+		double sanchalanAmount = supplyDetails.getFinalRate() <= params.getFreeLimit()  ? params.getSanchalanOnFree() : ParameterValueFetcher.getSanchalanAmount(params,supplyDetails.getVehicle().getVehicleType()); 
 		Client sanchalanPerson = dao.getSanchalanPerson(1);
 		dao.addDepositeOrExpense(sanchalanPerson.getClientId(), sanchalanAmount, 
 				"Expense", DefineTypesAndCategories.creditExpenseSanchalan.getCashbookType(), 
@@ -168,6 +169,13 @@ public class MiningService {
 	public boolean cancleSales(int salesId) {
 		System.out.println(salesId);
 		return dao.cancleEntry("sales", salesId);
+	}
+	
+	// One Day Sale Count
+	public long getTodaySaleCount() {
+		long count = dao.getSaleCount();
+		System.out.println(count);
+		return count;
 	}
 	// ----------------------------- End Supply Service ------------------------------------
 	

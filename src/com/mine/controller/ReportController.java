@@ -51,6 +51,16 @@ public class ReportController {
 		model.addAttribute("salesList",salesList);
 		model.addAttribute("material_lookup", miningService.getLookupMap("materialType"));
 		model.addAttribute("quantity_lookup", miningService.getLookupMap("quantity"));
+		/*if((details.getQuantity().equalsIgnoreCase("foot")) || (details.getQuantity().equalsIgnoreCase("bucket")) ||
+				(details.getQuantity().equalsIgnoreCase("ton"))) {
+			//System.out.println("In print quantity test");
+			double rate = service.getRate(details.getTyreType(), details.getMaterial(), details.getVehicleType(), details.getQuantity(), companyId);
+			double quantity = details.getRate() / rate;
+			model.addAttribute("qty",Long.toString(Math.round(quantity)).concat(" ").concat(details.getQuantity()));
+		}
+		else {
+			model.addAttribute("qty",details.getQuantity());
+		}*/
 		//model.addAttribute();
 		return "report/sales_report";
 	}

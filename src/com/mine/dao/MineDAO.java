@@ -2,6 +2,7 @@ package com.mine.dao;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,6 +17,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -492,6 +494,28 @@ public class MineDAO {
 		session.save(details);
 	}
 	
+	@Transactional
+	public Long getSaleCount() {
+		System.out.println("Running Sales count");
+		Session session = factory.getCurrentSession();
+		CriteriaBuilder builder = session.getCriteriaBuilder();
+		CriteriaQuery<Long> cQuery = builder.createQuery(Long.class);
+		Root<SupplyDetails> rootSupply = cQuery.from(SupplyDetails.class);
+		LocalDateTime fromDate = LocalDateTime.of(LocalDate.now(),LocalTime.of(0, 0,0));
+		LocalDateTime endDate = LocalDateTime.of(LocalDate.now(), LocalTime.of(23,59,59));
+		cQuery.multiselect(builder.count(rootSupply.get("id"))).where(builder.between(rootSupply.get("salesDate"), fromDate, endDate));
+		// Execute Query
+		TypedQuery<Long> query = session.createQuery(cQuery);
+		Long count = 0L;
+		try {
+			count = query.getSingleResult();
+		}
+		catch(Exception ex) {
+			ex.printStackTrace();
+		}
+		return count;
+	}
+	
 	// amount added from cash transaction screen income and expense both will be registered here.
 	
 	
@@ -798,8 +822,6 @@ public class MineDAO {
 	@Transactional
 	public boolean updateParameters(Parameters param) {
 		Session session = factory.getCurrentSession();
-		System.out.println(param.getDriverReturn());
-		System.out.println(param.getId());
 		boolean status = false;
 		try {
 				session.update(param);

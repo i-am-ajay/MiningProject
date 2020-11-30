@@ -9,9 +9,10 @@
 <title>Income And Expense</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/static_resources/css/style.css" >
-	<link rel="stylesheet" href="${pageContext.request.contextPath}/static_resources/css/style.css" >
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" />
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/static_resources/css/bootstrap_min.css" >
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/static_resources/css/datatable_min.css" >
+	<!--  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" />-->
 </head>
 <!-- 
 	1) We have to change client to party.
@@ -43,8 +44,8 @@
 	<div class="px-2 pb-2 m-auto" style="width:95%;">
 		<div class="row">
 			<h4 class="border-bottom border-danger mt-1 mx-3 mb-3 pb-2 display-5 col-8" id="form_title">Deposite and Expense</h4>
-			<div class="col-2 align-right ml-auto pl-5 mt-4 mr-5"><i id="home_icon" class="fa fa-home fa-2x" aria-hidden="true"></i></div>
-			<div class="col-1"><a class="btn btn-danger btn-sm mt-4" style="font-size: .6em;" href="${pageContext.request.contextPath}/logout">Logout</a></div>
+			<div class="col-2 align-right ml-auto pl-5 mt-2 mr-5"><i id="home_icon" class="fa fa-home fa-2x" aria-hidden="true"></i></div>
+			<div class="col-1"><a class="btn btn-danger btn-sm mt-2" style="font-size: .6em;" href="${pageContext.request.contextPath}/logout">Logout</a></div>
 		</div>
 		<form method="POST" action="ledger_entries_screen" id="eledger">
 		   <!-- Patient Vitals -->
@@ -108,7 +109,7 @@
 					    	</div>
 					    </div>
 				 	</div>
-				 	<input type="submit" class="btn btn-sm btn-success btn-block w-50 mx-auto" value="submit"/>
+				 	<input type="submit" id="save_btn" class="btn btn-sm btn-success btn-block w-50 mx-auto" value="submit"/>
 			  	</div>
 			</div>
 		</div>
@@ -249,11 +250,11 @@
         </table> --%>
 	</div>
 	<!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
-	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+	<script src="${pageContext.request.contextPath}/static_resources/js/bootstrap_min.js"></script>
+	<script src="${pageContext.request.contextPath}/static_resources/js/jquery_3.5.1_min.js"></script>
+	<script src="${pageContext.request.contextPath}/static_resources/js/popper.js"></script>
 	<script src="https://use.fontawesome.com/80a486f3d9.js"></script>
+	<!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 	<!--  <script src="${pageContext.request.contextPath}/static_resources/js/header_manipulate.js"></script>-->
 	<script>
 	// ------------------------------ Page Load Initialization -----------------------------------
@@ -265,6 +266,13 @@
 				$("#home_icon").click( e =>{
 					window.location.href = "admin_panel";
 				});
+		});
+		// disable back button
+
+		// disable submit button on submit.
+		$('form').submit(function () {
+		    //$(this).find(':submit').attr('disabled', 'disabled');
+		    $('#save_btn').attr('disabled','disabled');
 		});
 
 		// ------------------------------ Page Load Configuration End ---------------------------------

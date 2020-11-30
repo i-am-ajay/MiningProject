@@ -10,6 +10,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/static_resources/css/style.css" >
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/static_resources/css/bootstrap_min.css" >
+	<link rel="stylesheet" href="${pageContext.request.contextPath}/static_resources/css/datatable_min.css" >
 	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
 	
 </head>
@@ -108,6 +109,7 @@
 		                <th>Final Rate</th>
 		                <th>NRL</th>
 		                <th>Driver Return</th>
+		                <th>Status</th>
 		                <th>Date</th>
            			 </tr>
 	        	</thead>
@@ -130,13 +132,14 @@
 				                <td>${item.vehicle.vehicleType}</td>
 				                <td>${item.vehicle.tyreType}</td>
 				                <td>${item.material }</td>
-				                <td>${item.quantity}</td>
+				                <td>${item.getQuantity()}</td>
 				                <td>${item.paymentType }</td>
 				                <td>${item.rate}</td>
 				                <td>${item.discount}</td>
 				                <td>${item.finalRate}</td>
 				                <td>${item.nrl}</td>
 				                <td>${item.driverReturn}</td>
+				                <td>${item.status}</td>
 				                <td>${item.salesDate}</td>
 		              		</tr>
 		             </c:forEach>
@@ -150,6 +153,7 @@
 	<script src="${pageContext.request.contextPath}/static_resources/js/popper.js"></script>
 	<script src="${pageContext.request.contextPath}/static_resources/js/bootstrap_max_cdn_min.js"></script>
 	<script src="${pageContext.request.contextPath}/static_resources/js/font_awesome.js"></script>
+	<script src="${pageContext.request.contextPath}/static_resources/js/data_table.js"></script>
 	<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.21/af-2.3.5/b-1.6.3/b-html5-1.6.3/datatables.min.js"></script>
 	<script>
 	var table = null;
