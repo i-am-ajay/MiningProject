@@ -11,6 +11,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -150,13 +151,26 @@ public class ReportDAO {
 	
 	//-------------------------------- Sales Report ------------------------------------------------
 	@Transactional
-	public List<SupplyDetails> getSalesList(String vehicleNo,String quantity, String material, String paymentType, LocalDate fromDate, LocalDate toDate){
+	public List<Object[]> getSalesList(String vehicleNo,String quantity, String material, String paymentType, LocalDate fromDate, LocalDate toDate){
 		boolean initiateSearch = false;
-		List<SupplyDetails> salesList = null;
+		List<Object[]> salesList = null;
 		Session session = factory.getCurrentSession();
 		CriteriaBuilder builder = session.getCriteriaBuilder();
-		CriteriaQuery<SupplyDetails> criteria = builder.createQuery(SupplyDetails.class);
+		CriteriaQuery<Object[]> criteria = builder.createQuery(Object[].class);
 		Root<SupplyDetails> from = criteria.from(SupplyDetails.class);
+		// subquery to get rate
+		// create subquery result type.
+		Subquery<Double> rateQuery = criteria.subquery(Double.class);
+		// create subquery root.
+		Root<Rate> rateRoot = rateQuery.from(Rate.class);
+		List<Predicate> ratePredicate = new ArrayList<>();
+		rateQuery.select(rateRoot.get("rate")).where(
+			builder.and(builder.equal(rateRoot.get("materialType"), from.get("material")),
+					builder.equal(rateRoot.get("quantity"), from.get("quantity"))),
+					builder.isNull(rateRoot.get("truckType")),
+					builder.isNull(rateRoot.get("tyreType"))
+		);
+		
 		List<Predicate> predicateList = new ArrayList<>();
 		if(vehicleNo != null && vehicleNo.length() > 0) {
 			initiateSearch = true;
@@ -186,8 +200,8 @@ public class ReportDAO {
 		}
 		//predicateList.add(builder.equal(from.get("status"), true));
 		if(initiateSearch) {
-			criteria.where(builder.and(predicateList.toArray(new Predicate[predicateList.size()])));
-			TypedQuery<SupplyDetails> salesQuery = session.createQuery(criteria);
+			criteria.multiselect(from,rateQuery).where(builder.and(predicateList.toArray(new Predicate[predicateList.size()])));
+			TypedQuery<Object[]> salesQuery = session.createQuery(criteria);
 			salesList = salesQuery.getResultList();
 		}
 		return salesList;

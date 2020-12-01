@@ -123,24 +123,25 @@
 		            			<tr>
 		            		</c:otherwise>
 		       			 </c:choose> --%>
-		       			 	<tr class="${item.status ? '' : 'table-danger'}">
-			            		<td>${item.token}</td>
-				                <td>${item.driverName}</td>
-				                <td>${item.driverNumber}</td>
-				                <td>${item.clientName}</td>
-				                <td>${item.vehicle.vehicleNo}</td>
-				                <td>${item.vehicle.vehicleType}</td>
-				                <td>${item.vehicle.tyreType}</td>
-				                <td>${item.material }</td>
-				                <td>${item.getQuantity()}</td>
-				                <td>${item.paymentType }</td>
-				                <td>${item.rate}</td>
-				                <td>${item.discount}</td>
-				                <td>${item.finalRate}</td>
-				                <td>${item.nrl}</td>
-				                <td>${item.driverReturn}</td>
-				                <td>${item.status}</td>
-				                <td>${item.salesDate}</td>
+		       			 	item.status
+		       			 	<tr class="${item[0].status ? '' : 'table-danger'}">
+			            		<td>${item[0].token}</td>
+				                <td>${item[0].driverName}</td>
+				                <td>${item[0].driverNumber}</td>
+				                <td>${item[0].clientName}</td>
+				                <td>${item[0].vehicle.vehicleNo}</td>
+				                <td>${item[0].vehicle.vehicleType}</td>
+				                <td>${item[0].vehicle.tyreType}</td>
+				                <td>${item[0].material }</td>
+				                <td>${item[0].getFormattedQuantity(item[1])}</td>
+				                <td>${item[0].paymentType }</td>
+				                <td>${item[0].rate}</td>
+				                <td>${item[0].discount}</td>
+				                <td>${item[0].finalRate}</td>
+				                <td>${item[0].nrl}</td>
+				                <td>${item[0].driverReturn}</td>
+				                <td>${item[0].status}</td>
+				                <td>${item[0].salesDate}</td>
 		              		</tr>
 		             </c:forEach>
 	        	</tbody>

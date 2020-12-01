@@ -182,4 +182,15 @@ public class SupplyDetails {
 		}
 		return qty;
 	}
+	
+	public String getFormattedQuantity(double unitRate) {
+		String qty = this.quantity;
+		if(this.quantity.equalsIgnoreCase("bucket") 
+				|| this.quantity.equalsIgnoreCase("foot")
+				|| this.quantity.equalsIgnoreCase("ton")) {
+			long r = Math.round(this.rate / unitRate);
+			qty = Long.toString(r).concat(" ").concat(this.quantity);
+		}
+		return qty;	
+	}
 }

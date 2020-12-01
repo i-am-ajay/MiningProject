@@ -20,7 +20,7 @@ public class ReportService {
 	ReportDAO reportDAO;
 	
 	// ----------------------- Sales Report Service ---------------------------
-	public List<SupplyDetails> getSupplyDetails(String vehicleNo,String quantity, String material, String paymentType, LocalDate fromDate, LocalDate toDate){
+	public List<Object[]> getSupplyDetails(String vehicleNo,String quantity, String material, String paymentType, LocalDate fromDate, LocalDate toDate){
 		return reportDAO.getSalesList(vehicleNo, quantity, material, paymentType, fromDate, toDate);
 	}
 	

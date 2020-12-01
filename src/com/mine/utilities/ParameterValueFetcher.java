@@ -12,9 +12,6 @@ public class ParameterValueFetcher {
 		if(vehicleType.equalsIgnoreCase("Tralla") || vehicleType.equalsIgnoreCase("Trolly")) {
 			sanchalanAmount = params.getSanchalanTrolly();
 		}
-		else if(vehicleType.equalsIgnoreCase("bugda")) {
-			sanchalanAmount = 0.0;
-		}
 		else {
 			sanchalanAmount = params.getSanchalanNormal();
 		}

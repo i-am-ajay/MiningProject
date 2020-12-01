@@ -47,7 +47,7 @@ public class ReportController {
 		if(session.getAttribute("user") == null) {
 			return "login";
 		}
-		List<SupplyDetails> salesList = reportService.getSupplyDetails(vehicleNumber, quantity, material, paymentType, fromDate, toDate);
+		List<Object[]> salesList = reportService.getSupplyDetails(vehicleNumber, quantity, material, paymentType, fromDate, toDate);
 		model.addAttribute("salesList",salesList);
 		model.addAttribute("material_lookup", miningService.getLookupMap("materialType"));
 		model.addAttribute("quantity_lookup", miningService.getLookupMap("quantity"));

@@ -119,9 +119,12 @@ public class MiningService {
 		 * if threshold is not crossed then an entry will be passed to add addition price in expense.
 		 * */
 		Client client = supplyDetails.getVehicle().getClientId();
-		double sanchalanAmount = supplyDetails.getFinalRate() <= params.getFreeLimit()  ? params.getSanchalanOnFree() : ParameterValueFetcher.getSanchalanAmount(params,supplyDetails.getVehicle().getVehicleType()); 
+		double sancalanAmount = 0.0;
+		if(!supplyDetails.getMaterial().equalsIgnoreCase("bugda")) {
+			sancalanAmount = supplyDetails.getFinalRate() <= params.getFreeLimit()  ? params.getSanchalanOnFree() : ParameterValueFetcher.getSanchalanAmount(params,supplyDetails.getVehicle().getVehicleType());
+		}
 		Client sanchalanPerson = dao.getSanchalanPerson(1);
-		dao.addDepositeOrExpense(sanchalanPerson.getClientId(), sanchalanAmount, 
+		dao.addDepositeOrExpense(sanchalanPerson.getClientId(), sancalanAmount, 
 				"Expense", DefineTypesAndCategories.creditExpenseSanchalan.getCashbookType(), 
 				DefineTypesAndCategories.creditExpenseSanchalan.getCashbookCategory(), 
 				DefineTypesAndCategories.creditExpenseSanchalan.getCreditType(), 
