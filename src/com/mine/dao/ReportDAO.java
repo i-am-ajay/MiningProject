@@ -206,6 +206,17 @@ public class ReportDAO {
 		}
 		return salesList;
 	}
+	
+	@Transactional
+	public List<Object[]> salesSummary(){
+		// get ids of Owner, Sanchalan and Creditor
+		
+		Session session = factory.getCurrentSession();
+		CriteriaBuilder builder = session.getCriteriaBuilder();
+		
+		// Get summary of all the records with specified criteria.
+		return null;
+	}
 	//-------------------------------- End Sales Report --------------------------------------------
 	
 	
@@ -264,4 +275,13 @@ public class ReportDAO {
 	
 	// ------------------------------ End Ledger DAO ---------------------------------------------
 	
+	// ------------------------------ Utility DAO ----------------------------------------
+	@Transactional
+	public void getTypeId() {
+		Session session = factory.getCurrentSession();
+		List<Long> idList = session.createQuery("SELECT id FROM GeneralData WHERE description in ('Owner','Contractor','Sanchalan')",Long.class).getResultList();
+	}
+	
+	
+	// ------------------------------ End Utility DAO ----------------------------------------
 }

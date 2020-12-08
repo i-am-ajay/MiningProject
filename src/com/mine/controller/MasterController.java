@@ -268,10 +268,11 @@ public class MasterController {
 	// ------------------------------------ Administrative Controls ----------------------------
 	// Admin panel control.
 	@RequestMapping("admin_panel")
-	public String admin(HttpSession session) {
-		if(session.getAttribute("user") == null) {
+	public String admin(HttpSession session, Model model) {
+		if(session.getAttribute("user") == null){
 			return "login";
 		}
+		model.addAttribute("role",(String)session.getAttribute("role"));
 		return "admin_panel";
 	}
 	

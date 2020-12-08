@@ -24,6 +24,10 @@ public class ReportService {
 		return reportDAO.getSalesList(vehicleNo, quantity, material, paymentType, fromDate, toDate);
 	}
 	
+	public List<Object[]> combinedSalesReport(){
+		return reportDAO.salesSummary();
+	}
+	
 	// ----------------------- End Sales Report Service -----------------------
 	
 	

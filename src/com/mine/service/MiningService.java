@@ -120,7 +120,7 @@ public class MiningService {
 		 * */
 		Client client = supplyDetails.getVehicle().getClientId();
 		double sancalanAmount = 0.0;
-		if(!supplyDetails.getMaterial().equalsIgnoreCase("bugda")) {
+		if(!supplyDetails.getMaterial().equalsIgnoreCase("bugada")) {
 			sancalanAmount = supplyDetails.getFinalRate() <= params.getFreeLimit()  ? params.getSanchalanOnFree() : ParameterValueFetcher.getSanchalanAmount(params,supplyDetails.getVehicle().getVehicleType());
 		}
 		Client sanchalanPerson = dao.getSanchalanPerson(1);
