@@ -576,8 +576,9 @@ public class MineDAO {
 		}
 		else {
 			generalSubQuery.where(builder.or(builder.equal(generalDataRoot.get("name"),"Owner"),
+					builder.equal(generalDataRoot.get("name"),"Contractor"),
 					builder.equal(generalDataRoot.get("name"),"Contractor")));
-			query.multiselect(clientRoot.get("name"),subQuery).where(builder.notIn(generalSubQuery));
+			query.multiselect(clientRoot.get("name"),subQuery).where(builder.not(builder.in(generalSubQuery)));
 		}
 		
 		return null;
