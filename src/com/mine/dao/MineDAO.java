@@ -16,6 +16,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -539,6 +540,49 @@ public class MineDAO {
 		TypedQuery<SupplyDetails> details = session.createQuery(query);
 		return details.getResultList();
 	}
+	
+	/** combined sale data.
+	 * 1) Categorize Owner-Contractor/Sanchalan/Other Office Expense
+	 * 2) Write a query on Party to fetch all parties from given category.
+	 * 3) For each party get a sum of total amount from ledger.
+	 *  */
+	
+	@Transactional
+	public List<Object[]> getCombinedSales(int selectionCode){
+		Session session = factory.getCurrentSession();
+		CriteriaBuilder builder = session.getCriteriaBuilder();
+		CriteriaQuery<Object[]> query = builder.createQuery(Object[].class);
+		Root<Client> clientRoot = query.from(Client.class);
+		// create SubQuery
+		Subquery<Double> subQuery = query.subquery(Double.class);
+		Root<Ledger> subQueryRoot = subQuery.from(Ledger.class);
+		
+		subQuery.select(builder.sum(builder.sum(subQueryRoot.get("debitAmount")),
+				builder.sum(subQueryRoot.get("creditAmount")))).where(builder.or(builder.equal(subQueryRoot.get("target"), clientRoot.get("name")),
+						builder.equal(subQueryRoot.get("source"), clientRoot.get("name"))));
+		
+		// Get predicate for general data.
+		Subquery<GeneralData> generalSubQuery = query.subquery(GeneralData.class);
+		Root<GeneralData> generalDataRoot = generalSubQuery.from(GeneralData.class);
+		// client predicate
+		if (selectionCode == 1) {
+			generalSubQuery.where(builder.or(builder.equal(generalDataRoot.get("name"),"Owner"),
+					builder.equal(generalDataRoot.get("name"),"Contractor")));
+			query.multiselect(clientRoot.get("name"),subQuery).where(builder.in(generalSubQuery));
+		}
+		else if(selectionCode == 2) {
+			generalSubQuery.where(builder.equal(generalDataRoot.get("name"),"Sanchalan"));
+			query.multiselect(clientRoot.get("name"),subQuery).where(builder.in(generalSubQuery));
+		}
+		else {
+			generalSubQuery.where(builder.or(builder.equal(generalDataRoot.get("name"),"Owner"),
+					builder.equal(generalDataRoot.get("name"),"Contractor")));
+			query.multiselect(clientRoot.get("name"),subQuery).where(builder.notIn(generalSubQuery));
+		}
+		
+		return null;
+	}
+	
 	// ---------------------------- End Sales DAO Methods ----------------------------------------
 	
 	
