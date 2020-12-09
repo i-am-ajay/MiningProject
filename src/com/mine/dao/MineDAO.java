@@ -547,43 +547,7 @@ public class MineDAO {
 	 * 3) For each party get a sum of total amount from ledger.
 	 *  */
 	
-	@Transactional
-	public List<Object[]> getCombinedSales(int selectionCode){
-		Session session = factory.getCurrentSession();
-		CriteriaBuilder builder = session.getCriteriaBuilder();
-		CriteriaQuery<Object[]> query = builder.createQuery(Object[].class);
-		Root<Client> clientRoot = query.from(Client.class);
-		// create SubQuery
-		Subquery<Double> subQuery = query.subquery(Double.class);
-		Root<Ledger> subQueryRoot = subQuery.from(Ledger.class);
-		
-		subQuery.select(builder.sum(builder.sum(subQueryRoot.get("debitAmount")),
-				builder.sum(subQueryRoot.get("creditAmount")))).where(builder.or(builder.equal(subQueryRoot.get("target"), clientRoot.get("name")),
-						builder.equal(subQueryRoot.get("source"), clientRoot.get("name"))));
-		
-		// Get predicate for general data.
-		Subquery<GeneralData> generalSubQuery = query.subquery(GeneralData.class);
-		Root<GeneralData> generalDataRoot = generalSubQuery.from(GeneralData.class);
-		// client predicate
-		if (selectionCode == 1) {
-			generalSubQuery.where(builder.or(builder.equal(generalDataRoot.get("name"),"Owner"),
-					builder.equal(generalDataRoot.get("name"),"Contractor")));
-			query.multiselect(clientRoot.get("name"),subQuery).where(builder.in(generalSubQuery));
-		}
-		else if(selectionCode == 2) {
-			generalSubQuery.where(builder.equal(generalDataRoot.get("name"),"Sanchalan"));
-			query.multiselect(clientRoot.get("name"),subQuery).where(builder.in(generalSubQuery));
-		}
-		else {
-			generalSubQuery.where(builder.or(builder.equal(generalDataRoot.get("name"),"Owner"),
-					builder.equal(generalDataRoot.get("name"),"Contractor"),
-					builder.equal(generalDataRoot.get("name"),"Contractor")));
-			query.multiselect(clientRoot.get("name"),subQuery).where(builder.not(builder.in(generalSubQuery)));
-		}
-		
-		return null;
-	}
-	
+
 	// ---------------------------- End Sales DAO Methods ----------------------------------------
 	
 	

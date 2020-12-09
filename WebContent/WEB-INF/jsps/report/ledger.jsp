@@ -113,11 +113,13 @@
             	<th>Date</th>
                 <th>Particulars</th>
                 <th>Credit Amount</th>
+                <th>Token</th>
                 <th>Remarks</th>
                 <th>&emsp;</th>
                 <th>Date</th>
                 <th>Particular</th>
                 <th>Debit Amount</th>
+                <th>Token</th>
                 <th>Remarks</th>
             </tr>
         </thead>

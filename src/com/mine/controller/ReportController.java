@@ -64,6 +64,18 @@ public class ReportController {
 		//model.addAttribute();
 		return "report/sales_report";
 	}
+	
+	@RequestMapping("ledger_summary")
+	public String salesSummary(HttpSession session, Model model, @RequestParam(name="param", required=false, defaultValue="0") int param) {
+		if(session.getAttribute("user") == null) {
+			return "login";
+		}
+		List<Object[]> obj = null;
+		if(param != 0)
+			obj = reportService.combinedSalesReport(param);
+		model.addAttribute("records", obj);
+		return "report/summary_of_sales";
+	}
 	// ------------------------------ End Sales Control ----------------------------------
 	
 	
@@ -269,16 +281,17 @@ public class ReportController {
 		
 		String [] strArray = null;
 		if(openingBalance >= 0) {
-			strArray = new String[] {startDate.toString(),"Opening Balance",Double.toString(openingBalance),"","","f",""};
+			strArray = new String[] {startDate.toString(),"Opening Balance",Double.toString(openingBalance),"","","f","",""};
 		}
 		else {
-			strArray = new String[] {startDate.toString(),"Opening Balance","",Double.toString(openingBalance),"","f",""};
+			strArray = new String[] {startDate.toString(),"Opening Balance","",Double.toString(openingBalance),"","f","",""};
 		}
 		listOfRecords.add(strArray);
 		
 		String buttonEnableFlag = "f";
 		String cashbookLinking = null;
 		String creditLink = null;
+		String tokenNumber = null;
 		String salesLink = null;
 		String rowId = null;
 		
@@ -287,6 +300,7 @@ public class ReportController {
 			cashbookLinking = ledger.getCashbookLinking() != null? Integer.toString(ledger.getCashbookLinking().getId()) : "";
 			creditLink = ledger.getCreditRecordLinking() != null? Integer.toString(ledger.getCreditRecordLinking().getId()) : "";
 			salesLink = ledger.getSalesLink() != null? Integer.toString(ledger.getSalesLink().getId()) : "";
+			tokenNumber = ledger.getSalesLink() != null ? ledger.getSalesLink().getToken() : "";
 			if(!salesLink.equals("")) {
 				buttonEnableFlag = "f";
 			}
@@ -298,15 +312,15 @@ public class ReportController {
 				buttonEnableFlag = "t";
 				rowId = "credit_"+creditLink;
 			}
-			strArray = new String[] {ledger.getEntryDate().toLocalDate().toString(),ledger.getSource()+" to "+ledger.getTarget(),Double.toString(ledger.getCreditAmount()),Double.toString(ledger.getDebitAmount()),ledger.getRemarks(),buttonEnableFlag, rowId};
+			strArray = new String[] {ledger.getEntryDate().toLocalDate().toString(),ledger.getSource()+" to "+ledger.getTarget(),Double.toString(ledger.getCreditAmount()),Double.toString(ledger.getDebitAmount()),ledger.getRemarks(),buttonEnableFlag, rowId, tokenNumber};
 			listOfRecords.add(strArray);
 		}
 		
 		if(closingBalance >= 0) {
-			strArray = new String[] {endDate.toString(),"Closing Balance",Double.toString(closingBalance),"","","f",""};
+			strArray = new String[] {endDate.toString(),"Closing Balance",Double.toString(closingBalance),"","","f","",""};
 		}
 		else {
-			strArray = new String[] {endDate.toString(),"Closing Balance","",Double.toString(closingBalance),"","f",""};
+			strArray = new String[] {endDate.toString(),"Closing Balance","",Double.toString(closingBalance),"","f","",""};
 		}
 		listOfRecords.add(strArray);
 		return listOfRecords;
