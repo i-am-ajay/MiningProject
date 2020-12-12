@@ -43,11 +43,11 @@ public class ReportController {
 	// ------------------------------ Sales Control --------------------------------------
 	@RequestMapping("sales_report")
 	public String salesReport(HttpSession session,Model model,@RequestParam(name="vehicle_no",required=false) String vehicleNumber,@RequestParam(name="material",required=false) String material,@RequestParam(name="quantity",required=false) String quantity
-			, @RequestParam(name="payment_type", required=false) String paymentType, @RequestParam(name="f_date", required=false) @DateTimeFormat(iso = ISO.DATE)LocalDate fromDate, @RequestParam(name="t_date", required=false) @DateTimeFormat(iso = ISO.DATE)LocalDate toDate) {
+			, @RequestParam(name="payment_type", required=false) String paymentType,@RequestParam(name="client", required=false) String client, @RequestParam(name="f_date", required=false) @DateTimeFormat(iso = ISO.DATE)LocalDate fromDate, @RequestParam(name="t_date", required=false) @DateTimeFormat(iso = ISO.DATE)LocalDate toDate) {
 		if(session.getAttribute("user") == null) {
 			return "login";
 		}
-		List<Object[]> salesList = reportService.getSupplyDetails(vehicleNumber, quantity, material, paymentType, fromDate, toDate);
+		List<Object[]> salesList = reportService.getSupplyDetails(vehicleNumber, quantity, material, paymentType, client, fromDate, toDate);
 		model.addAttribute("salesList",salesList);
 		model.addAttribute("material_lookup", miningService.getLookupMap("materialType"));
 		model.addAttribute("quantity_lookup", miningService.getLookupMap("quantity"));

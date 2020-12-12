@@ -188,9 +188,9 @@ public class ReportDAO {
 			initiateSearch = true;
 			predicateList.add(builder.equal(from.get("paymentType"), paymentType));
 		}
-		if(paymentType != null && paymentType.length() > 0) {
+		if(client != null && client.length() > 0) {
 			initiateSearch = true;
-			predicateList.add(builder.equal(from.get("client"), paymentType));
+			predicateList.add(builder.equal(from.get("clientName"), client));
 		}
 		if(fromDate != null) {
 			initiateSearch = true;

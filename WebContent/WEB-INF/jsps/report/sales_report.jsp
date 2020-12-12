@@ -63,7 +63,7 @@
 						    		<div class="form-group">
 							      		<label class="font-weight-bold">Client</label>
 							      		
-							      		<select class="form-control form-control-sm" id="quantity" placeholder="Enter Tyre Type" name="quantity" >
+							      		<select class="form-control form-control-sm" id="quantity" placeholder="Enter Tyre Type" name="client" >
 							      			<option value=""></option>
 							      			<c:forEach var="item" items="${client_lookup}">
 							      				<option value="${item.value}">${item.value}</option>
