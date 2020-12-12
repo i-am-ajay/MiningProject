@@ -35,7 +35,7 @@
 			    </div>
 			    <div class="col-md-1"></div>
 			    <div class="form-group col-md-3">
-		    		<div><label class="font-weight-bold">Vehicle Belongs To</label></div>
+		    		<div><label class="font-weight-bold">Client Type</label></div>
 		    		<div class="form-check form-check-inline">
 		    			<input type="radio" class="form-check-input belong" value="1" id="sbelongs" name="belongs_to"/><label class="form-check-label">Self</label></div>
 		    		<div class="form-check form-check-inline">

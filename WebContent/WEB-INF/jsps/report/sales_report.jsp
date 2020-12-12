@@ -36,7 +36,7 @@
 					      				<input type="text" id="vehicle_no" class="form-control form-control-sm" placeholder="Enter Vehicle No" name="vehicle_no" />
 					    			</div>
 					    		</div>
-					     		<div class="col-md-2">
+					     		<div class="col-md-1">
 					    			<div class="form-group">
 					      				<label class="font-weight-bold">Material</label>
 					      				<select class="form-control form-control-sm" id="material_type" name="material" >
@@ -47,13 +47,25 @@
 					      				</select>
 					    			</div>
 					    		</div>
-					    		<div class="col-md-2">
+					    		<div class="col-md-1">
 						    		<div class="form-group">
 							      		<label class="font-weight-bold">Quantity</label>
 							      		
 							      		<select class="form-control form-control-sm" id="quantity" placeholder="Enter Tyre Type" name="quantity" >
 							      			<option value=""></option>
 							      			<c:forEach var="item" items="${quantity_lookup}">
+							      				<option value="${item.value}">${item.value}</option>
+							      			</c:forEach>
+							      		</select>
+							    	</div>
+						    	</div>
+						    	<div class="col-md-2">
+						    		<div class="form-group">
+							      		<label class="font-weight-bold">Client</label>
+							      		
+							      		<select class="form-control form-control-sm" id="quantity" placeholder="Enter Tyre Type" name="quantity" >
+							      			<option value=""></option>
+							      			<c:forEach var="item" items="${client_lookup}">
 							      				<option value="${item.value}">${item.value}</option>
 							      			</c:forEach>
 							      		</select>

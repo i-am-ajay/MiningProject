@@ -32,13 +32,21 @@ public class MiningService {
 	// -------------------------------- Client Service ----------------------------------------
 	
 	public Map<Integer,String> getClientList(int companyId, int clientTypeId){
-		List<Client> clientList = dao.getClientList(companyId, clientTypeId);
+		return getClientList(companyId, clientTypeId, true);
+	}
+	
+	public Map<Integer,String> getClientList(int companyId, int clientTypeId, boolean type){
+		List<Client> clientList = dao.getClientList(companyId, clientTypeId, type);
 		Map<Integer,String> map = new HashMap<>();
 		for(Client client : clientList) {
 			map.put(client.getClientId(), client.getName());
 		}
 		return map;
 	}
+	
+	/*public Map<Integer,String> getPartyList(){
+		List<Client> clientList;
+	}*/
 	
 	public Client getClient(String clientName) {
 		return dao.clientExists(clientName);

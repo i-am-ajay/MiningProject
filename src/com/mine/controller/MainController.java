@@ -82,6 +82,9 @@ public class MainController {
 		if(result.hasErrors()) {
 			System.out.println(result.toString());
 		}
+		if(!details.isDataCorrect()) {
+			return "display_sales_page";
+		}
 		String token = TokenManager.giveToken(service);
 		details.setToken(token);
 		User user = (User)session.getAttribute("user");
@@ -283,7 +286,6 @@ public class MainController {
 			return "login";
 		}
 		model.addAttribute("supply",details);
-		System.out.println("Called Printing page *************** $$$$$$$$");
 		return "print_token";
 	}
 	

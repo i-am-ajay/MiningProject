@@ -246,11 +246,17 @@ public class MineDAO {
 	}
 	
 	@Transactional
-	public List<Client> getClientList(int companyId, int clientTypeId) {
+	public List<Client> getClietList(int companyId, int clientTypeId){
+		return getClientList(companyId, clientTypeId, true);
+	}
+	
+	@Transactional
+	public List<Client> getClientList(int companyId, int clientTypeId, boolean allClients) {
 		Session session = factory.getCurrentSession();
 		Company company = session.get(Company.class, companyId);
 		GeneralData clientType = session.get(GeneralData.class, clientTypeId);
 		CriteriaBuilder builder = session.getCriteriaBuilder();
+		Subquery<GeneralData> generalDataSubQuery = null;
 		
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 		
@@ -261,10 +267,20 @@ public class MineDAO {
 		predicateList.add(builder.isNull(from.get("endDate")));
 		if(clientType != null) {
 			predicateList.add(builder.equal(from.get("clientType"), clientType));
+			Predicate[] predicateArray = predicateList.toArray(new Predicate[predicateList.size()]);
+			criteria.where(predicateArray);
 		}
-		Predicate[] predicateArray = predicateList.toArray(new Predicate[predicateList.size()]);
+		else if(allClients == false) {
+			generalDataSubQuery = criteria.subquery(GeneralData.class);
+			Root<GeneralData> generalDataRoot = generalDataSubQuery.from(GeneralData.class);
+			generalDataSubQuery.select(generalDataRoot.get("id")).where(builder.or(
+					builder.equal(generalDataRoot.get("description"), "Self"),
+					builder.equal(generalDataRoot.get("description"), "Owner"),
+					builder.equal(generalDataRoot.get("description"), "Contractor")));
+			criteria.where(from.get("clientType").in(generalDataSubQuery));
+		}
 		
-		criteria.where(predicateArray);
+		
 		
 		TypedQuery<Client> clientQuery = session.createQuery(criteria);
 		List<Client> client = clientQuery.getResultList();

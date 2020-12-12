@@ -51,6 +51,7 @@ public class ReportController {
 		model.addAttribute("salesList",salesList);
 		model.addAttribute("material_lookup", miningService.getLookupMap("materialType"));
 		model.addAttribute("quantity_lookup", miningService.getLookupMap("quantity"));
+		model.addAttribute("client_lookup", miningService.getClientList(companyId,0,false));
 		/*if((details.getQuantity().equalsIgnoreCase("foot")) || (details.getQuantity().equalsIgnoreCase("bucket")) ||
 				(details.getQuantity().equalsIgnoreCase("ton"))) {
 			//System.out.println("In print quantity test");
@@ -107,7 +108,7 @@ public class ReportController {
 		}	
 		List<Vehicle> vehicleList = reportService.getVehicleList(vehicleNo, vehicleType, tyreType, client, clientType != null ? Integer.parseInt(clientType) : 0);
 			model.addAttribute("vehicleList",vehicleList);
-			model.addAttribute("client",miningService.getClientList(companyId, 0));
+			model.addAttribute("client",miningService.getClientList(companyId, 0,false));
 			model.addAttribute("vehicle_lookup",miningService.getLookupMap("vehicleType"));
 			model.addAttribute("tyre_lookup", miningService.getLookupMap("tyreType"));
 			return "report/vehicle_report";
@@ -132,7 +133,7 @@ public class ReportController {
 	}
 	
 	@RequestMapping("rate_update_report")
-	public String updateRateList(HttpSession session, Model model) {
+	public String updateRateList(HttpSession session, Model model){
 		if(session.getAttribute("user") == null) {
 			return "login";
 		}

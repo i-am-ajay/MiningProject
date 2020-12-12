@@ -151,7 +151,7 @@ public class ReportDAO {
 	
 	//-------------------------------- Sales Report ------------------------------------------------
 	@Transactional
-	public List<Object[]> getSalesList(String vehicleNo,String quantity, String material, String paymentType, LocalDate fromDate, LocalDate toDate){
+	public List<Object[]> getSalesList(String vehicleNo,String quantity, String material, String paymentType, String client, LocalDate fromDate, LocalDate toDate){
 		boolean initiateSearch = false;
 		List<Object[]> salesList = null;
 		Session session = factory.getCurrentSession();
@@ -187,6 +187,10 @@ public class ReportDAO {
 		if(paymentType != null && paymentType.length() > 0) {
 			initiateSearch = true;
 			predicateList.add(builder.equal(from.get("paymentType"), paymentType));
+		}
+		if(paymentType != null && paymentType.length() > 0) {
+			initiateSearch = true;
+			predicateList.add(builder.equal(from.get("client"), paymentType));
 		}
 		if(fromDate != null) {
 			initiateSearch = true;

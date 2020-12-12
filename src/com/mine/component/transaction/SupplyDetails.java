@@ -183,6 +183,11 @@ public class SupplyDetails {
 		return qty;
 	}
 	
+	/**
+	 * In case of bucket, foot, ton we need a numeric value along with quantity.
+	 * @param unitRate
+	 * @return
+	 */
 	public String getFormattedQuantity(double unitRate) {
 		String qty = this.quantity;
 		if(this.quantity.equalsIgnoreCase("bucket") 
@@ -193,4 +198,25 @@ public class SupplyDetails {
 		}
 		return qty;	
 	}
+	
+	/**
+	 * Test if sales data is correct, if it's correct then return true else return false.
+	 * To validate sales data, we'll check rate, vehicle, client etc if any of the field is null data is not
+	 * correct.
+	 * @return
+	 */
+	public boolean isDataCorrect() {
+		boolean flag = false;
+		if((this.clientName != null || this.clientName.length() > 0) && 
+			(this.driverName != null || this.clientName.length() > 0) &&
+			(this.driverName != null || this.driverName.length() > 0) &&
+			(this.driverNumber != null || this.driverNumber.length() >0) &&
+			(this.material != null || this.material.length() > 0) &&
+			(this.quantity != null || this.material.length() > 0) &&
+			(this.rate != 0.0)) {
+			flag = true;
+		}
+		return flag;
+	}
 }
+
