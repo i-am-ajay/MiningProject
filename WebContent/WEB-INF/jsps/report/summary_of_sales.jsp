@@ -89,10 +89,12 @@
 		        </thead>
 		        <tbody id="table_body">
 			        <c:forEach var="record" items="${records}">
+			        	<c:if test="${record[1] != null}">
 			        	<tr>
 	        				<td>${record[0]}</td>
 	        				<td>${record[1]}</td>
         				</tr>
+        				</c:if>
 			        	</c:forEach>
 			    </tbody>
 		 	</table>
