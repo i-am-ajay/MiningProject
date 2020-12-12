@@ -66,12 +66,12 @@
 			</div>
 		</div>
 		<div class=" col-sm-12 col-md-4">
-			<!-- <div class="card bg-light my-1 py-1" id="report">
+			<div class="card bg-light my-1 py-1" id="ledger_summary">
 			<article class="card-body mx-auto">
-				<h3 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Add<br/> Vehicle</h3>
+				<h3 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Ledger<br/> Summary</h3>
 				<p class="text-center mt-3"><i class="fa fa-file-text-o fa-3x" aria-hidden="true"></i></p>
 			</article>
-			</div> -->
+			</div
 		</div>
 	</div>
 	</div> 
@@ -120,6 +120,10 @@
 
 		$("#ledger").click( e=>{
 			window.location.href ="ledger_report";
+		});
+		
+		$("#ledger_summary").click( e=>{
+			window.location.href ="ledger_summary";
 		});
 
 		$(document).ready(e => {

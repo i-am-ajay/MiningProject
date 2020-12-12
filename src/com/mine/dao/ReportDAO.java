@@ -217,28 +217,28 @@ public class ReportDAO {
 		Subquery<Double> subQuery = query.subquery(Double.class);
 		Root<Ledger> subQueryRoot = subQuery.from(Ledger.class);
 		
-		subQuery.select(builder.sum(builder.sum(subQueryRoot.get("debitAmount")),
-				builder.sum(subQueryRoot.get("creditAmount")))).where(builder.or(builder.equal(subQueryRoot.get("target"), clientRoot.get("name")),
-						builder.equal(subQueryRoot.get("source"), clientRoot.get("name"))));
+		subQuery.select(builder.diff(builder.sum(subQueryRoot.get("creditAmount")),
+				builder.sum(subQueryRoot.get("debitAmount")))).where(builder.and(builder.or(builder.equal(subQueryRoot.get("target"), clientRoot.get("name")),
+						builder.equal(subQueryRoot.get("source"), clientRoot.get("name")))),builder.equal(subQueryRoot.get("status"), 1));
 		
 		// Get predicate for general data.
 		Subquery<GeneralData> generalSubQuery = query.subquery(GeneralData.class);
 		Root<GeneralData> generalDataRoot = generalSubQuery.from(GeneralData.class);
 		// client predicate
 		if (selectionCode == 1){
-			generalSubQuery.select(generalDataRoot.get("id")).where(builder.or(builder.equal(generalDataRoot.get("description"),"Owner"),
+			generalSubQuery.select(generalDataRoot).where(builder.or(builder.equal(generalDataRoot.get("description"),"Owner"),
 					builder.equal(generalDataRoot.get("description"),"Contractor")));
-			query.multiselect(clientRoot.get("name"),subQuery).where(clientRoot.get("clientId").in(generalSubQuery));
+			query.multiselect(clientRoot.get("name"),subQuery).where(clientRoot.get("clientType").in(generalSubQuery));
 		}
 		else if(selectionCode == 2) {
-			generalSubQuery.select(generalDataRoot.get("id")).where(builder.equal(generalDataRoot.get("description"),"Sanchalan"));
-			query.multiselect(clientRoot.get("name"),subQuery).where(builder.in(generalSubQuery));
+			generalSubQuery.select(generalDataRoot).where(builder.equal(generalDataRoot.get("description"),"Sanchalan"));
+			query.multiselect(clientRoot.get("name"),subQuery).where(clientRoot.get("clientType").in(generalSubQuery));
 		}
 		else {
-			generalSubQuery.select(generalDataRoot.get("id")).where(builder.or(builder.equal(generalDataRoot.get("description"),"Owner"),
+			generalSubQuery.select(generalDataRoot).where(builder.or(builder.equal(generalDataRoot.get("description"),"Owner"),
 					builder.equal(generalDataRoot.get("description"),"Contractor"),
 					builder.equal(generalDataRoot.get("description"),"Sanchalan")));
-			query.multiselect(clientRoot.get("name"),subQuery).where(builder.not(builder.in(generalSubQuery)));
+			query.multiselect(clientRoot.get("name"),subQuery).where(clientRoot.get("clientType").in(generalSubQuery).not());
 		}
 		
 		TypedQuery<Object[]> summaryObj = session.createQuery(query);
