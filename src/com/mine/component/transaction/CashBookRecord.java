@@ -42,7 +42,7 @@ public class CashBookRecord {
 	// income / expanse
 	private String category;
 	
-	@Generated(GenerationTime.INSERT)
+	//@Generated(GenerationTime.INSERT)
 	@Column(name = "creation_date")
 	private LocalDateTime entryDate;
 	

@@ -9,11 +9,14 @@ import javax.servlet.http.HttpSession;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -131,20 +134,32 @@ public class MainController {
 	
 	
 	//-------------------------------- Expense and Deposite Control ---------------------------
-	@RequestMapping("ledger_entries_screen")
+	@RequestMapping(value="ledger_entries_screen")
 	public String ledgerEntries(HttpSession session,Model model,@RequestParam(name="party", required=false) String partyName, @RequestParam(name="amount",required=false, defaultValue="0.0") double amount, 
 			@RequestParam(name="type", required=false) String type, @RequestParam(name="expense_type", required=false) String expenseType, 
-			@RequestParam(name="remarks", required=false) String remarks) {
+			@RequestParam(name="remarks", required=false) String remarks, 
+			@RequestParam(name="entry_date", required=false) @DateTimeFormat(iso=DateTimeFormat.ISO.DATE) LocalDate date) {
 		if(session.getAttribute("user") == null){
 			return "login";
 		}
 		User user = (User)session.getAttribute("user");
+		LocalDateTime dateTime = null;
+		if(date != null) {
+			dateTime = LocalDateTime.of(date, LocalTime.now());
+		}
+		else {
+		 dateTime = LocalDateTime.of(LocalDate.now(),LocalTime.now());
+		}
 		if (partyName != null && amount != 0.0) {
-			service.ledgerEntries(partyName, amount, type, expenseType, remarks,user);
+			service.ledgerEntries(partyName, amount, type, expenseType, remarks,user, dateTime);
 		}
 		
 		model.addAttribute("party_list",service.getClientList(companyId, 0));
 		model.addAttribute("subtype_list",service.getLookupMap("SubType"));
+		model.addAttribute("minDate", this.setMinDate(user.getRole()));
+		model.addAttribute("maxDate", LocalDate.now());
+		
+		model.addAttribute("enable_date", user.getRole().equalsIgnoreCase("user") ? false : true);
 
 		LocalDate startDate = LocalDate.now();
 		LocalDate endDate = LocalDate.now();
@@ -154,12 +169,47 @@ public class MainController {
 		return "ledger_entries";
 	}
 	
+	@RequestMapping("journal_entries")
+	public String journalEntries(HttpSession session,Model model,@RequestParam(name="debtor", required=false) String debtorName,
+			@RequestParam(name="creditor", required=false) String creditorName,
+			@RequestParam(name="amount",required=false, defaultValue="0.0") double amount, 
+			@RequestParam(name="remarks", required=false) String remarks, 
+			@RequestParam(name="entry_date", required=false) @DateTimeFormat(iso=DateTimeFormat.ISO.DATE) LocalDate date) {
+		
+		if(session.getAttribute("user") == null){
+			return "login";
+		}
+		User user = (User)session.getAttribute("user");
+		LocalDateTime dateTime = null;
+		if(date != null) {
+			dateTime = LocalDateTime.of(date, LocalTime.now());
+		}
+		else {
+		 dateTime = LocalDateTime.of(LocalDate.now(),LocalTime.now());
+		}
+		if (debtorName != null && creditorName != null && amount != 0.0) {
+			service.journalEntries(debtorName, creditorName, amount, remarks, dateTime, user);
+		}
+		
+		model.addAttribute("party_list",service.getClientList(companyId, 0));
+		model.addAttribute("minDate", this.setMinDate(user.getRole()));
+		model.addAttribute("maxDate", LocalDate.now());
+		
+		model.addAttribute("enable_date", user.getRole().equalsIgnoreCase("user") ? false : true);
+
+		LocalDate startDate = LocalDate.now();
+		LocalDate endDate = LocalDate.now();
+		List<String[]> stringList = reportController.getPartyLedgerEntries(debtorName, startDate, endDate);
+		model.addAttribute("ledger_records",stringList);
+		return "journal_entries";
+	}
+	
 	//-------------------------------- End Expense and Deposite Control -----------------------
 	
 	
 	// -------------------------------- JSON Control ------------------------------------------ 
 	//get Vehicle and Associated Discount
-	@RequestMapping("fetch_vehicle")
+	@RequestMapping(name="fetch_vehicle")
 	public @ResponseBody String fetchVehicleDetails(@RequestParam("vehicle_no") String vehicleNo) {
 		Vehicle vehicle = service.getVehicle(vehicleNo);
 		String stringObj = null;
@@ -290,4 +340,18 @@ public class MainController {
 	}
 	
 	//---------------------------------- End Print Token ---------------------------
+	
+	//---------------------------------- Utility Methods -------------------------
+	public LocalDate setMinDate(String role) {
+		LocalDate date = null;
+		if(role.equalsIgnoreCase("admin")) {
+			date = LocalDate.ofEpochDay(0);
+		}
+		else if(role.equalsIgnoreCase("manager")) {
+			date = LocalDate.now().minusDays(2);
+		}
+		return date;
+	}
+	
+	//---------------------------------- End Of Utility Methods ------------------
 }

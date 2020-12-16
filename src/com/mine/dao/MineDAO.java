@@ -571,14 +571,14 @@ public class MineDAO {
 	//natureOfTransaction - Cash/Bank/Credit
 	// SupplyDetails - If entry is made through Sale for contractor, sanchalan and driver return. Then pass sales details too.
 	@Transactional
-	public void addDepositeOrExpense(int clientId, double amount, String type, String cashbookType, String cashbookCategory, String creditType, String creditCategory, String ledgerType, String natureOfTransaction, SupplyDetails details, String remarks, User user) {
+	public void addDepositeOrExpense(int clientId, double amount, String type, String cashbookType, String cashbookCategory, String creditType, String creditCategory, String ledgerType, String natureOfTransaction, SupplyDetails details, String remarks, User user, LocalDateTime date) {
 		CashBookRecord cashRecord = null;
 		Ledger ledger = null;
 		CreditRecord creditRecord = null;
 		
 		Session session = factory.getCurrentSession();
 		Client client = session.get(Client.class, clientId);
-		
+		System.out.println(date);
 		if(type.equals("deposite")) {
 			cashRecord = new CashBookRecord();
 			cashRecord.setAmount(amount);
@@ -588,6 +588,7 @@ public class MineDAO {
 			cashRecord.setParty(client);
 			cashRecord.setSales(details);
 			cashRecord.setPaymentType(natureOfTransaction);
+			cashRecord.setEntryDate(date);
 			
 			// credit book entry -  if it's a cash deposite an entry will be sent to credit records too.
 			creditRecord = new CreditRecord();
@@ -598,6 +599,7 @@ public class MineDAO {
 			creditRecord.setClient(client);
 			creditRecord.setCashbookDepositeLink(cashRecord);
 			creditRecord.setSales(details);
+			creditRecord.setEntryDate(date);
 			
 			// ledger entry
 			ledger = new Ledger();
@@ -615,6 +617,7 @@ public class MineDAO {
 			ledger.setSalesLink(details);
 			ledger.setRemarks(remarks);
 			ledger.setCreatedBy(user);
+			ledger.setEntryDate(date);
 			
 			cashRecord.setLedger(ledger);
 			cashRecord.setCreditRecord(creditRecord);
@@ -634,6 +637,7 @@ public class MineDAO {
 				cashRecord.setStatus(true);
 				cashRecord.setPaymentType(natureOfTransaction);
 				cashRecord.setSales(details);
+				cashRecord.setEntryDate(date);
 				
 				/*// credit book entry -  if it's a cash deposite an entry will be sent to credit records too.
 				creditRecord = new CreditRecord();
@@ -660,6 +664,7 @@ public class MineDAO {
 				ledger.setSalesLink(details);
 				ledger.setRemarks(remarks);
 				ledger.setCreatedBy(user);
+				ledger.setEntryDate(date);
 				
 				cashRecord.setLedger(ledger);
 				
@@ -674,6 +679,7 @@ public class MineDAO {
 				creditRecord.setStatus(true);
 				creditRecord.setClient(client);
 				creditRecord.setSales(details);
+				creditRecord.setEntryDate(date);
 				
 				// ledger entry
 				ledger = new Ledger();
@@ -686,6 +692,7 @@ public class MineDAO {
 				ledger.setRemarks(remarks);
 				ledger.setCreatedBy(user);
 				ledger.setStatus(true);
+				ledger.setEntryDate(date);
 				
 				creditRecord.setLedgerLinking(ledger);
 				session.save(ledger);
@@ -695,6 +702,22 @@ public class MineDAO {
 		}
 	}
 	
+	@Transactional
+	public void journalEntry(String debtor, String creditor, double amount, String remarks, LocalDateTime dateTime, User user) {
+		Ledger ledger = new Ledger();
+		ledger.setSource(debtor);
+		ledger.setTarget(creditor);
+		ledger.setDebitAmount(amount);
+		ledger.setCreditAmount(amount);
+		ledger.setRemarks(remarks);
+		ledger.setStatus(true);
+		ledger.setType("Journal Entry");
+		ledger.setCreatedBy(user);
+		ledger.setEntryDate(dateTime);
+		
+		Session session = factory.getCurrentSession();
+		session.save(ledger);
+	}
 	
 	// ---------------------------- End Expense and Deposite related DAO -------------------------
 	

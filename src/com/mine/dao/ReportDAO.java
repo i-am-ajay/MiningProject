@@ -15,6 +15,7 @@ import javax.persistence.criteria.Subquery;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.NativeQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -273,35 +274,66 @@ public class ReportDAO {
 	@Transactional
 	public Double[] getBalances(String name, LocalDateTime startDate, LocalDateTime endDate) {
 		Session session = factory.getCurrentSession();
-		String openingBalanceQuery = "SELECT SUM(l.creditAmount)-SUM(l.debitAmount) FROM Ledger l WHERE "
-				+ "(l.target = :name OR l.source= :name) AND l.entryDate < :sDate and status = 1";
+		String openingBalanceDebitQuery = " SELECT SUM(l.debitAmount) FROM Ledger l WHERE l.source = :name"
+				+ " AND l.entryDate < :sDate and status = 1 ";
+		String openingBalanceCreditQuery = "SELECT SUM(l.creditAmount) FROM Ledger l WHERE "
+				+ "(l.target= :name) AND l.entryDate < :sDate and status = 1";
 		
-		String rangeBalanceQuery = "SELECT SUM(l.creditAmount)-SUM(l.debitAmount) FROM Ledger l WHERE "
-				+ "(l.target = :name OR l.source= :name) AND (l.entryDate BETWEEN :sDate AND :eDate) AND status = 1";
-		TypedQuery<Double> creditDebitAmount = session.createQuery(openingBalanceQuery,Double.class);
+		String rangeBalanceDebitQuery = "SELECT SUM(l.debitAmount) FROM Ledger l WHERE "
+				+ "(l.source = :name) AND (l.entryDate BETWEEN :sDate AND :eDate) AND status = 1";
+		String rangeBalanceCreditQuery = "SELECT SUM(l.creditAmount) FROM Ledger l WHERE "
+				+ "l.target = :name AND (l.entryDate BETWEEN :sDate AND :eDate) AND status = 1";
+		TypedQuery<Double> creditDebitAmount = session.createQuery(openingBalanceDebitQuery,Double.class);
 		creditDebitAmount.setParameter("name", name);
 		creditDebitAmount.setParameter("sDate", startDate);
-		Double openingBalance = null;
+		Double openingBalanceDebit = null;
+		Double openingBalanceCredit = null;
 		try {
-			openingBalance = creditDebitAmount.getSingleResult();
+			openingBalanceDebit = (Double)creditDebitAmount.getSingleResult();
+		}
+		catch(Exception ex) {
+			ex.printStackTrace();
+		}
+		
+		creditDebitAmount = session.createQuery(openingBalanceCreditQuery,Double.class);
+		creditDebitAmount.setParameter("name", name);
+		creditDebitAmount.setParameter("sDate", startDate);
+		try {
+			openingBalanceCredit = (Double)creditDebitAmount.getSingleResult();
 		}
 		catch(Exception ex) {
 			ex.printStackTrace();
 		}
 		
 		// Get balance of selected records
-		creditDebitAmount = session.createQuery(rangeBalanceQuery,Double.class);
+		creditDebitAmount = session.createQuery(rangeBalanceDebitQuery, Double.class);
 		creditDebitAmount.setParameter("name", name);
 		creditDebitAmount.setParameter("sDate", startDate);
 		creditDebitAmount.setParameter("eDate", endDate);
-		Double selectedRecordsBalance = null;
+		Double selectedRecordsBalanceDebit = null;
 		try {
-			selectedRecordsBalance = creditDebitAmount.getSingleResult();
+			selectedRecordsBalanceDebit = (Double)creditDebitAmount.getSingleResult();
 		}
 		catch(Exception ex) {
 			ex.printStackTrace();
 		}
-		return new Double[]{openingBalance != null ? openingBalance : 0.0, selectedRecordsBalance != null ? selectedRecordsBalance : 0.0};
+		
+		creditDebitAmount = session.createQuery(rangeBalanceCreditQuery, Double.class);
+		creditDebitAmount.setParameter("name", name);
+		creditDebitAmount.setParameter("sDate", startDate);
+		creditDebitAmount.setParameter("eDate", endDate);
+		Double selectedRecordsBalanceCredit = null;
+		try {
+			selectedRecordsBalanceCredit = (Double)creditDebitAmount.getSingleResult();
+		}
+		catch(Exception ex) {
+			ex.printStackTrace();
+		}
+		double openingBalance = (openingBalanceCredit == null ? 0.0 : openingBalanceCredit) - 
+				(openingBalanceDebit == null ? 0.0 : openingBalanceDebit);
+		Double selectedRecordBalance = (selectedRecordsBalanceCredit == null ? 0.0 : selectedRecordsBalanceCredit) - 
+				(selectedRecordsBalanceDebit == null ? 0.0 : selectedRecordsBalanceDebit);
+		return new Double[]{openingBalance , selectedRecordBalance};
 	}
 	
 	

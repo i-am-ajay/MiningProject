@@ -313,7 +313,10 @@ public class ReportController {
 				buttonEnableFlag = "t";
 				rowId = "credit_"+creditLink;
 			}
-			strArray = new String[] {ledger.getEntryDate().toLocalDate().toString(),ledger.getSource()+" to "+ledger.getTarget(),Double.toString(ledger.getCreditAmount()),Double.toString(ledger.getDebitAmount()),ledger.getRemarks(),buttonEnableFlag, rowId, tokenNumber};
+			strArray = new String[] {ledger.getEntryDate().toLocalDate().toString(),ledger.getSource()+" to "+ledger.getTarget(),
+						Double.toString(ledger.getCreditAmount()),
+						(ledger.getTarget().equalsIgnoreCase(partyName) && ledger.getType().equalsIgnoreCase("Journal Entry"))? Double.toString(0.0) :Double.toString(ledger.getDebitAmount()),
+						ledger.getRemarks(),buttonEnableFlag, rowId, tokenNumber};
 			listOfRecords.add(strArray);
 		}
 		

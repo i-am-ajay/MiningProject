@@ -37,7 +37,7 @@ public class CreditRecord {
 	@Column(name="credit_amount")
 	private double amount;
 	
-	@Generated(GenerationTime.INSERT)
+	//@Generated(GenerationTime.INSERT)
 	@Column(name = "creation_date")
 	private LocalDateTime entryDate;
 	

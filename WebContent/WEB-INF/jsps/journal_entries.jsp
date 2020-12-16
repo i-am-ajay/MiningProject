@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Income And Expense</title>
+<title>Journal Entries</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/static_resources/css/style.css" >
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/static_resources/css/bootstrap_min.css" >
@@ -15,39 +15,19 @@
 	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" />-->
 </head>
 <!-- 
-	1) We have to change client to party.
-	2) Different type of parties will be :
-		1) Self
-		2) Owner
-		3) Comission Agent
-		4) Sanchalan Person
-		5) Office 
-		6) Other
-		
-	3) There will be subtypes that will decide type of transactions based on party.
-		If Income :
-		Party client -> Client Deposite
-		Party any other than client -> Other Deposite
-		
-		If expense :
-		Type cash : 
-		Party Comission Agent -> comission_expense
-		Party Sanchalan Person -> sanchalan_expense
-		Party Office -> Office_expense
-		Any other situation -> other_expense
-		
-		Type Credit : 
-		Party Sanchalan -> credit_sanchalan_expense
-		Any Other situation -> credit_other_expense
+	1) There will be source party and target party.
+	2) Amount field will be there to specify how much amount is sent to target party.
+	3) A remark field to give any remark.
+	4) Type will be Journal Entry
  -->
 <body class=mt-1>
 	<div class="px-2 pb-2 m-auto" style="width:95%;">
 		<div class="row">
-			<h4 class="border-bottom border-danger mt-1 mx-3 mb-3 pb-2 display-5 col-8" id="form_title">Deposite and Expense</h4>
+			<h4 class="border-bottom border-danger mt-1 mx-3 mb-3 pb-2 display-5 col-8" id="form_title">Journal Entry</h4>
 			<div class="col-2 align-right ml-auto pl-5 mt-2 mr-5"><i id="home_icon" class="fa fa-home fa-2x" aria-hidden="true"></i></div>
 			<div class="col-1"><a class="btn btn-danger btn-sm mt-2" style="font-size: .6em;" href="${pageContext.request.contextPath}/logout">Logout</a></div>
 		</div>
-		<form method="POST" action="ledger_entries_screen" id="eledger">
+		<form method="POST" action="journal_entries" id="eledger">
 		   <!-- Patient Vitals -->
 		   <!--  <h4 class="border-bottom m-3 text-muted pb-2" id="form_title">Patient Report Card</h4>-->
 		   <!-- Card Vitals -->
@@ -58,28 +38,20 @@
   					<div class="row">
   						<div class="col-2">
 					    	<div class="form-group">
-					      		<label class="font-weight-bold">Income/Expense</label>
-					      		<select id="type_id" class="form-control form-control-sm" name="type">
-					      			<option value="income">Income</option>
-					      			<option value="expense">Expense</option>
-					      		</select>
-					    	</div>
-					    </div>
-					    <div id="expense_type" class="col-1">
-					    	<div class="form-group">
-					      		<label class="font-weight-bold">Sub Type</label>
-					      		<select id="e_type" class="form-control form-control-sm" name="expense_type">
-					      			<option value="cash_expense">Cash</option>
-					      			<option value="bank">Bank</option>
-					      			<!-- <option id="credit_id" value="credit_expense">Credit</option> -->
-					      		</select>
+					      		<label class="font-weight-bold">Debtor</label>
+					      		<input list="party_d" class="form-control form-control-sm" placeholder="Choose Party" id="party_debtor" name="debtor">
+					      		<datalist id="party_d">
+					      		<c:forEach var="party" items="${party_list}"> 
+					      			<option>${party.value}</option>
+					      		</c:forEach>
+					      		</datalist>
 					    	</div>
 					    </div>
   						<div class="col-2">
 					    	<div class="form-group">
-					      		<label class="font-weight-bold">Party</label>
-					      		<input list="party" class="form-control form-control-sm" placeholder="Choose Party" id="party_name" name="party">
-					      		<datalist id="party">
+					      		<label class="font-weight-bold">Creditor</label>
+					      		<input list="party_c" class="form-control form-control-sm" placeholder="Choose Party" id="party_creditor" name="creditor">
+					      		<datalist id="party_c">
 					      		<c:forEach var="party" items="${party_list}"> 
 					      			<option>${party.value}</option>
 					      		</c:forEach>

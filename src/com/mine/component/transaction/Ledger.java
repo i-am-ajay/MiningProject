@@ -22,8 +22,8 @@ public class Ledger {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	protected int id;
 	
-	@Column(name="entry_date", insertable=false, updatable=false)
-	@Generated(GenerationTime.INSERT)
+	@Column(name="entry_date")
+	//@Generated(GenerationTime.INSERT)
 	protected LocalDateTime entryDate;
 	
 	protected String type;

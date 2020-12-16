@@ -19,75 +19,87 @@
 		<div class="col-1"><a class="btn btn-danger btn-sm" style="font-size: .5em;" href="${pageContext.request.contextPath}/logout">Logout</a></div>
 	</div>
 	<div class="row mt-3">
-		<div class="col-sm-12 col-md-3">
-			<div class="card bg-light my-1 py-1" id="company">
+	<div class=" col-sm-12 col-md-2">
+			<div class="card bg-light my-1 py-1" id="sales">
 			<article class="card-body mx-auto">
-				<h4 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Create<br/>Company</h4>
-				<p class="text-center mt-3"><i class="fa fa-building fa-3x" aria-hidden="true"></i></i></p>	
-			</article>
-			</div>
-		</div>
-		<div class=" col-sm-12 col-md-3">
-			<div class="card bg-light my-1 py-1" id="client">
-			<article class="card-body mx-auto">
-				<h4 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Create<br/> Client</h4>
-				<p class="text-center mt-3"><i class="fa fa-user-plus fa-3x" aria-hidden="true"></i></p>
-			</article>
-			</div>
-		</div>
-		<div class=" col-sm-12 col-md-3">
-			<div class="card bg-light my-1 py-1" id="vehicle">
-			<article class="card-body mx-auto">
-				<h4 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Add<br/> Vehicle</h4>
-				<p class="text-center mt-3"><i class="fa fa-truck fa-3x" aria-hidden="true"></i></p>
+				<h5 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Supply<br/>& Sales</h5>
+				<p class="text-center mt-3"><i class="fa fa-calculator fa-2x" aria-hidden="true"></i></p>
 			</article>
 			</div>
 		</div>
 		
-		<div class="col-sm-12 col-md-3">
+		<div class=" col-sm-12 col-md-2">
+			<div class="card bg-light my-1 py-1" id="vehicle">
+			<article class="card-body mx-auto">
+				<h5 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Add<br/> Vehicle</h5>
+				<p class="text-center mt-3"><i class="fa fa-truck fa-2x" aria-hidden="true"></i></p>
+			</article>
+			</div>
+		</div>
+		
+		<div class=" col-sm-12 col-md-2">
+			<div class="card bg-light my-1 py-1" id="client">
+			<article class="card-body mx-auto">
+				<h5 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Create<br/> Client</h5>
+				<p class="text-center mt-3"><i class="fa fa-user-plus fa-2x" aria-hidden="true"></i></p>
+			</article>
+			</div>
+		</div>
+		
+		
+		<div class="col-sm-12 col-md-2">
 			<div class="card bg-light my-1 py-1" id="rates">
 			<article class="card-body mx-auto">
-				<h4 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Add<br/>Rates</h4>
-				<p class="text-center mt-3"><i class="fa fa-money fa-3x" aria-hidden="true"></i></p>	
+				<h5 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Add<br/>Rates</h5>
+				<p class="text-center mt-3"><i class="fa fa-money fa-2x" aria-hidden="true"></i></p>	
+			</article>
+			</div>
+		</div>
+		<div class="col-sm-12 col-md-2">
+			<div class="card bg-light my-1 py-1" id="inc_exp">
+			<article class="card-body mx-auto">
+				<h5 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Income<br/>Expense</h5>
+				<p class="text-center mt-3"><i class="fa fa-laptop fa-2x" aria-hidden="true"></i></p>	
 			</article>
 			</div>
 		</div>
 		
 	</div>
 	<div class="row mt-3">
-		<div class="col-sm-12 col-md-3">
-			<div class="card bg-light my-1 py-1" id="inc_exp">
+		<div class=" col-sm-12 col-md-2">
+			<div class="card bg-light my-1 py-1" id="journal">
 			<article class="card-body mx-auto">
-				<h4 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Income<br/>Expense</h4>
-				<p class="text-center mt-3"><i class="fa fa-laptop fa-3x" aria-hidden="true"></i></p>	
+				<h5 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Journal<br/>Entry</h5>
+				<p class="text-center mt-3"><i class="fa fa-pencil fa-2x" aria-hidden="true"></i></p>
 			</article>
 			</div>
 		</div>
-		<div class=" col-sm-12 col-md-3">
-			<div class="card bg-light my-1 py-1" id="sales">
-			<article class="card-body mx-auto">
-				<h4 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Supply<br/>& Sales</h4>
-				<p class="text-center mt-3"><i class="fa fa-calculator fa-3x" aria-hidden="true"></i></p>
-			</article>
-			</div>
-		</div>
-		<div class=" col-sm-12 col-md-3">
+		<div class=" col-sm-12 col-md-2">
 			<div class="card bg-light my-1 py-1" id="params">
 			<article class="card-body mx-auto">
-				<h4 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Parameters<br/>&nbsp;</h4>
-				<p class="text-center mt-3"><i class="fa fa-plus fa-3x" aria-hidden="true"></i></p>
+				<h5 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Parameters<br/>&nbsp;</h5>
+				<p class="text-center mt-3"><i class="fa fa-plus fa-2x" aria-hidden="true"></i></p>
 			</article>
 			</div>
 		</div>
-		<div class=" col-sm-12 col-md-3">
+		<div class=" col-sm-12 col-md-2">
 			<div class="card bg-light my-1 py-1" id="report">
 			<article class="card-body mx-auto">
-				<h4 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Reports<br/>&nbsp;</h4>
-				<p class="text-center mt-3"><i class="fa fa-file-text-o fa-3x" aria-hidden="true"></i></p>
+				<h5 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Reports<br/>&nbsp;</h5>
+				<p class="text-center mt-3"><i class="fa fa-file-text-o fa-2x" aria-hidden="true"></i></p>
+			</article>
+			</div>
+		</div>
+		<div class="col-sm-12 col-md-2">
+			<div class="card bg-light my-1 py-1" id="company">
+			<article class="card-body mx-auto">
+				<h5 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Create<br/>Company</h5>
+				<p class="text-center mt-3"><i class="fa fa-building fa-2x" aria-hidden="true"></i></i></p>	
 			</article>
 			</div>
 		</div>
 	</div>
+	
 	<!-- <div class="row mt-3">
 		<div class="col-sm-12 col-md-3">
 			<div class="card bg-light my-1 py-1" id="rates">

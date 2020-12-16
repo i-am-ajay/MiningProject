@@ -135,7 +135,6 @@
 		            			<tr>
 		            		</c:otherwise>
 		       			 </c:choose> --%>
-		       			 	item.status
 		       			 	<tr class="${item[0].status ? '' : 'table-danger'}">
 			            		<td>${item[0].token}</td>
 				                <td>${item[0].driverName}</td>
