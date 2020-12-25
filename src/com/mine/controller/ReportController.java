@@ -313,7 +313,7 @@ public class ReportController {
 				buttonEnableFlag = "t";
 				rowId = "credit_"+creditLink;
 			}
-			strArray = new String[] {ledger.getEntryDate().toLocalDate().toString(),ledger.getSource()+" to "+ledger.getTarget(),
+			strArray = new String[] {ledger.getEntryDate().toLocalDate().toString(),getLedgerText(ledger.getTarget(),ledger.getSource(),partyName),
 						(ledger.getSource().equalsIgnoreCase(partyName) && ledger.getType().equalsIgnoreCase("Journal Entry"))? Double.toString(0.0): Double.toString(ledger.getCreditAmount()),
 						(ledger.getTarget().equalsIgnoreCase(partyName) && ledger.getType().equalsIgnoreCase("Journal Entry"))? Double.toString(0.0) :Double.toString(ledger.getDebitAmount()),
 						ledger.getRemarks(),buttonEnableFlag, rowId, tokenNumber};
@@ -328,6 +328,17 @@ public class ReportController {
 		}
 		listOfRecords.add(strArray);
 		return listOfRecords;
+	}
+	
+	public String getLedgerText(String target, String source, String party) {
+		String ledgerHeading = null; 
+		if(target.equalsIgnoreCase(party)) {
+			ledgerHeading = "To "+target + " From " + source;
+		}
+		else {
+			ledgerHeading = "From "+source+" To " + target;
+		}
+		return ledgerHeading;
 	}
 	
 	
