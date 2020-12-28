@@ -23,7 +23,7 @@
 	3) When user select any of these quantities, user has to enter a number too, rate calculation will be 
 		based on these quantities. 
 -->
-<body class=mt-1>
+<body class = mt-1>
 	<div class="px-2 pb-2 m-auto" style="width:95%;">
 		<div class="row">
 			<h4 class="border-bottom border-danger mt-1 mx-3 mb-3 pb-2 display-5 col-8" id="form_title">Supply And Sales</h4>
@@ -316,16 +316,15 @@
 		// check if vehicle already exists
 		$('#vehicle_no').focusout(function(){
 			$.ajax({
-				type: "POST",
+				type: "Get",
 				url : "${home}fetch_vehicle",
-				data : {"vehicle_no":this.value},
+				data : {"vehicle_num":$('#vehicle_no').val()},
 				success: function(result, status, xhr){
 					if(result != null && result != ""){
 						let json = JSON.parse(result);
 						$("#vehicle_type").val(json['vehicle_type']);
 						$("#tyre_type").val(json['tyre_type']);
 						$("#discount").val(json['discount']);
-						
 						$("#vehicle_type").attr("readonly",true);
 						$("#tyre_type").attr("readonly",true);
 						$("#vehicle_of").val(json['vehicle_of']);
@@ -336,7 +335,9 @@
 					}
 				},
 				error : function(result,status,xhr){
-					console.log("error");
+					console.log(result);
+					console.log(status);
+					console.log(xhr);
 				}
 			});
 

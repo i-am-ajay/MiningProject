@@ -87,6 +87,7 @@
 	<input type="hidden" id="role" value="${role}" />
 	</form>
 	</div>
+	<h5 class="display-5">Ledger of - ${party_}</h5>
 	<div id="table_section" class="row">
 		<div class="col" id="credit_table">
 			<table id="data_table" class="table table-striped table-sm display mx-auto col" style="width:95%; font-size:13px;">

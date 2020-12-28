@@ -178,6 +178,10 @@
 			window.location.href ="parameter_display";
 		});
 
+		$("#journal").click( e=>{
+			window.location.href ="journal_entries";
+		});
+
 		$(document).ready( e=>{
 			$("#home_icon").hide();
 		});

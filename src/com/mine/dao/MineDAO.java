@@ -279,6 +279,7 @@ public class MineDAO {
 					builder.equal(generalDataRoot.get("description"), "Contractor")));
 			criteria.where(from.get("clientType").in(generalDataSubQuery));
 		}
+		criteria.orderBy(builder.asc(from.get("name")));
 		
 		
 		

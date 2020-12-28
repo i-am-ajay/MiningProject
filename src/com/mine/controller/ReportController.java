@@ -239,6 +239,7 @@ public class ReportController {
 		model.addAttribute("party_list",miningService.getClientList(companyId, 0));
 		model.addAttribute("ledger_records",stringArray);
 		model.addAttribute("allow_cancel",allowCancel);
+		model.addAttribute("party_",partyName);
 		return "report/ledger_report";
 	}
 	// ------------------------------ End Ledger Control ----------------------------------

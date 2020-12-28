@@ -106,6 +106,8 @@
 	<input type="hidden" id="role" value="${role}" />
 	</f:form>
 	</div>
+	
+	<h5 class="display-5">Ledger Of - ${ }</h5>
 	<div id="table_section">
 		<table id="data_table" class="table table-striped table-sm display mx-auto" style="width:95%; font-size:13px;">
         <thead class="thead-dark">

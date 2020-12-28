@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -154,10 +155,15 @@ public class MainController {
 			service.ledgerEntries(partyName, amount, type, expenseType, remarks,user, dateTime);
 		}
 		
+		Map<Integer, String> clientMap = service.getClientList(companyId, 0);
+		clientMap.forEach((e,x) ->{
+			System.out.println(x);
+		});
 		model.addAttribute("party_list",service.getClientList(companyId, 0));
 		model.addAttribute("subtype_list",service.getLookupMap("SubType"));
 		model.addAttribute("minDate", this.setMinDate(user.getRole()));
 		model.addAttribute("maxDate", LocalDate.now());
+		model.addAttribute("party_",partyName);
 		
 		model.addAttribute("enable_date", user.getRole().equalsIgnoreCase("user") ? false : true);
 
@@ -194,7 +200,7 @@ public class MainController {
 		model.addAttribute("party_list",service.getClientList(companyId, 0));
 		model.addAttribute("minDate", this.setMinDate(user.getRole()));
 		model.addAttribute("maxDate", LocalDate.now());
-		
+		model.addAttribute("debtor_",debtorName);
 		model.addAttribute("enable_date", user.getRole().equalsIgnoreCase("user") ? false : true);
 
 		LocalDate startDate = LocalDate.now();
@@ -210,9 +216,11 @@ public class MainController {
 	// -------------------------------- JSON Control ------------------------------------------ 
 	//get Vehicle and Associated Discount
 	@RequestMapping(name="fetch_vehicle")
-	public @ResponseBody String fetchVehicleDetails(@RequestParam("vehicle_no") String vehicleNo) {
+	public @ResponseBody String fetchVehicleDetails(@RequestParam("vehicle_num") String vehicleNo) {
+		System.out.println(vehicleNo);
 		Vehicle vehicle = service.getVehicle(vehicleNo);
 		String stringObj = null;
+		System.out.println(vehicle.getVehicleType());
 		if(vehicle != null) {
 			JSONObject object = new JSONObject();
 			object.put("vehicle_type", vehicle.getVehicleType());

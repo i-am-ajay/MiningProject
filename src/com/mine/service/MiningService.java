@@ -195,6 +195,7 @@ public class MiningService {
 	// ----------------------------- Ledger Entries ----------------------------------------
 	public void ledgerEntries(String partyName, double amount, String type, 
 			String expenseCategory, String remarks, User user, LocalDateTime date) {
+			System.out.println(partyName);
 			Client party = dao.clientExists(partyName);
 			String partyType = party.getClientType().getDescription();
 			if(type.equalsIgnoreCase("income")) {

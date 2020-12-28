@@ -214,12 +214,12 @@ public class ReportDAO {
 	
 	@Transactional
 	public List<Object[]> salesSummary(int selectionCode){
-		Session session = factory.getCurrentSession();
+		/*Session session = factory.getCurrentSession();
 		CriteriaBuilder builder = session.getCriteriaBuilder();
 		CriteriaQuery<Object[]> query = builder.createQuery(Object[].class);
 		Root<Client> clientRoot = query.from(Client.class);
 		// create SubQuery
-		/*
+		
 		 * Subquery<Double> subQuery = query.subquery(Double.class); Root<Ledger>
 		 * subQueryRoot = subQuery.from(Ledger.class);
 		 * 
@@ -228,7 +228,7 @@ public class ReportDAO {
 		 * builder.equal(subQueryRoot.get("target"), clientRoot.get("name")),
 		 * builder.equal(subQueryRoot.get("source"),
 		 * clientRoot.get("name")))),builder.equal(subQueryRoot.get("status"), 1));
-		 */
+		 
 		Subquery<Double> subQueryDebit = query.subquery(Double.class); 
 		Subquery<Double> subQueryCredit = query.subquery(Double.class);
 		Root<Ledger> subQueryRootDebit = subQueryDebit.from(Ledger.class);
@@ -256,7 +256,8 @@ public class ReportDAO {
 		}
 		
 		TypedQuery<Object[]> summaryObj = session.createQuery(query);
-		return summaryObj.getResultList();
+		return summaryObj.getResultList();*/
+		return new ArrayList<>();
 	}
 	
 	//-------------------------------- End Sales Report --------------------------------------------

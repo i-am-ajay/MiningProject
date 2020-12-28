@@ -103,6 +103,7 @@
 			    
 	<input type="hidden" id="role" value="${role}" />
 	</form>
+	<h5 class="display-5">Ledger of - ${debtor_}</h5>
 	</div>
 	<div id="table_section" class="row">
 		<div class="col" id="credit_table">
