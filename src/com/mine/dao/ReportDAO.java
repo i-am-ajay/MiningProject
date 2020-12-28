@@ -219,13 +219,22 @@ public class ReportDAO {
 		CriteriaQuery<Object[]> query = builder.createQuery(Object[].class);
 		Root<Client> clientRoot = query.from(Client.class);
 		// create SubQuery
-		Subquery<Double> subQuery = query.subquery(Double.class);
-		Root<Ledger> subQueryRoot = subQuery.from(Ledger.class);
+		/*
+		 * Subquery<Double> subQuery = query.subquery(Double.class); Root<Ledger>
+		 * subQueryRoot = subQuery.from(Ledger.class);
+		 * 
+		 * subQuery.select(builder.diff(builder.sum(subQueryRoot.get("creditAmount")),
+		 * builder.sum(subQueryRoot.get("debitAmount")))).where(builder.and(builder.or(
+		 * builder.equal(subQueryRoot.get("target"), clientRoot.get("name")),
+		 * builder.equal(subQueryRoot.get("source"),
+		 * clientRoot.get("name")))),builder.equal(subQueryRoot.get("status"), 1));
+		 */
+		Subquery<Double> subQueryDebit = query.subquery(Double.class); 
+		Subquery<Double> subQueryCredit = query.subquery(Double.class);
+		Root<Ledger> subQueryRootDebit = subQueryDebit.from(Ledger.class);
+		Root<Ledger> subQueryRootCredit = subQueryCredit.from(Ledger.class);
 		
-		subQuery.select(builder.diff(builder.sum(subQueryRoot.get("creditAmount")),
-				builder.sum(subQueryRoot.get("debitAmount")))).where(builder.and(builder.or(builder.equal(subQueryRoot.get("target"), clientRoot.get("name")),
-						builder.equal(subQueryRoot.get("source"), clientRoot.get("name")))),builder.equal(subQueryRoot.get("status"), 1));
-		
+		// create seperate subqueryf or credita and debit amount.
 		// Get predicate for general data.
 		Subquery<GeneralData> generalSubQuery = query.subquery(GeneralData.class);
 		Root<GeneralData> generalDataRoot = generalSubQuery.from(GeneralData.class);
