@@ -215,7 +215,7 @@ public class MainController {
 	
 	// -------------------------------- JSON Control ------------------------------------------ 
 	//get Vehicle and Associated Discount
-	@RequestMapping(name="fetch_vehicle")
+	@RequestMapping("vehicle_fetch")
 	public @ResponseBody String fetchVehicleDetails(@RequestParam("vehicle_num") String vehicleNo) {
 		System.out.println(vehicleNo);
 		Vehicle vehicle = service.getVehicle(vehicleNo);
@@ -362,4 +362,17 @@ public class MainController {
 	}
 	
 	//---------------------------------- End Of Utility Methods ------------------
+	
+	//---------------------------------- Test methods -----------------------------
+	
+	@RequestMapping("test")
+	public String test() {
+		return "test";
+	}
+	
+	@RequestMapping("test_2")
+	public String test2() {
+		return "test2";
+	}
+	//---------------------------------- End Of Test ------------------------------
 }

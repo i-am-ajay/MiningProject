@@ -338,6 +338,7 @@ public class MineDAO {
 		rate.setCompany(company);
 		rate.setCreatedById(user);
 		session.save(rate);
+		System.out.println("Rate Saved");
 		rateSaved = "success";
 		return rateSaved;
 	}

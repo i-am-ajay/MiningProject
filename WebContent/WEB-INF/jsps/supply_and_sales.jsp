@@ -317,8 +317,8 @@
 		$('#vehicle_no').focusout(function(){
 			$.ajax({
 				type: "Get",
-				url : "${home}fetch_vehicle",
-				data : {"vehicle_num":$('#vehicle_no').val()},
+				url : "${home}vehicle_fetch",
+				data : {"vehicle_num":this.value},
 				success: function(result, status, xhr){
 					if(result != null && result != ""){
 						let json = JSON.parse(result);
