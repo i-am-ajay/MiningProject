@@ -372,4 +372,11 @@ public class MiningService {
 	}
 	
 	// ----------------------------- End Parameters Service ------------------------------
+	
+	// ----------------------------- test methods ---------------------------------------
+	public void saveLedger() {
+		dao.saveLedger();
+	}
+	
+	//------------------------------ end test methods -----------------------------------
 }

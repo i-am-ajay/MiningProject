@@ -425,43 +425,41 @@ public class MineDAO {
 		TypesAndCategories cashSale = DefineTypesAndCategories.cashSale; 
 		TypesAndCategories creditSale = DefineTypesAndCategories.creditSale;
 		TypesAndCategories bankSale = DefineTypesAndCategories.bankSale;
-		
+		LocalDateTime currentDateTime = LocalDateTime.now();
 		// get vehicle and set it's linking.
 		Vehicle vehicle = session.get(Vehicle.class, details.getVehicle().getVehicleNo());
 		details.setVehicle(vehicle);
 		details.setUser(user);
 		details.setStatus(true);
-		
 		if(details.getPaymentType().equalsIgnoreCase("cash")){
 			CashBookRecord cashRecord = new CashBookRecord();
-			/*cashRecord.setAmount(details.getFinalRate());
+			cashRecord.setAmount(details.getFinalRate());
 			cashRecord.setParty(vehicle.getClientId());
 			cashRecord.setSales(details);
 			cashRecord.setType(cashSale.getCashbookType());
 			cashRecord.setCategory(cashSale.getCashbookCategory());
-			cashRecord.setStatus(true);*/
+			cashRecord.setStatus(true);
 			cashRecord.setPaymentType("Cash");
+			cashRecord.setEntryDate(currentDateTime);
 			
 			// ledger record
 			
 			Ledger ledger = new Ledger();
 			ledger.setCreditAmount(details.getFinalRate());
-			/*ledger.setSource("Sales");
+			ledger.setSource("Sales");
 			ledger.setTarget("Cash");
 			//ledger.setType(cashSale.getLedgerType());
 			ledger.setType("test");
 			ledger.setCreatedBy(user);
-			ledger.setStatus(true);*/
+			ledger.setStatus(true);
+			ledger.setEntryDate(currentDateTime);
 			
 			
 			//cashRecord.setLedger(ledger);
 			//ledger.setCashbookLinking(cashRecord);
 			//ledger.setSalesLink(details);
-			System.out.println(session.save(details));
-			System.out.println(session.save(ledger));
-			System.out.println(session.save(cashRecord));
-			session.flush();
-			
+			session.save(ledger);
+			session.save(cashRecord);
 		}
 		else if(details.getPaymentType().equalsIgnoreCase("bank")) {
 			CashBookRecord cashRecord = new CashBookRecord();
@@ -472,6 +470,7 @@ public class MineDAO {
 			cashRecord.setCategory(bankSale.getCashbookCategory());
 			cashRecord.setStatus(true);
 			cashRecord.setPaymentType("Bank");
+			cashRecord.setEntryDate(currentDateTime);
 			
 			// ledger record
 			
@@ -482,15 +481,14 @@ public class MineDAO {
 			ledger.setType(bankSale.getLedgerType());
 			ledger.setCreatedBy(user);
 			ledger.setStatus(true);
+			ledger.setEntryDate(currentDateTime);
 			
 			cashRecord.setLedger(ledger);
 			ledger.setCashbookLinking(cashRecord);
 			ledger.setSalesLink(details);
 			
-			System.out.println(session.save(details));
 			session.save(ledger);
 			session.save(cashRecord);
-			session.flush();
 		}
 		else {
 			CreditRecord creditRecord = new CreditRecord();
@@ -500,6 +498,7 @@ public class MineDAO {
 			creditRecord.setStatus(true);
 			creditRecord.setType(creditSale.getCreditType());
 			creditRecord.setCategory(creditSale.getCreditCategory());
+			creditRecord.setEntryDate(currentDateTime);
 			
 			// ledger record
 			Ledger ledger = new Ledger();
@@ -511,16 +510,15 @@ public class MineDAO {
 			ledger.setSalesLink(details);
 			ledger.setCreatedBy(user);
 			ledger.setStatus(true);
+			ledger.setEntryDate(currentDateTime);
 			
-			System.out.println(session.save(details));
+			
 			session.save(creditRecord);
 			session.save(ledger);
-			session.flush();
 		}
 		//session.save(details);
-		
+		session.save(details);
 		session.setHibernateFlushMode(FlushMode.COMMIT);
-		System.out.println(session.getStatistics().toString());
 	}
 	
 	@Transactional
@@ -907,4 +905,13 @@ public class MineDAO {
 		return parameter;
 	}
 	// ------------------------------ End Parameter DAO --------------------------------
+	
+	@Transactional
+	public void saveLedger() {
+		Ledger ledger = new Ledger();
+		ledger.setDebitAmount(100);
+		ledger.setStatus(true);
+		Session session = factory.getCurrentSession();
+		session.save(ledger);
+	}
 }

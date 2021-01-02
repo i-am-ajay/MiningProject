@@ -367,6 +367,7 @@ public class MainController {
 	
 	@RequestMapping("test")
 	public String test() {
+		service.saveLedger();
 		return "test";
 	}
 	
