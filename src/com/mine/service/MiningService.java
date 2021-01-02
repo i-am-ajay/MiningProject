@@ -115,9 +115,9 @@ public class MiningService {
 	
 	// ------------------------------ Supply Service ----------------------------------
 	
-	public void saveSupplyDetails(SupplyDetails supplyDetails, User user) {
+	public void saveSupplyDetails(SupplyDetails supplyDetails, User user, int companyId) {
 		Parameters params = this.getParameters();
-		dao.addSales(supplyDetails, user);
+		dao.addSalesToCashAndLedger(supplyDetails, user);
 		
 		// both expenses will be added in credit table as we are not paying them in cash. 
 		/* add an entry of sanchalan expense. 
@@ -132,7 +132,7 @@ public class MiningService {
 		if(!supplyDetails.getMaterial().equalsIgnoreCase("bugada")) {
 			sancalanAmount = supplyDetails.getFinalRate() <= params.getFreeLimit()  ? params.getSanchalanOnFree() : ParameterValueFetcher.getSanchalanAmount(params,supplyDetails.getVehicle().getVehicleType());
 		}
-		Client sanchalanPerson = dao.getSanchalanPerson(1);
+		Client sanchalanPerson = dao.getSanchalanPerson(companyId);
 		dao.addDepositeOrExpense(sanchalanPerson.getClientId(), sancalanAmount, 
 				"Expense", DefineTypesAndCategories.creditExpenseSanchalan.getCashbookType(), 
 				DefineTypesAndCategories.creditExpenseSanchalan.getCashbookCategory(), 

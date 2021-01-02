@@ -19,6 +19,7 @@ import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
 
 import org.hibernate.Criteria;
+import org.hibernate.FlushMode;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -418,7 +419,7 @@ public class MineDAO {
 	
 	// ----------------------------- Sales Related DAO Methods ------------------------------------
 	@Transactional
-	public void addSales(SupplyDetails details, User user) {
+	public void addSalesToCashAndLedger(SupplyDetails details, User user) {
 		Session session = factory.getCurrentSession();
 		// save sales record in Cash or credit table.
 		TypesAndCategories cashSale = DefineTypesAndCategories.cashSale; 
@@ -431,33 +432,35 @@ public class MineDAO {
 		details.setUser(user);
 		details.setStatus(true);
 		
-		if(details.getPaymentType().equalsIgnoreCase("cash")) {
+		if(details.getPaymentType().equalsIgnoreCase("cash")){
 			CashBookRecord cashRecord = new CashBookRecord();
-			cashRecord.setAmount(details.getFinalRate());
+			/*cashRecord.setAmount(details.getFinalRate());
 			cashRecord.setParty(vehicle.getClientId());
 			cashRecord.setSales(details);
 			cashRecord.setType(cashSale.getCashbookType());
 			cashRecord.setCategory(cashSale.getCashbookCategory());
-			cashRecord.setStatus(true);
+			cashRecord.setStatus(true);*/
 			cashRecord.setPaymentType("Cash");
 			
 			// ledger record
 			
 			Ledger ledger = new Ledger();
 			ledger.setCreditAmount(details.getFinalRate());
-			ledger.setSource("Sales");
+			/*ledger.setSource("Sales");
 			ledger.setTarget("Cash");
-			ledger.setType(cashSale.getLedgerType());
+			//ledger.setType(cashSale.getLedgerType());
+			ledger.setType("test");
 			ledger.setCreatedBy(user);
-			ledger.setStatus(true);
+			ledger.setStatus(true);*/
 			
 			
-			cashRecord.setLedger(ledger);
-			ledger.setCashbookLinking(cashRecord);
-			ledger.setSalesLink(details);
-			
-			session.save(ledger);
-			session.save(cashRecord);
+			//cashRecord.setLedger(ledger);
+			//ledger.setCashbookLinking(cashRecord);
+			//ledger.setSalesLink(details);
+			System.out.println(session.save(details));
+			System.out.println(session.save(ledger));
+			System.out.println(session.save(cashRecord));
+			session.flush();
 			
 		}
 		else if(details.getPaymentType().equalsIgnoreCase("bank")) {
@@ -484,8 +487,10 @@ public class MineDAO {
 			ledger.setCashbookLinking(cashRecord);
 			ledger.setSalesLink(details);
 			
+			System.out.println(session.save(details));
 			session.save(ledger);
 			session.save(cashRecord);
+			session.flush();
 		}
 		else {
 			CreditRecord creditRecord = new CreditRecord();
@@ -507,10 +512,15 @@ public class MineDAO {
 			ledger.setCreatedBy(user);
 			ledger.setStatus(true);
 			
+			System.out.println(session.save(details));
 			session.save(creditRecord);
 			session.save(ledger);
+			session.flush();
 		}
-		session.save(details);
+		//session.save(details);
+		
+		session.setHibernateFlushMode(FlushMode.COMMIT);
+		System.out.println(session.getStatistics().toString());
 	}
 	
 	@Transactional

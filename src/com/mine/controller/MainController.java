@@ -92,7 +92,7 @@ public class MainController {
 		String token = TokenManager.giveToken(service);
 		details.setToken(token);
 		User user = (User)session.getAttribute("user");
-		service.saveSupplyDetails(details, user);
+		service.saveSupplyDetails(details, user, companyId);
 		model.addAttribute("supply",details);
 		if((details.getQuantity().equalsIgnoreCase("foot")) || (details.getQuantity().equalsIgnoreCase("bucket")) ||
 				(details.getQuantity().equalsIgnoreCase("ton"))) {
