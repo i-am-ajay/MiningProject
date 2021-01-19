@@ -1,13 +1,14 @@
 package com.mine.utilities;
 
 public class DefineTypesAndCategories {
+	/*
 	// For cash sale
-	static public TypesAndCategories cashSale = new TypesAndCategories("Sale", "Income",null, null, "Cash Sale"); 
+	static public TypesAndCategories cashSale = new TypesAndCategories("Cash Sale",null, "Sales To Cash",null); 
 	
-	static public TypesAndCategories bankSale = new TypesAndCategories("Sale", "Income",null, null, "Bank Sale"); 
+	static public TypesAndCategories bankSale = new TypesAndCategories("Bank Sale", null,"Sales To Bank", null); 
 	
 	// Cash Or Bank
-	static public TypesAndCategories deposite = new TypesAndCategories("Deposite","Income","Client Deposite", "Deposite", "Client Deposite");
+	static public TypesAndCategories clientDeposite = new TypesAndCategories("Payment",null,"To", null);
 	
 	static public TypesAndCategories otherDeposite = new TypesAndCategories("Deposite","Income","Other Deposite", "Deposite", "Other Deposite");
 	
@@ -33,5 +34,5 @@ public class DefineTypesAndCategories {
 	static public TypesAndCategories creditExpenseOther = new TypesAndCategories(null,null,"Expense Other","Liability","Expense Other");
 	
 	
-	
+	*/
 }

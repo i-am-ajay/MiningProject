@@ -272,7 +272,8 @@ public class ReportController {
 	
 	
 	public List<String[]> getPartyLedgerEntries(String partyName, LocalDate startDate, LocalDate endDate) {
-		LocalDateTime startDateTime = LocalDateTime.of(startDate, LocalTime.of(0, 0,0));
+		return null;
+		/*LocalDateTime startDateTime = LocalDateTime.of(startDate, LocalTime.of(0, 0,0));
 		LocalDateTime endDateTime = LocalDateTime.of(endDate, LocalTime.of(23,59,59));
 		List<Ledger> ledgerEntries = this.reportService.getLedgerEntries(partyName, startDateTime, endDateTime);
 		Double[] balances = reportService.getBalances(partyName, startDateTime, endDateTime);
@@ -328,7 +329,7 @@ public class ReportController {
 			strArray = new String[] {endDate.toString(),"Closing Balance","",Double.toString(closingBalance),"","f","",""};
 		}
 		listOfRecords.add(strArray);
-		return listOfRecords;
+		return listOfRecords;*/
 	}
 	
 	public String getLedgerText(String target, String source, String party) {

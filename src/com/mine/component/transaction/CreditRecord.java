@@ -19,8 +19,6 @@ import org.hibernate.annotations.GenerationTime;
 import com.mine.component.master.Client;
 import com.mine.component.master.Vehicle;
 
-@Entity
-@Table(name="credit_table")
 public class CreditRecord {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -55,7 +53,7 @@ public class CreditRecord {
 	@JoinColumn(name="cashbook_link_for_deposite")
 	private CashBookRecord cashbookDepositeLink;
 	
-	@OneToOne(mappedBy = "creditRecordLinking")
+	//@OneToOne(mappedBy = "creditRecordLinking")
 	@JoinColumn(name="ledger_linking")
 	private Ledger ledgerLinking;
 
