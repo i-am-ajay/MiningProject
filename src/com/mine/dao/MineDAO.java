@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -90,9 +92,13 @@ public class MineDAO {
 	 */
 	@Transactional
 	public Vehicle getVehicle(String vehicleNo) {
+		Vehicle vehicleReturn = null;
 		Session session = factory.getCurrentSession();
 		Vehicle vehicle = session.get(Vehicle.class, vehicleNo);
-		return vehicle;
+		if(vehicle !=null && vehicle.isStatus()) {
+			vehicleReturn = vehicle;
+		}
+		return vehicleReturn;
 	}
 	
 	@Transactional
@@ -100,7 +106,7 @@ public class MineDAO {
 		boolean vehicleRegistered = false;
 		Session session = factory.getCurrentSession();
 		Vehicle vehicle = session.get(Vehicle.class, vehicle_no);
-		if(vehicle != null) {
+		if(vehicle != null && vehicle.isStatus()) {
 			vehicleRegistered = true;
 		}
 		return vehicleRegistered;
@@ -214,6 +220,7 @@ public class MineDAO {
 			clientDb.setDiscount(client.getDiscount());
 			clientDb.setName(client.getName());
 			clientDb.setComission(client.getComission());
+			clientDb.setStatus(client.isStatus());
 			client = clientDb;
 			status = "updated";
 		}
@@ -237,7 +244,6 @@ public class MineDAO {
 		Client clientDb = null;
 		criteria.where(builder.and(builder.equal(from.get("name"),clientName),
 				builder.isNull(from.get("endDate"))));
-		
 		TypedQuery<Client> query = session.createQuery(criteria);
 		List<Client> clientList = query.getResultList();
 		if(clientList != null && clientList.size() > 0) {
@@ -281,9 +287,6 @@ public class MineDAO {
 			criteria.where(from.get("clientType").in(generalDataSubQuery));
 		}
 		criteria.orderBy(builder.asc(from.get("name")));
-		
-		
-		
 		TypedQuery<Client> clientQuery = session.createQuery(criteria);
 		List<Client> client = clientQuery.getResultList();
 		return client;
@@ -330,7 +333,6 @@ public class MineDAO {
 	@Transactional
 	public String addRate(Rate rate, int companyId, User user) {
 		if(getRate(rate.getTyreType(),rate.getTruckType(), rate.getMaterialType(), rate.getQuantity(), companyId) != 0.0d) {
-			System.out.println("System.");
 			return "exists";
 		}
 		String rateSaved = "fails";
@@ -339,7 +341,6 @@ public class MineDAO {
 		rate.setCompany(company);
 		rate.setCreatedById(user);
 		session.save(rate);
-		System.out.println("Rate Saved");
 		rateSaved = "success";
 		return rateSaved;
 	}
@@ -349,8 +350,6 @@ public class MineDAO {
 		double rate = 0.0;
 		Session session = factory.getCurrentSession();
 		Company company = session.load(Company.class, companyId);
-		
-		System.out.println("rate called");
 		
 		CriteriaBuilder builder = session.getCriteriaBuilder();
 		CriteriaQuery<Rate> criteria = builder.createQuery(Rate.class);
@@ -378,7 +377,6 @@ public class MineDAO {
 		}
 		
 		catch(NoResultException | NonUniqueResultException | IllegalStateException ex) { 
-			System.out.println("tyreType"+tyreType +"MT: "+materialType+"TT: "+truckType+"quantity"+quantity);
 			ex.printStackTrace();
 		}
 		return rate;
@@ -466,9 +464,6 @@ public class MineDAO {
 		ledgerDebit.setEntryDate(currentDateTime);
 		ledgerDebit.setSalesLink(details);
 		
-		ledgerDebit.setParentEntryLink(ledgerCredit);
-		ledgerCredit.setChildLink(ledgerDebit);
-		
 				
 		if(details.getPaymentType().equalsIgnoreCase("cash") || details.getPaymentType().equalsIgnoreCase("bank")){
 			if(details.getPaymentType().equalsIgnoreCase("cash")) {
@@ -487,7 +482,7 @@ public class MineDAO {
 			// ledger record
 			ledgerDebit.setAccount(details.getClientName());
 			ledgerCredit.setDescription("Credit Sale To ".concat(details.getClientName()));
-			ledgerDebit.setDescription("Sale To".concat(details.getClientName()));
+			ledgerDebit.setDescription("Sale To ".concat(details.getClientName()));
 		}
 		//session.save(details);
 		session.save(ledgerCredit);
@@ -587,14 +582,14 @@ public class MineDAO {
 			 * either in cash or bank and party account is credited with equivalent amount. 
 			*/
 			ledgerCredit.setAccount(client.getName());
-			ledgerCredit.setDescription("Payment From".concat(client.getName()));
+			ledgerCredit.setDescription("Payment From ".concat(client.getName()));
 			if(natureOfTransaction.equalsIgnoreCase("bank")) {
 				ledgerDebit.setAccount("Bank");
-				ledgerDebit.setDescription(client.getName().concat("To Bank"));
+				ledgerDebit.setDescription(client.getName().concat("To Bank "));
 			}
 			else {
 				ledgerDebit.setAccount("Cash");
-				ledgerDebit.setDescription(client.getName().concat("To Cash"));
+				ledgerDebit.setDescription(client.getName().concat("To Cash "));
 			}
 		}
 		else {
@@ -616,7 +611,7 @@ public class MineDAO {
 			else {
 				ledgerDebit.setAccount("Expense");
 				ledgerCredit.setAccount(client.getName());
-				ledgerDebit.setDescription(debitDescription.concat(" Amount To be paid to".concat(client.getName())));
+				ledgerDebit.setDescription(debitDescription.concat(" Amount To be paid to ".concat(client.getName())));
 				ledgerCredit.setDescription(creditDescription.concat(" Amount To be recieved by ".concat(client.getName())));
 				ledgerCredit.setParentEntryLink(ledgerDebit);
 				ledgerDebit.setChildLink(ledgerCredit);
@@ -626,16 +621,17 @@ public class MineDAO {
 		session.save(ledgerDebit);
 	}
 	
-	/*@Transactional
+	@Transactional
 	public void journalEntry(String debtor, String creditor, double amount, String remarks, LocalDateTime dateTime, User user) {
-		// Ledger of sale
+		
+		// Ledger of creditor
 		Ledger ledgerCredit = new Ledger();
 		ledgerCredit.setCreditAmount(amount);
 		ledgerCredit.setCreatedBy(user);
 		ledgerCredit.setStatus(true);
 		ledgerCredit.setEntryDate(dateTime);
-		//ledgerCredit.setSalesLink(details);
-		//ledgerCredit.setType(ledgerType);
+		ledgerCredit.setAccount(creditor);
+		ledgerCredit.setDescription("Journal Entry: From "+creditor + " To "+ debtor);
 		ledgerCredit.setRemarks(remarks);
 		
 		// Ledger record for payment
@@ -644,24 +640,17 @@ public class MineDAO {
 		ledgerDebit.setCreatedBy(user);
 		ledgerDebit.setStatus(true);
 		ledgerDebit.setEntryDate(dateTime);
-		ledgerDebit.setType(ledgerType);
-		ledgerDebit.setSalesLink(details);
-		ledgerCredit.setRemarks(remarks);
-				
-		Ledger ledger = new Ledger();
-		ledger.setSource(debtor);
-		ledger.setTarget(creditor);
-		ledger.setDebitAmount(amount);
-		ledger.setCreditAmount(amount);
-		ledger.setRemarks(remarks);
-		ledger.setStatus(true);
-		ledger.setType("Journal Entry");
-		ledger.setCreatedBy(user);
-		ledger.setEntryDate(dateTime);
+		ledgerDebit.setDescription("Journal Entry: To "+debtor+" From "+creditor);
+		ledgerDebit.setRemarks(remarks);
+		ledgerDebit.setAccount(debtor);
 		
+		ledgerDebit.setParentEntryLink(ledgerCredit);
+		ledgerCredit.setChildLink(ledgerDebit);
 		Session session = factory.getCurrentSession();
-		session.save(ledger);
-	}*/
+		session.save(ledgerDebit);
+		session.save(ledgerCredit);
+		session.flush();
+	}
 	
 	// ---------------------------- End Expense and Deposite related DAO -------------------------
 	
@@ -671,26 +660,16 @@ public class MineDAO {
 	public boolean cancleEntry(String type, int salesId) {
 		Session session = factory.getCurrentSession();
 		boolean status = false;
-		String updateCashbook = null;
-		String updateCreditBook = null;
+		
 		String updateLedger = null;
 		
 		String updateSales = "UPDATE supplydetails SET status = 0 WHERE id = :id";
 		if(type.equals("sales")) {
-			updateCashbook = "UPDATE cashbook_table SET status = 0 WHERE sales_id = :id";
-			updateCreditBook = "UPDATE credit_table SET status = 0 WHERE sales_id = :id";
 			updateLedger = "UPDATE ledger SET status = 0 WHERE sales_id = :id";
 		}
-		else if(type.equals("cash")) {
-			updateCashbook = "UPDATE cashbook_table SET status = 0 WHERE id = :id";
-			updateCreditBook = "UPDATE credit_table SET status = 0 WHERE cashbook_link_for_deposite = :id";
-			updateLedger = "UPDATE ledger SET status = 0 WHERE cashbook_link = :id";
+		else{
+			updateLedger = "UPDATE ledger SET status = 0 WHERE id = :id OR parent_link = :id OR child_link = :id";
 		}
-		else if(type.equals("credit")) {
-			updateCreditBook = "UPDATE credit_table SET status = 0 WHERE id = :id";
-			updateLedger = "UPDATE ledger SET status = 0 WHERE creditbook_link = :id";
-		}
-		
 		
 		Query query = null;
 		// cancel sales;
@@ -699,18 +678,6 @@ public class MineDAO {
 			query.setParameter("id", salesId);
 			query.executeUpdate();
 		}
-		// cancel cashbook entry
-		if(type.equals("sales") || type.equals("cash")) {
-			query = session.createNativeQuery(updateCashbook);
-			query.setParameter("id", salesId);
-			query.executeUpdate();
-		}
-		
-		// cancel credit entry
-		query = session.createNativeQuery(updateCreditBook);
-		query.setParameter("id", salesId);
-		query.executeUpdate();
-		
 		// cancel ledger entry
 		query = session.createNativeQuery(updateLedger);
 		query.setParameter("id", salesId);
@@ -734,7 +701,7 @@ public class MineDAO {
 		CriteriaQuery<GeneralData> criteria = builder.createQuery(GeneralData.class);
 		Root<GeneralData> from = criteria.from(GeneralData.class);
 		criteria.where(builder.and(builder.equal(from.get("category"),category),builder.isNull(from.get("endDate"))));
-		
+		criteria.orderBy(builder.asc(from.get("description")));
 		TypedQuery<GeneralData> query = session.createQuery(criteria);
 		List<GeneralData> objectList = query.getResultList();
 		return objectList;

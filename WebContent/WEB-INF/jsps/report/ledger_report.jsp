@@ -96,8 +96,8 @@
 		            	<th>Date</th>
 		            	<th>Token</th>
 		                <th>Particulars</th>
-		                <th>Credit Amount</th>
-		                <th>Debit Amout</th>
+		                <th>Debit Amount</th>
+		                <th>Credit Amout</th>
 		                <th>Remarks</th>
 		                <c:if test="${allow_cancel == true }">
 		                	<th>Cancel Record</th>
@@ -110,8 +110,8 @@
 	        				<td>${record[0]}</td>
 	        				<td>${record[7]}</td>
 	        				<td>${record[1]}</td>
-	        				<td class="table-success">${record[2]}</td>
-	        				<td class="table-danger">${record[3]}</td>
+	        				<td class="table-success">${record[3]}</td>
+	        				<td class="table-danger">${record[2]}</td>
 	        				<td>${record[4]}</td>
 	        				<c:if test="${allow_cancel == true }">
 	        					<td>

@@ -40,6 +40,8 @@ public class Vehicle {
 	private User createdById;
 	
 	private Integer endedById;
+	
+	private boolean status;
 
 	public String getVehicleNo() {
 		return vehicleNo;
@@ -119,5 +121,13 @@ public class Vehicle {
 	
 	public double getDiscount() {
 		return this.discount;
+	}
+
+	public boolean isStatus() {
+		return status;
+	}
+
+	public void setStatus(boolean status) {
+		this.status = status;
 	}
 }

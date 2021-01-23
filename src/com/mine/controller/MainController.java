@@ -156,9 +156,6 @@ public class MainController {
 		}
 		
 		Map<Integer, String> clientMap = service.getClientList(companyId, 0);
-		clientMap.forEach((e,x) ->{
-			System.out.println(x);
-		});
 		model.addAttribute("party_list",service.getClientList(companyId, 0));
 		model.addAttribute("subtype_list",service.getLookupMap("SubType"));
 		model.addAttribute("minDate", this.setMinDate(user.getRole()));
@@ -245,7 +242,7 @@ public class MainController {
 	
 	// --------------------------------- User authentication Control ----------------------
 	
-	@RequestMapping("authenticate_user")
+	/*@RequestMapping("authenticate_user")
 	public String authenticateUser(Model model,HttpSession session, @RequestParam(name="username") String userName, @RequestParam(name="password") String password ) {
 		String page = "login";
 		userName = userName.toLowerCase();
@@ -327,13 +324,13 @@ public class MainController {
 			obj.put("deactive", !user.isActive());
 		}
 		return obj.toString();
-	}
+	}*/
 	
-	@RequestMapping("logout")
+	/*@RequestMapping("logout")
 	public String logout(HttpSession session) {
 		session.invalidate();
 		return "login";
-	}
+	}*/
 	// ---------------------------------End User authentication control -------------------
 	
 	// --------------------------------- Print token -------------------------------

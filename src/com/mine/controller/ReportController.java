@@ -1,5 +1,6 @@
 package com.mine.controller;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -272,64 +273,65 @@ public class ReportController {
 	
 	
 	public List<String[]> getPartyLedgerEntries(String partyName, LocalDate startDate, LocalDate endDate) {
-		return null;
-		/*LocalDateTime startDateTime = LocalDateTime.of(startDate, LocalTime.of(0, 0,0));
+		LocalDateTime startDateTime = LocalDateTime.of(startDate, LocalTime.of(0, 0,0));
 		LocalDateTime endDateTime = LocalDateTime.of(endDate, LocalTime.of(23,59,59));
 		List<Ledger> ledgerEntries = this.reportService.getLedgerEntries(partyName, startDateTime, endDateTime);
 		Double[] balances = reportService.getBalances(partyName, startDateTime, endDateTime);
-		double openingBalance = balances[0];
-		double closingBalance = balances[1]+balances[0];
-
+		double openingBalance = balances[0] == null ? 0.0 : balances[0];
+		double closingBalance = (balances[1] == null ? 0.0 : balances[1]) + openingBalance;
+		System.out.println("Closing Balance "+closingBalance);
 		List<String[]> listOfRecords = new ArrayList<>();
 		
 		String [] strArray = null;
+		BigDecimal bgOpeningBalance = BigDecimal.valueOf(Math.abs(openingBalance));
 		if(openingBalance >= 0) {
-			strArray = new String[] {startDate.toString(),"Opening Balance",Double.toString(openingBalance),"","","f","",""};
+			strArray = new String[] {startDate.toString(),"Opening Balance","",bgOpeningBalance.toPlainString(),"","f","",""};
 		}
 		else {
-			strArray = new String[] {startDate.toString(),"Opening Balance","",Double.toString(openingBalance),"","f","",""};
+			strArray = new String[] {startDate.toString(),"Opening Balance",bgOpeningBalance.toPlainString(),"","","f","",""};
 		}
 		listOfRecords.add(strArray);
 		
 		String buttonEnableFlag = "f";
-		String cashbookLinking = null;
-		String creditLink = null;
+		String parentLink = null;
+		String childLink = null;
 		String tokenNumber = null;
 		String salesLink = null;
 		String rowId = null;
 		
 		for(Ledger ledger : ledgerEntries) {
 			buttonEnableFlag = "f";
-			cashbookLinking = ledger.getCashbookLinking() != null? Integer.toString(ledger.getCashbookLinking().getId()) : "";
-			creditLink = ledger.getCreditRecordLinking() != null? Integer.toString(ledger.getCreditRecordLinking().getId()) : "";
+			parentLink = ledger.getParentEntryLink() != null? Integer.toString(ledger.getParentEntryLink().getId()) : "";
+			childLink = ledger.getChildLink() != null? Integer.toString(ledger.getChildLink().getId()) : "";
 			salesLink = ledger.getSalesLink() != null? Integer.toString(ledger.getSalesLink().getId()) : "";
 			tokenNumber = ledger.getSalesLink() != null ? ledger.getSalesLink().getToken() : "";
 			if(!salesLink.equals("")) {
 				buttonEnableFlag = "f";
 			}
-			else if(!cashbookLinking.equals("")) {
+			else if(!parentLink.equals("")) {
 				buttonEnableFlag = "t";
-				rowId = "cash_"+cashbookLinking;
+				rowId = "ledger_"+parentLink;
 			}
-			else if(!creditLink.equals("")) {
+			else if(!childLink.equals("")) {
 				buttonEnableFlag = "t";
-				rowId = "credit_"+creditLink;
+				rowId = "ledger_"+childLink;
 			}
-			strArray = new String[] {ledger.getEntryDate().toLocalDate().toString(),getLedgerText(ledger.getTarget(),ledger.getSource(),partyName),
-						(ledger.getSource().equalsIgnoreCase(partyName) && ledger.getType().equalsIgnoreCase("Journal Entry"))? Double.toString(0.0): Double.toString(ledger.getCreditAmount()),
-						(ledger.getTarget().equalsIgnoreCase(partyName) && ledger.getType().equalsIgnoreCase("Journal Entry"))? Double.toString(0.0) :Double.toString(ledger.getDebitAmount()),
+			strArray = new String[] {ledger.getEntryDate().toLocalDate().toString(),ledger.getDescription(),
+						Double.toString(ledger.getCreditAmount()),
+						Double.toString(ledger.getDebitAmount()),
 						ledger.getRemarks(),buttonEnableFlag, rowId, tokenNumber};
 			listOfRecords.add(strArray);
 		}
 		
+		BigDecimal bgClosingBalance = BigDecimal.valueOf(Math.abs(closingBalance));
 		if(closingBalance >= 0) {
-			strArray = new String[] {endDate.toString(),"Closing Balance",Double.toString(closingBalance),"","","f","",""};
+			strArray = new String[] {endDate.toString(),"Closing Balance","",bgClosingBalance.toPlainString(),"","f","",""};
 		}
 		else {
-			strArray = new String[] {endDate.toString(),"Closing Balance","",Double.toString(closingBalance),"","f","",""};
+			strArray = new String[] {endDate.toString(),"Closing Balance",bgClosingBalance.toPlainString(),"","","f","",""};
 		}
 		listOfRecords.add(strArray);
-		return listOfRecords;*/
+		return listOfRecords;
 	}
 	
 	public String getLedgerText(String target, String source, String party) {

@@ -103,6 +103,9 @@
 					      		</div>
 					      		<f:input class="form-control form-control-sm" id="comission" placeholder="Enter Comission" path="comission"/>
 					    	</div>
+					    	<div id="deactivate_div" class="form-check">
+	        					<label class="form-check-label"><input type="checkbox" class="form-check-input mr-3" id="check" name="status"/> Deactivate User</label>
+	    					</div>
 			  			</div>
 			  		</div>
 			  	</div>
@@ -127,6 +130,8 @@
 				$("#phone").attr("required","true");
 				$("#address").attr("required","true");
 				$("#comission").attr("readonly","true");
+				$("#deactivate_div").hide();
+				//$("#check").val("true");
 			});
 		$(document).ready(e => {
 			$("#home_icon").hover( e => {
@@ -162,6 +167,7 @@
 						$("#address").val(json.address);
 						$("#discount").val(json.discount);
 						$("#comission").val(json.comission);
+						//$("#deactivate_div").show();
 						/* if(json.type_desc == 'Contractor'){
 							$("#comission").attr("readonly",false);
 						} */

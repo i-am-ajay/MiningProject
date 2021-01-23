@@ -4,8 +4,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
@@ -37,7 +39,7 @@ public class MiningService {
 	
 	public Map<Integer,String> getClientList(int companyId, int clientTypeId, boolean type){
 		List<Client> clientList = dao.getClientList(companyId, clientTypeId, type);
-		Map<Integer,String> map = new HashMap<>();
+		Map<Integer,String> map = new LinkedHashMap<>();
 		for(Client client : clientList) {
 			map.put(client.getClientId(), client.getName());
 		}
@@ -173,14 +175,12 @@ public class MiningService {
 	}
 	
 	public boolean cancleSales(int salesId) {
-		System.out.println(salesId);
 		return dao.cancleEntry("sales", salesId);
 	}
 	
 	// One Day Sale Count
 	public long getTodaySaleCount() {
 		long count = dao.getSaleCount();
-		System.out.println(count);
 		return count;
 	}
 	// ----------------------------- End Supply Service ------------------------------------
@@ -241,7 +241,7 @@ public class MiningService {
 	}
 	
 	public void journalEntries(String debtor, String creditor, double amount, String remarks, LocalDateTime dateTime, User user) {
-		//dao.journalEntry(debtor, creditor, amount, remarks, dateTime, user);
+		dao.journalEntry(debtor, creditor, amount, remarks, dateTime, user);
 	}
 	
 	public boolean cancelEntries(String id) {
@@ -310,7 +310,7 @@ public class MiningService {
 	// ----------------------------- Misc Service ----------------------------------------
 	public Map<Integer,String> getLookupMap(String category){
 		List<GeneralData> objList = dao.getLookupMap(category);
-		Map<Integer,String> map = new HashMap<>();
+		Map<Integer,String> map = new LinkedHashMap<>();
 		for(GeneralData obj : objList) {
 			map.put(obj.getId(), obj.getDescription());
 		}

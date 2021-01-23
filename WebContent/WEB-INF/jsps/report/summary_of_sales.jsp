@@ -59,9 +59,12 @@
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Ledger Type</label>
 					      		<select class="form-control form-control-sm" placeholder="Choose Party Type" id="party_name" name="param">
-						      		<option value=1>Contractor and Owner</option>
-						      		<option value=2>Sanchalan</option>
-						      		<option value=3>Others</option>
+						      		<option value=1>Owner</option>
+						      		<option value=2>Contractor</option>
+						      		<option value=3>Sanchalan</option>
+						      		<option value=4>Office Expense</option>
+						      		<option value=5>Journal</option>
+						      		<option value=6>Others</option>
 					      		</select>
 					    	</div>
 					    </div>
