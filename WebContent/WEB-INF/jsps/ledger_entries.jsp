@@ -140,26 +140,26 @@
 		            <tr class="text-center">
 		            	<th>Date</th>
 		                <th>Particulars</th>
-		                <th>Debit Amount</th>
+		                <th>Credit Amount</th>
 		                <th>Remarks</th>
 		            </tr>
 		        </thead>
 		        <tbody id="table_body">
 			        	<c:forEach var="record" items="${ledger_records}">
 			        		<c:choose>
-			        			<c:when test="${(record[1].equalsIgnoreCase('opening balance') || record[1].equalsIgnoreCase('closing balance')) &&  !record[3].equalsIgnoreCase('')}">
+			        			<c:when test="${(record[1].equalsIgnoreCase('opening balance') || record[1].equalsIgnoreCase('closing balance')) &&  !record[2].equalsIgnoreCase('')}">
 			        				<tr class="table-success">
 				        				<td>${record[0]}</td>
 				        				<td class="text-success font-weight-bold">${record[1]}</td>
-				        				<td class="font-weight-bold">${record[3]}</td>
+				        				<td class="font-weight-bold">${record[2]}</td>
 				        				<td>${record[4]}</td>
 			        				</tr>
 			        			</c:when>
-			        			<c:when test="${!record[3].equalsIgnoreCase('') && !record[3].equalsIgnoreCase('0.0')}">
+			        			<c:when test="${!record[2].equalsIgnoreCase('') && !record[2].equalsIgnoreCase('0.0')}">
 			        				<tr class="table-success">
 				        				<td>${record[0]}</td>
 				        				<td>${record[1]}</td>
-				        				<td>${record[3]}</td>
+				        				<td>${record[2]}</td>
 				        				<td>${record[4]}</td>
 			        				</tr>
 			        			</c:when>
@@ -182,26 +182,26 @@
 		            <tr class="text-center">
 		            	<th>Date</th>
 		                <th>Particulars</th>
-		                <th>Credit Amount</th>
+		                <th>Debit Amount</th>
 		                <th>Remarks</th>
 		            </tr>
 		        </thead>
 		        <tbody id="table_body">
 			        	<c:forEach var="record" items="${ledger_records}">
 			        		<c:choose>
-			        			<c:when test="${(record[1].equalsIgnoreCase('opening balance') || record[1].equalsIgnoreCase('closing balance')) &&  (!record[2].equalsIgnoreCase(''))}">
+			        			<c:when test="${(record[1].equalsIgnoreCase('opening balance') || record[1].equalsIgnoreCase('closing balance')) &&  (!record[3].equalsIgnoreCase(''))}">
 			        				<tr class="table-danger">
 				        				<td>${record[0]}</td>
 				        				<td class="text-danger font-weight-bold">${record[1]}</td>
-				        				<td class="font-weight-bold">${record[2]}</td>
+				        				<td class="font-weight-bold">${record[3]}</td>
 				        				<td>${record[4]}</td>
 			        				</tr>
 			        			</c:when>
-			        			<c:when test="${!record[2].equalsIgnoreCase('') && !record[2].equalsIgnoreCase('0.0')}">
+			        			<c:when test="${!record[3].equalsIgnoreCase('') && !record[3].equalsIgnoreCase('0.0')}">
 			        				<tr class="table-danger">
 				        				<td>${record[0]}</td>
 				        				<td>${record[1]}</td>
-				        				<td>${record[2]}</td>
+				        				<td>${record[3]}</td>
 				        				<td>${record[4]}</td>
 			        				</tr>
 			        			</c:when>

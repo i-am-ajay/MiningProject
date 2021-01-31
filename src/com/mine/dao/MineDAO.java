@@ -95,7 +95,7 @@ public class MineDAO {
 		Vehicle vehicleReturn = null;
 		Session session = factory.getCurrentSession();
 		Vehicle vehicle = session.get(Vehicle.class, vehicleNo);
-		if(vehicle !=null && vehicle.isStatus()) {
+		if(vehicle !=null) {
 			vehicleReturn = vehicle;
 		}
 		return vehicleReturn;
@@ -106,7 +106,7 @@ public class MineDAO {
 		boolean vehicleRegistered = false;
 		Session session = factory.getCurrentSession();
 		Vehicle vehicle = session.get(Vehicle.class, vehicle_no);
-		if(vehicle != null && vehicle.isStatus()) {
+		if(vehicle != null) {
 			vehicleRegistered = true;
 		}
 		return vehicleRegistered;
@@ -450,7 +450,6 @@ public class MineDAO {
 		// Ledger of sale
 		Ledger ledgerCredit = new Ledger();
 		ledgerCredit.setCreditAmount(details.getFinalRate());
-		ledgerCredit.setAccount("Sales");
 		ledgerCredit.setCreatedBy(user);
 		ledgerCredit.setStatus(true);
 		ledgerCredit.setEntryDate(currentDateTime);
@@ -463,24 +462,25 @@ public class MineDAO {
 		ledgerDebit.setStatus(true);
 		ledgerDebit.setEntryDate(currentDateTime);
 		ledgerDebit.setSalesLink(details);
+		ledgerDebit.setAccount("Sales");
 		
 				
 		if(details.getPaymentType().equalsIgnoreCase("cash") || details.getPaymentType().equalsIgnoreCase("bank")){
 			if(details.getPaymentType().equalsIgnoreCase("cash")) {
 				// ledger record for cash
-				ledgerDebit.setAccount("Cash");
-				ledgerCredit.setDescription("Sales in Cash");
-				ledgerDebit.setDescription("Sales To Cash");
+				ledgerCredit.setAccount("Cash");
+				ledgerCredit.setDescription("Sales To Cash");
+				ledgerDebit.setDescription("Sales In Cash");
 			}
 			else {
-				ledgerDebit.setAccount("Bank");
-				ledgerCredit.setDescription("Sales in Bank Deposite");
-				ledgerDebit.setDescription("Sales To Bank");
+				ledgerCredit.setAccount("Bank");
+				ledgerCredit.setDescription("Sales To Bank");
+				ledgerDebit.setDescription("Sales in Bank");
 			}
 		}
 		else {
 			// ledger record
-			ledgerDebit.setAccount(details.getClientName());
+			ledgerCredit.setAccount(details.getClientName());
 			ledgerCredit.setDescription("Credit Sale To ".concat(details.getClientName()));
 			ledgerDebit.setDescription("Sale To ".concat(details.getClientName()));
 		}
@@ -581,38 +581,43 @@ public class MineDAO {
 			/* debit and credit entry of ledger i.e amount recieved is debited
 			 * either in cash or bank and party account is credited with equivalent amount. 
 			*/
-			ledgerCredit.setAccount(client.getName());
-			ledgerCredit.setDescription("Payment From ".concat(client.getName()));
+			ledgerDebit.setAccount(client.getName());
+			
 			if(natureOfTransaction.equalsIgnoreCase("bank")) {
-				ledgerDebit.setAccount("Bank");
-				ledgerDebit.setDescription(client.getName().concat("To Bank "));
+				ledgerCredit.setAccount("Bank");
+				ledgerDebit.setDescription("Bank Payment From ".concat(client.getName()));
+				ledgerCredit.setDescription(client.getName().concat(" To Bank "));
 			}
 			else {
-				ledgerDebit.setAccount("Cash");
-				ledgerDebit.setDescription(client.getName().concat("To Cash "));
+				ledgerCredit.setAccount("Cash");
+				ledgerDebit.setDescription("Cash Payment From ".concat(client.getName()));
+				ledgerCredit.setDescription(client.getName().concat(" To Cash "));
 			}
 		}
 		else {
 			// if it's not deposite then it's expense and expense can be cash or credit.
 			if(type.equalsIgnoreCase("CashExpense")) {
-				ledgerDebit.setAccount(client.getName());
-				ledgerDebit.setDescription("Payment To ".concat(client.getName()));
+				ledgerCredit.setAccount(client.getName());
+				
 				if(natureOfTransaction.equalsIgnoreCase("bank")) {
-					ledgerCredit.setAccount("Bank");
-					ledgerCredit.setDescription("Bank To ".concat(client.getName()));
+					ledgerDebit.setAccount("Bank");
+					ledgerCredit.setDescription("Bank Payment To ".concat(client.getName()));
+					ledgerDebit.setDescription("Bank To ".concat(client.getName()));
 				}
 				else {
-					ledgerCredit.setAccount("Cash");
-					ledgerCredit.setDescription("Cash To ".concat(client.getName()));
+					ledgerDebit.setAccount("Cash");
+					ledgerCredit.setDescription("Cash Payment To ".concat(client.getName()));
+					ledgerDebit.setDescription("Cash To ".concat(client.getName()));
+					
 				}
 				ledgerDebit.setParentEntryLink(ledgerCredit);
 				ledgerCredit.setChildLink(ledgerDebit);
 			}
 			else {
-				ledgerDebit.setAccount("Expense");
-				ledgerCredit.setAccount(client.getName());
-				ledgerDebit.setDescription(debitDescription.concat(" Amount To be paid to ".concat(client.getName())));
-				ledgerCredit.setDescription(creditDescription.concat(" Amount To be recieved by ".concat(client.getName())));
+				ledgerCredit.setAccount("Expense");
+				ledgerDebit.setAccount(client.getName());
+				ledgerCredit.setDescription(debitDescription.concat(" Amount Payble to ".concat(client.getName())));
+				ledgerDebit.setDescription(creditDescription.concat(" Amount Recivable by ".concat(client.getName())));
 				ledgerCredit.setParentEntryLink(ledgerDebit);
 				ledgerDebit.setChildLink(ledgerCredit);
 			}
@@ -631,7 +636,7 @@ public class MineDAO {
 		ledgerCredit.setStatus(true);
 		ledgerCredit.setEntryDate(dateTime);
 		ledgerCredit.setAccount(creditor);
-		ledgerCredit.setDescription("Journal Entry: From "+creditor + " To "+ debtor);
+		ledgerCredit.setDescription("Journal Entry: To "+creditor + " From "+ debtor);
 		ledgerCredit.setRemarks(remarks);
 		
 		// Ledger record for payment
@@ -640,7 +645,7 @@ public class MineDAO {
 		ledgerDebit.setCreatedBy(user);
 		ledgerDebit.setStatus(true);
 		ledgerDebit.setEntryDate(dateTime);
-		ledgerDebit.setDescription("Journal Entry: To "+debtor+" From "+creditor);
+		ledgerDebit.setDescription("Journal Entry: From "+debtor+" To "+creditor);
 		ledgerDebit.setRemarks(remarks);
 		ledgerDebit.setAccount(debtor);
 		

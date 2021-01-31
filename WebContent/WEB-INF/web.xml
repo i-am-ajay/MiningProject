@@ -31,8 +31,8 @@
 
   
   <resource-ref>
-  	<description>jdbc/MiningConf</description>
-  	<res-ref-name>jdbc/MiningConf</res-ref-name>
+  	<description>jdbc/MiningConf_New</description>
+  	<res-ref-name>jdbc/MiningConf_New</res-ref-name>
   	<res-type>javax.sql.DataSource</res-type>
   	<res-auth>Container</res-auth>
   </resource-ref>

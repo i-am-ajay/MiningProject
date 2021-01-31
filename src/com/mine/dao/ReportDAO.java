@@ -298,35 +298,45 @@ public class ReportDAO {
 	@Transactional
 	public Double[] getBalances(String name, LocalDateTime startDate, LocalDateTime endDate) {
 		Session session = factory.getCurrentSession();
-		String openingBalance = " SELECT SUM(l.debitAmount) - SUM(l.creditAmount) FROM Ledger l WHERE l.account = :name"
+		String openingBalance = " SELECT SUM(l.creditAmount), SUM(l.debitAmount), SUM(l.creditAmount) - SUM(l.debitAmount) FROM Ledger l WHERE l.account = :name"
 				+ " AND l.entryDate < :sDate and status = 1 ";
 		
-		String rangeBalanceDebitQuery = "SELECT SUM(l.debitAmount) - SUM(l.creditAmount) FROM Ledger l WHERE "
+		String rangeBalanceDebitQuery = "SELECT SUM(l.creditAmount), SUM(l.debitAmount),SUM(l.creditAmount) - SUM(l.debitAmount) FROM Ledger l WHERE "
 				+ "(l.account = :name) AND (l.entryDate BETWEEN :sDate AND :eDate) AND status = 1";
-		TypedQuery<Double> creditDebitAmount = session.createQuery(openingBalance,Double.class);
+		TypedQuery<Object[]> creditDebitAmount = session.createQuery(openingBalance,Object[].class);
 		creditDebitAmount.setParameter("name", name);
 		creditDebitAmount.setParameter("sDate", startDate);
-		Double openingBalanceAmount = null;
+		double openingBalanceAmount = 0.0;
+		double openingCreditBalance = 0.0;
+		double openingDebitBalance = 0.0;
 		try {
-			openingBalanceAmount = (Double)creditDebitAmount.getSingleResult();
+			Object [] openingBalanceArray = creditDebitAmount.getSingleResult();
+			openingBalanceAmount = (Double)openingBalanceArray[2] != null ? (Double)openingBalanceArray[2] : 0.0;
+			openingCreditBalance = (Double)openingBalanceArray[0] != null ? (Double)openingBalanceArray[0] : 0.0;
+			openingDebitBalance = (Double)openingBalanceArray[1] != null ? (Double)openingBalanceArray[1] : 0.0;
 		}
 		catch(Exception ex) {
 			ex.printStackTrace();
 		}
 		
 		// Get balance of selected records
-		creditDebitAmount = session.createQuery(rangeBalanceDebitQuery, Double.class);
+		creditDebitAmount = session.createQuery(rangeBalanceDebitQuery, Object[].class);
 		creditDebitAmount.setParameter("name", name);
 		creditDebitAmount.setParameter("sDate", startDate);
 		creditDebitAmount.setParameter("eDate", endDate);
-		Double selectedRecordsBalance = null;
+		double selectedRecordsBalance = 0.0;
+		double selectedRangeCredit = 0.0;
+		double selectedRangeDebit = 0.0;
 		try {
-			selectedRecordsBalance = (Double)creditDebitAmount.getSingleResult();
+			Object [] openingBalanceArray = creditDebitAmount.getSingleResult();
+			selectedRecordsBalance = (Double)openingBalanceArray[2] != null ? (Double)openingBalanceArray[2] : 0.0 ;
+			selectedRangeCredit = (Double)openingBalanceArray[0] != null ? (Double)openingBalanceArray[0] : 0.0; 
+			selectedRangeDebit = (Double)openingBalanceArray[1] != null ? (Double)openingBalanceArray[1] : 0.0; 
 		}
 		catch(Exception ex) {
 			ex.printStackTrace();
 		}
-		return new Double[]{openingBalanceAmount , selectedRecordsBalance};
+		return new Double[]{openingBalanceAmount , selectedRecordsBalance, (openingDebitBalance + selectedRangeDebit), (openingCreditBalance + selectedRangeCredit)};
 	}
 	
 	

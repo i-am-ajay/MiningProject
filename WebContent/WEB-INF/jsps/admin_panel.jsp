@@ -75,6 +75,15 @@
 			</div>
 		</div>
 		<div class=" col-sm-12 col-md-2">
+			<div class="card bg-light my-1 py-1" id="report">
+			<article class="card-body mx-auto">
+				<h5 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Reports<br/>&nbsp;</h5>
+				<p class="text-center mt-3"><i class="fa fa-file-text-o fa-2x" aria-hidden="true"></i></p>
+			</article>
+			</div>
+		</div>
+		<c:if test="${role.equals('Admin')}">
+		<div class=" col-sm-12 col-md-2">
 			<div class="card bg-light my-1 py-1" id="params">
 			<article class="card-body mx-auto">
 				<h5 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Parameters<br/>&nbsp;</h5>
@@ -83,10 +92,10 @@
 			</div>
 		</div>
 		<div class=" col-sm-12 col-md-2">
-			<div class="card bg-light my-1 py-1" id="report">
+			<div class="card bg-light my-1 py-1" id="register">
 			<article class="card-body mx-auto">
-				<h5 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Reports<br/>&nbsp;</h5>
-				<p class="text-center mt-3"><i class="fa fa-file-text-o fa-2x" aria-hidden="true"></i></p>
+				<h5 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Add<br/> User</h5>
+				<p class="text-center mt-3"><i class="fa fa-truck fa-2x" aria-hidden="true"></i></p>
 			</article>
 			</div>
 		</div>
@@ -98,6 +107,7 @@
 			</article>
 			</div>
 		</div>
+		</c:if>
 	</div>
 	
 	<!-- <div class="row mt-3">
@@ -172,6 +182,10 @@
 
 		$("#inc_exp").click( e=>{
 			window.location.href ="ledger_entries_screen";
+		});
+
+		$("#register").click( e=>{
+			window.location.href ="signup";
 		});
 
 		$("#params").click( e=>{

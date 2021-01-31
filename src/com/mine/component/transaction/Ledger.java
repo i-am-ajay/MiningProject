@@ -49,6 +49,7 @@ public class Ledger {
 	protected Ledger parentEntryLink;
 	
 	@OneToOne(mappedBy="parentEntryLink")
+	@JoinColumn(name="child_link")
 	protected Ledger childLink;
 	
 	@OneToOne
