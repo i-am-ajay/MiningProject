@@ -369,6 +369,7 @@
 						result = JSON.parse(result);
 						console.log(result);
 						let rate = result.rate;
+						let nrl = 0.0;
 						let quantity = $("#quantity").val();
 						quantity = quantity.toLowerCase();
 						if(quantity == 'bucket' || quantity == 'foot' || quantity == 'ton'){
@@ -377,7 +378,7 @@
 						let discount = $("#discount").val();
 						// check if nrl is selected.
 						if($("#nrl").prop("checked")){
-							rate = rate - $("#royalty").val();
+							nrl = $("#royalty").val();
 							$("#royalty_save").val($("#royalty").val());
 						}
 						else{
@@ -400,7 +401,7 @@
 							$("#numberofDiv").show();
 							return 1;
 						}
-						finalRate = finalRate - driverReturn; 
+						finalRate = finalRate - driverReturn - nrl; 
 						$("#final_rate").val(finalRate);
 					}
 				}
