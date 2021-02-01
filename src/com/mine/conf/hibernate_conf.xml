@@ -10,7 +10,7 @@
 	<tx:annotation-driven/>
 	
 	<!-- Set a JNDI datasource -->
-	<jee:jndi-lookup jndi-name="java:/comp/env/jdbc/MiningConf" 
+	<jee:jndi-lookup jndi-name="java:/comp/env/jdbc/MiningConf_New" 
 		expected-type="javax.sql.DataSource" id="miningDataSource">
 	</jee:jndi-lookup>
 	

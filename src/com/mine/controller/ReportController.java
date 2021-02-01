@@ -1,5 +1,6 @@
 package com.mine.controller;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -150,56 +151,6 @@ public class ReportController {
 	
 	
 	// ------------------------------ Ledger Control --------------------------------------
-	// get ledger entries based on party
-		/*@RequestMapping("get_party_ledger")
-		public @ResponseBody String getPartyLedgerEntries(@RequestParam("name") String partyName) {
-			LocalDateTime startDate = LocalDateTime.of(LocalDate.now(), LocalTime.of(0, 0,0));
-			LocalDateTime endDate = LocalDateTime.of(LocalDate.now(), LocalTime.of(23,59,59));
-			List<Ledger> ledgerEntries = this.reportService.getLedgerEntries(partyName, startDate, endDate);
-			System.out.println("Ledger Entries"+ledgerEntries.size());
-			Double[] balances = reportService.getBalances(partyName, startDate, endDate);
-			double openingBalance = balances[0];
-			double closingBalance = balances[1]+balances[0];
-			JSONObject obj = null;
-			JSONObject[] objArray = new JSONObject[ledgerEntries.size()+1];
-			System.out.println(openingBalance);
-			if(openingBalance >= 0) {
-				obj = new JSONObject();
-				obj.put("date",startDate);
-				obj.put("cParticular", "Opening Balance");
-				obj.put("cRemarks", "");
-				obj.put("creditAmount", openingBalance);
-				obj.put("dParticular", "");
-				obj.put("dRemarks", "");
-				obj.put("debitAmount","");
-			}
-			else {
-				obj = new JSONObject();
-				obj.put("date",startDate);
-				obj.put("cParticular", "");
-				obj.put("cRemarks", "");
-				obj.put("creditAmount", "");
-				obj.put("dParticular", "Opening Balance");
-				obj.put("dRemarks", "");
-				obj.put("debitAmount",openingBalance);
-			}
-			objArray[0] = obj;
-			int count = 1;
-			for(Ledger ledger : ledgerEntries) {
-				obj = new JSONObject();
-				obj.put("date",ledger.getEntryDate().toLocalDate());
-				obj.put("cParticular",ledger.getCreditAmount()!= 0.0 ? ledger.getSource()+" to "+ledger.getTarget() : "");
-				obj.put("cRemarks", ledger.getCreditAmount()!= 0.0 ? "" : "");
-				obj.put("creditAmount", ledger.getCreditAmount() !=0.0 ? ledger.getCreditAmount() : "");
-				obj.put("dParticular", ledger.getDebitAmount()!= 0.0 ? ledger.getSource()+" to "+ledger.getTarget() : "");
-				obj.put("dRemarks", ledger.getCreditAmount()!= 0.0 ? "" : "");
-				obj.put("debitAmount",ledger.getDebitAmount() !=0.0 ? ledger.getDebitAmount() : "");
-				objArray[count] = obj;
-				count += 1;
-			}
-			//System.out.println(Arrays.toString(objArray));
-			return Arrays.toString(objArray);
-		}*/
 	
 	@RequestMapping("ledger_report")
 	public String ledgerReport(HttpSession session,Model model,@RequestParam(name="party", required=false)String partyName, 
@@ -277,55 +228,66 @@ public class ReportController {
 		List<Ledger> ledgerEntries = this.reportService.getLedgerEntries(partyName, startDateTime, endDateTime);
 		Double[] balances = reportService.getBalances(partyName, startDateTime, endDateTime);
 		double openingBalance = balances[0];
-		double closingBalance = balances[1]+balances[0];
-
+		double closingBalance = balances[1] + openingBalance;
+		double closingCredit = balances[3];
+		double closingDebit = balances[2];
+		
+		System.out.println("Closing Balance "+closingBalance);
 		List<String[]> listOfRecords = new ArrayList<>();
 		
 		String [] strArray = null;
+		BigDecimal bgOpeningBalance = BigDecimal.valueOf(Math.abs(openingBalance));
 		if(openingBalance >= 0) {
-			strArray = new String[] {startDate.toString(),"Opening Balance",Double.toString(openingBalance),"","","f","",""};
+			strArray = new String[] {startDate.toString(),"Opening Balance",bgOpeningBalance.toPlainString(),"","","f","",""};
+			
 		}
 		else {
-			strArray = new String[] {startDate.toString(),"Opening Balance","",Double.toString(openingBalance),"","f","",""};
+			strArray = new String[] {startDate.toString(),"Opening Balance","",bgOpeningBalance.toPlainString(),"","f","",""};
 		}
 		listOfRecords.add(strArray);
 		
 		String buttonEnableFlag = "f";
-		String cashbookLinking = null;
-		String creditLink = null;
+		String parentLink = null;
+		String childLink = null;
 		String tokenNumber = null;
 		String salesLink = null;
 		String rowId = null;
 		
 		for(Ledger ledger : ledgerEntries) {
 			buttonEnableFlag = "f";
-			cashbookLinking = ledger.getCashbookLinking() != null? Integer.toString(ledger.getCashbookLinking().getId()) : "";
-			creditLink = ledger.getCreditRecordLinking() != null? Integer.toString(ledger.getCreditRecordLinking().getId()) : "";
+			parentLink = ledger.getParentEntryLink() != null? Integer.toString(ledger.getParentEntryLink().getId()) : "";
+			childLink = ledger.getChildLink() != null? Integer.toString(ledger.getChildLink().getId()) : "";
 			salesLink = ledger.getSalesLink() != null? Integer.toString(ledger.getSalesLink().getId()) : "";
 			tokenNumber = ledger.getSalesLink() != null ? ledger.getSalesLink().getToken() : "";
 			if(!salesLink.equals("")) {
 				buttonEnableFlag = "f";
 			}
-			else if(!cashbookLinking.equals("")) {
+			else if(!parentLink.equals("")) {
 				buttonEnableFlag = "t";
-				rowId = "cash_"+cashbookLinking;
+				rowId = "ledger_"+parentLink;
 			}
-			else if(!creditLink.equals("")) {
+			else if(!childLink.equals("")) {
 				buttonEnableFlag = "t";
-				rowId = "credit_"+creditLink;
+				rowId = "ledger_"+childLink;
 			}
-			strArray = new String[] {ledger.getEntryDate().toLocalDate().toString(),getLedgerText(ledger.getTarget(),ledger.getSource(),partyName),
-						(ledger.getSource().equalsIgnoreCase(partyName) && ledger.getType().equalsIgnoreCase("Journal Entry"))? Double.toString(0.0): Double.toString(ledger.getCreditAmount()),
-						(ledger.getTarget().equalsIgnoreCase(partyName) && ledger.getType().equalsIgnoreCase("Journal Entry"))? Double.toString(0.0) :Double.toString(ledger.getDebitAmount()),
+			strArray = new String[] {ledger.getEntryDate().toLocalDate().toString(),ledger.getDescription(),
+						Double.toString(ledger.getCreditAmount()),
+						Double.toString(ledger.getDebitAmount()),
 						ledger.getRemarks(),buttonEnableFlag, rowId, tokenNumber};
 			listOfRecords.add(strArray);
 		}
 		
+		BigDecimal bgClosingBalance = BigDecimal.valueOf(Math.abs(closingBalance));
+		BigDecimal bgClosingDebit = BigDecimal.valueOf(Math.abs(closingDebit));
+		BigDecimal bgClosingCredit = BigDecimal.valueOf(Math.abs(closingCredit));
+		strArray = new String[] {endDate.toString(),"Total",bgClosingCredit.toPlainString(),bgClosingDebit.toPlainString(),"","f","",""};
+		listOfRecords.add(strArray);
 		if(closingBalance >= 0) {
-			strArray = new String[] {endDate.toString(),"Closing Balance",Double.toString(closingBalance),"","","f","",""};
+			strArray = new String[] {endDate.toString(),"Closing Balance",bgClosingBalance.toPlainString(),"","","f","",""};
+			
 		}
 		else {
-			strArray = new String[] {endDate.toString(),"Closing Balance","",Double.toString(closingBalance),"","f","",""};
+			strArray = new String[] {endDate.toString(),"Closing Balance","",bgClosingBalance.toPlainString(),"","f","",""};
 		}
 		listOfRecords.add(strArray);
 		return listOfRecords;

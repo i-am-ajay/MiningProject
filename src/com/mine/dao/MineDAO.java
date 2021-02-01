@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -90,9 +92,13 @@ public class MineDAO {
 	 */
 	@Transactional
 	public Vehicle getVehicle(String vehicleNo) {
+		Vehicle vehicleReturn = null;
 		Session session = factory.getCurrentSession();
 		Vehicle vehicle = session.get(Vehicle.class, vehicleNo);
-		return vehicle;
+		if(vehicle !=null) {
+			vehicleReturn = vehicle;
+		}
+		return vehicleReturn;
 	}
 	
 	@Transactional
@@ -214,6 +220,7 @@ public class MineDAO {
 			clientDb.setDiscount(client.getDiscount());
 			clientDb.setName(client.getName());
 			clientDb.setComission(client.getComission());
+			clientDb.setStatus(client.isStatus());
 			client = clientDb;
 			status = "updated";
 		}
@@ -237,7 +244,6 @@ public class MineDAO {
 		Client clientDb = null;
 		criteria.where(builder.and(builder.equal(from.get("name"),clientName),
 				builder.isNull(from.get("endDate"))));
-		
 		TypedQuery<Client> query = session.createQuery(criteria);
 		List<Client> clientList = query.getResultList();
 		if(clientList != null && clientList.size() > 0) {
@@ -281,9 +287,6 @@ public class MineDAO {
 			criteria.where(from.get("clientType").in(generalDataSubQuery));
 		}
 		criteria.orderBy(builder.asc(from.get("name")));
-		
-		
-		
 		TypedQuery<Client> clientQuery = session.createQuery(criteria);
 		List<Client> client = clientQuery.getResultList();
 		return client;
@@ -330,7 +333,6 @@ public class MineDAO {
 	@Transactional
 	public String addRate(Rate rate, int companyId, User user) {
 		if(getRate(rate.getTyreType(),rate.getTruckType(), rate.getMaterialType(), rate.getQuantity(), companyId) != 0.0d) {
-			System.out.println("System.");
 			return "exists";
 		}
 		String rateSaved = "fails";
@@ -339,7 +341,6 @@ public class MineDAO {
 		rate.setCompany(company);
 		rate.setCreatedById(user);
 		session.save(rate);
-		System.out.println("Rate Saved");
 		rateSaved = "success";
 		return rateSaved;
 	}
@@ -349,8 +350,6 @@ public class MineDAO {
 		double rate = 0.0;
 		Session session = factory.getCurrentSession();
 		Company company = session.load(Company.class, companyId);
-		
-		System.out.println("rate called");
 		
 		CriteriaBuilder builder = session.getCriteriaBuilder();
 		CriteriaQuery<Rate> criteria = builder.createQuery(Rate.class);
@@ -378,7 +377,6 @@ public class MineDAO {
 		}
 		
 		catch(NoResultException | NonUniqueResultException | IllegalStateException ex) { 
-			System.out.println("tyreType"+tyreType +"MT: "+materialType+"TT: "+truckType+"quantity"+quantity);
 			ex.printStackTrace();
 		}
 		return rate;
@@ -418,112 +416,83 @@ public class MineDAO {
 	
 	
 	// ----------------------------- Sales Related DAO Methods ------------------------------------
+	/**
+	 * For each transaction ledger will have two entries. 
+	 * Services or Money that's being given is recorded in credit.
+	 * Services or Money recieved in recorded in debit.
+	 * 
+	 * If we are giving service then that will have entry in credit and there will be a corresponding
+	 * entry for party paying for the service and it will be in debit head. both service and payment will 
+	 * have equal amount entry so entries will always be balanced. 
+	 * 
+	 * Similarly if we are making a payment it will be recorded in credit as money going out
+	 * and there will be a corresponding entry of either service or good we have recieved in 
+	 * debit head.
+	 * @param details
+	 * @param user
+	 */
 	@Transactional
-	public void addSalesToCashAndLedger(SupplyDetails details, User user) {
+	public void addSalesToCashAndLedger(SupplyDetails details, User user){
 		Session session = factory.getCurrentSession();
 		// save sales record in Cash or credit table.
-		TypesAndCategories cashSale = DefineTypesAndCategories.cashSale; 
+		/*TypesAndCategories cashSale = DefineTypesAndCategories.cashSale; 
 		TypesAndCategories creditSale = DefineTypesAndCategories.creditSale;
-		TypesAndCategories bankSale = DefineTypesAndCategories.bankSale;
+		TypesAndCategories bankSale = DefineTypesAndCategories.bankSale;*/
 		LocalDateTime currentDateTime = LocalDateTime.now();
 		// get vehicle and set it's linking.
 		Vehicle vehicle = session.get(Vehicle.class, details.getVehicle().getVehicleNo());
 		details.setVehicle(vehicle);
 		details.setUser(user);
 		details.setStatus(true);
-		if(details.getPaymentType().equalsIgnoreCase("cash")){
-			CashBookRecord cashRecord = new CashBookRecord();
-			cashRecord.setAmount(details.getFinalRate());
-			cashRecord.setParty(vehicle.getClientId());
-			cashRecord.setSales(details);
-			cashRecord.setType(cashSale.getCashbookType());
-			cashRecord.setCategory(cashSale.getCashbookCategory());
-			cashRecord.setStatus(true);
-			cashRecord.setPaymentType("Cash");
-			cashRecord.setEntryDate(currentDateTime);
-			
-			// ledger record
-			
-			Ledger ledger = new Ledger();
-			ledger.setCreditAmount(details.getFinalRate());
-			ledger.setSource("Sales");
-			ledger.setTarget("Cash");
-			//ledger.setType(cashSale.getLedgerType());
-			ledger.setType("test");
-			ledger.setCreatedBy(user);
-			ledger.setStatus(true);
-			ledger.setEntryDate(currentDateTime);
-			
-			
-			//cashRecord.setLedger(ledger);
-			//ledger.setCashbookLinking(cashRecord);
-			//ledger.setSalesLink(details);
-			session.save(ledger);
-			session.save(cashRecord);
-		}
-		else if(details.getPaymentType().equalsIgnoreCase("bank")) {
-			CashBookRecord cashRecord = new CashBookRecord();
-			cashRecord.setAmount(details.getFinalRate());
-			cashRecord.setParty(vehicle.getClientId());
-			cashRecord.setSales(details);
-			cashRecord.setType(bankSale.getCashbookType());
-			cashRecord.setCategory(bankSale.getCashbookCategory());
-			cashRecord.setStatus(true);
-			cashRecord.setPaymentType("Bank");
-			cashRecord.setEntryDate(currentDateTime);
-			
-			// ledger record
-			
-			Ledger ledger = new Ledger();
-			ledger.setCreditAmount(details.getFinalRate());
-			ledger.setSource("Sales");
-			ledger.setTarget("Bank");
-			ledger.setType(bankSale.getLedgerType());
-			ledger.setCreatedBy(user);
-			ledger.setStatus(true);
-			ledger.setEntryDate(currentDateTime);
-			
-			cashRecord.setLedger(ledger);
-			ledger.setCashbookLinking(cashRecord);
-			ledger.setSalesLink(details);
-			
-			session.save(ledger);
-			session.save(cashRecord);
+		// For Cash or Bank payment modes
+		
+		
+		// Ledger of sale
+		Ledger ledgerCredit = new Ledger();
+		ledgerCredit.setCreditAmount(details.getFinalRate());
+		ledgerCredit.setCreatedBy(user);
+		ledgerCredit.setStatus(true);
+		ledgerCredit.setEntryDate(currentDateTime);
+		ledgerCredit.setSalesLink(details);
+		
+		// Ledger record for payment
+		Ledger ledgerDebit = new Ledger();
+		ledgerDebit.setDebitAmount(details.getFinalRate());
+		ledgerDebit.setCreatedBy(user);
+		ledgerDebit.setStatus(true);
+		ledgerDebit.setEntryDate(currentDateTime);
+		ledgerDebit.setSalesLink(details);
+		ledgerDebit.setAccount("Sales");
+		
+				
+		if(details.getPaymentType().equalsIgnoreCase("cash") || details.getPaymentType().equalsIgnoreCase("bank")){
+			if(details.getPaymentType().equalsIgnoreCase("cash")) {
+				// ledger record for cash
+				ledgerCredit.setAccount("Cash");
+				ledgerCredit.setDescription("Sales To Cash");
+				ledgerDebit.setDescription("Sales In Cash");
+			}
+			else {
+				ledgerCredit.setAccount("Bank");
+				ledgerCredit.setDescription("Sales To Bank");
+				ledgerDebit.setDescription("Sales in Bank");
+			}
 		}
 		else {
-			CreditRecord creditRecord = new CreditRecord();
-			creditRecord.setAmount(details.getFinalRate());
-			creditRecord.setClient(vehicle.getClientId());
-			creditRecord.setSales(details);
-			creditRecord.setStatus(true);
-			creditRecord.setType(creditSale.getCreditType());
-			creditRecord.setCategory(creditSale.getCreditCategory());
-			creditRecord.setEntryDate(currentDateTime);
-			
 			// ledger record
-			Ledger ledger = new Ledger();
-			ledger.setDebitAmount(details.getFinalRate());
-			ledger.setSource("Sale");
-			ledger.setTarget(vehicle.getClientId().getName());
-			ledger.setType(creditSale.getLedgerType());
-			ledger.setCreditRecordLinking(creditRecord);
-			ledger.setSalesLink(details);
-			ledger.setCreatedBy(user);
-			ledger.setStatus(true);
-			ledger.setEntryDate(currentDateTime);
-			
-			
-			session.save(creditRecord);
-			session.save(ledger);
+			ledgerCredit.setAccount(details.getClientName());
+			ledgerCredit.setDescription("Credit Sale To ".concat(details.getClientName()));
+			ledgerDebit.setDescription("Sale To ".concat(details.getClientName()));
 		}
 		//session.save(details);
+		session.save(ledgerCredit);
+		session.save(ledgerDebit);
 		session.save(details);
 		session.setHibernateFlushMode(FlushMode.COMMIT);
 	}
 	
 	@Transactional
 	public Long getSaleCount() {
-		System.out.println("Running Sales count");
 		Session session = factory.getCurrentSession();
 		CriteriaBuilder builder = session.getCriteriaBuilder();
 		CriteriaQuery<Long> cQuery = builder.createQuery(Long.class);
@@ -581,152 +550,111 @@ public class MineDAO {
 	//natureOfTransaction - Cash/Bank/Credit
 	// SupplyDetails - If entry is made through Sale for contractor, sanchalan and driver return. Then pass sales details too.
 	@Transactional
-	public void addDepositeOrExpense(int clientId, double amount, String type, String cashbookType, String cashbookCategory, String creditType, String creditCategory, String ledgerType, String natureOfTransaction, SupplyDetails details, String remarks, User user, LocalDateTime date) {
-		CashBookRecord cashRecord = null;
-		Ledger ledger = null;
-		CreditRecord creditRecord = null;
-		
+	public void addDepositeOrExpense(int clientId, double amount, String type, String creditDescription, String debitDescription, String natureOfTransaction, SupplyDetails details, String remarks, User user, LocalDateTime date) {
 		Session session = factory.getCurrentSession();
 		Client client = session.get(Client.class, clientId);
-		System.out.println(date);
+		
+		//Ledger of deposite
+		Ledger ledgerCredit = new Ledger();
+		ledgerCredit.setCreditAmount(amount);
+		ledgerCredit.setCreatedBy(user);
+		ledgerCredit.setStatus(true);
+		ledgerCredit.setEntryDate(date);
+		ledgerCredit.setSalesLink(details);
+		ledgerCredit.setDescription(creditDescription);
+		ledgerCredit.setRemarks(remarks);
+		
+		//Ledger record for expense
+		Ledger ledgerDebit = new Ledger();
+		ledgerDebit.setDebitAmount(amount);
+		ledgerDebit.setCreatedBy(user);
+		ledgerDebit.setStatus(true);
+		ledgerDebit.setEntryDate(date);
+		ledgerDebit.setDescription(debitDescription);
+		ledgerDebit.setRemarks(remarks);
+		ledgerDebit.setSalesLink(details);
+		
+		
 		if(type.equals("deposite")) {
-			cashRecord = new CashBookRecord();
-			cashRecord.setAmount(amount);
-			cashRecord.setCategory(cashbookCategory);
-			cashRecord.setType(cashbookType);
-			cashRecord.setStatus(true);
-			cashRecord.setParty(client);
-			cashRecord.setSales(details);
-			cashRecord.setPaymentType(natureOfTransaction);
-			cashRecord.setEntryDate(date);
+			ledgerDebit.setChildLink(ledgerCredit);
+			ledgerCredit.setParentEntryLink(ledgerDebit);
+			/* debit and credit entry of ledger i.e amount recieved is debited
+			 * either in cash or bank and party account is credited with equivalent amount. 
+			*/
+			ledgerDebit.setAccount(client.getName());
 			
-			// credit book entry -  if it's a cash deposite an entry will be sent to credit records too.
-			creditRecord = new CreditRecord();
-			creditRecord.setAmount(amount * -1);
-			creditRecord.setCategory(creditCategory);
-			creditRecord.setType(creditType);
-			creditRecord.setStatus(true);
-			creditRecord.setClient(client);
-			creditRecord.setCashbookDepositeLink(cashRecord);
-			creditRecord.setSales(details);
-			creditRecord.setEntryDate(date);
-			
-			// ledger entry
-			ledger = new Ledger();
-			ledger.setCreditAmount(amount);
-			ledger.setSource(client.getName());
-			ledger.setStatus(true);
 			if(natureOfTransaction.equalsIgnoreCase("bank")) {
-				ledger.setTarget("Bank");
+				ledgerCredit.setAccount("Bank");
+				ledgerDebit.setDescription("Bank Payment From ".concat(client.getName()));
+				ledgerCredit.setDescription(client.getName().concat(" To Bank "));
 			}
 			else {
-				ledger.setTarget("Cash");
+				ledgerCredit.setAccount("Cash");
+				ledgerDebit.setDescription("Cash Payment From ".concat(client.getName()));
+				ledgerCredit.setDescription(client.getName().concat(" To Cash "));
 			}
-			ledger.setType(ledgerType);
-			ledger.setCashbookLinking(cashRecord);
-			ledger.setSalesLink(details);
-			ledger.setRemarks(remarks);
-			ledger.setCreatedBy(user);
-			ledger.setEntryDate(date);
-			
-			cashRecord.setLedger(ledger);
-			cashRecord.setCreditRecord(creditRecord);
-			
-			session.save(ledger);
-			session.save(creditRecord);
-			session.save(cashRecord);
 		}
 		else {
 			// if it's not deposite then it's expense and expense can be cash or credit.
 			if(type.equalsIgnoreCase("CashExpense")) {
-				cashRecord = new CashBookRecord();
-				cashRecord.setAmount(amount * -1);
-				cashRecord.setCategory(cashbookCategory);
-				cashRecord.setType(cashbookType);
-				cashRecord.setParty(client);
-				cashRecord.setStatus(true);
-				cashRecord.setPaymentType(natureOfTransaction);
-				cashRecord.setSales(details);
-				cashRecord.setEntryDate(date);
+				ledgerCredit.setAccount(client.getName());
 				
-				/*// credit book entry -  if it's a cash deposite an entry will be sent to credit records too.
-				creditRecord = new CreditRecord();
-				creditRecord.setAmount(amount);
-				creditRecord.setCategory(category);
-				creditRecord.setType(type);
-				creditRecord.setStatus(true);
-				creditRecord.setClient(client);
-				creditRecord.setCashbookDepsiteLink(cashRecord);*/
-				
-				// ledger entry
-				ledger = new Ledger();
-				ledger.setDebitAmount(amount);
-				ledger.setStatus(true);
 				if(natureOfTransaction.equalsIgnoreCase("bank")) {
-					ledger.setSource("Bank");
+					ledgerDebit.setAccount("Bank");
+					ledgerCredit.setDescription("Bank Payment To ".concat(client.getName()));
+					ledgerDebit.setDescription("Bank To ".concat(client.getName()));
 				}
 				else {
-					ledger.setSource("Cash");
+					ledgerDebit.setAccount("Cash");
+					ledgerCredit.setDescription("Cash Payment To ".concat(client.getName()));
+					ledgerDebit.setDescription("Cash To ".concat(client.getName()));
+					
 				}
-				ledger.setTarget(client.getName());
-				ledger.setType(ledgerType);
-				ledger.setCashbookLinking(cashRecord);
-				ledger.setSalesLink(details);
-				ledger.setRemarks(remarks);
-				ledger.setCreatedBy(user);
-				ledger.setEntryDate(date);
-				
-				cashRecord.setLedger(ledger);
-				
-				session.save(ledger);
-				session.save(cashRecord);
+				ledgerDebit.setParentEntryLink(ledgerCredit);
+				ledgerCredit.setChildLink(ledgerDebit);
 			}
 			else {
-				creditRecord = new CreditRecord();
-				creditRecord.setAmount(amount);
-				creditRecord.setCategory(creditCategory);
-				creditRecord.setType(creditType);
-				creditRecord.setStatus(true);
-				creditRecord.setClient(client);
-				creditRecord.setSales(details);
-				creditRecord.setEntryDate(date);
-				
-				// ledger entry
-				ledger = new Ledger();
-				ledger.setCreditAmount(amount);
-				ledger.setSource(client.getName());
-				ledger.setTarget("Expense");
-				ledger.setType(ledgerType);
-				ledger.setCreditRecordLinking(creditRecord);
-				ledger.setSalesLink(details);
-				ledger.setRemarks(remarks);
-				ledger.setCreatedBy(user);
-				ledger.setStatus(true);
-				ledger.setEntryDate(date);
-				
-				creditRecord.setLedgerLinking(ledger);
-				session.save(ledger);
-				session.save(creditRecord);
-				
+				ledgerCredit.setAccount("Expense");
+				ledgerDebit.setAccount(client.getName());
+				ledgerCredit.setDescription(debitDescription.concat(" Amount Payble to ".concat(client.getName())));
+				ledgerDebit.setDescription(creditDescription.concat(" Amount Recivable by ".concat(client.getName())));
+				ledgerCredit.setParentEntryLink(ledgerDebit);
+				ledgerDebit.setChildLink(ledgerCredit);
 			}
 		}
+		session.save(ledgerCredit);
+		session.save(ledgerDebit);
 	}
 	
 	@Transactional
 	public void journalEntry(String debtor, String creditor, double amount, String remarks, LocalDateTime dateTime, User user) {
-		Ledger ledger = new Ledger();
-		ledger.setSource(debtor);
-		ledger.setTarget(creditor);
-		ledger.setDebitAmount(amount);
-		ledger.setCreditAmount(amount);
-		ledger.setRemarks(remarks);
-		ledger.setStatus(true);
-		ledger.setType("Journal Entry");
-		ledger.setCreatedBy(user);
-		ledger.setEntryDate(dateTime);
 		
+		// Ledger of creditor
+		Ledger ledgerCredit = new Ledger();
+		ledgerCredit.setCreditAmount(amount);
+		ledgerCredit.setCreatedBy(user);
+		ledgerCredit.setStatus(true);
+		ledgerCredit.setEntryDate(dateTime);
+		ledgerCredit.setAccount(creditor);
+		ledgerCredit.setDescription("Journal Entry: To "+creditor + " From "+ debtor);
+		ledgerCredit.setRemarks(remarks);
+		
+		// Ledger record for payment
+		Ledger ledgerDebit = new Ledger();
+		ledgerDebit.setDebitAmount(amount);
+		ledgerDebit.setCreatedBy(user);
+		ledgerDebit.setStatus(true);
+		ledgerDebit.setEntryDate(dateTime);
+		ledgerDebit.setDescription("Journal Entry: From "+debtor+" To "+creditor);
+		ledgerDebit.setRemarks(remarks);
+		ledgerDebit.setAccount(debtor);
+		
+		ledgerDebit.setParentEntryLink(ledgerCredit);
+		ledgerCredit.setChildLink(ledgerDebit);
 		Session session = factory.getCurrentSession();
-		session.save(ledger);
+		session.save(ledgerDebit);
+		session.save(ledgerCredit);
+		session.flush();
 	}
 	
 	// ---------------------------- End Expense and Deposite related DAO -------------------------
@@ -737,26 +665,16 @@ public class MineDAO {
 	public boolean cancleEntry(String type, int salesId) {
 		Session session = factory.getCurrentSession();
 		boolean status = false;
-		String updateCashbook = null;
-		String updateCreditBook = null;
+		
 		String updateLedger = null;
 		
 		String updateSales = "UPDATE supplydetails SET status = 0 WHERE id = :id";
 		if(type.equals("sales")) {
-			updateCashbook = "UPDATE cashbook_table SET status = 0 WHERE sales_id = :id";
-			updateCreditBook = "UPDATE credit_table SET status = 0 WHERE sales_id = :id";
 			updateLedger = "UPDATE ledger SET status = 0 WHERE sales_id = :id";
 		}
-		else if(type.equals("cash")) {
-			updateCashbook = "UPDATE cashbook_table SET status = 0 WHERE id = :id";
-			updateCreditBook = "UPDATE credit_table SET status = 0 WHERE cashbook_link_for_deposite = :id";
-			updateLedger = "UPDATE ledger SET status = 0 WHERE cashbook_link = :id";
+		else{
+			updateLedger = "UPDATE ledger SET status = 0 WHERE id = :id OR parent_link = :id OR child_link = :id";
 		}
-		else if(type.equals("credit")) {
-			updateCreditBook = "UPDATE credit_table SET status = 0 WHERE id = :id";
-			updateLedger = "UPDATE ledger SET status = 0 WHERE creditbook_link = :id";
-		}
-		
 		
 		Query query = null;
 		// cancel sales;
@@ -765,18 +683,6 @@ public class MineDAO {
 			query.setParameter("id", salesId);
 			query.executeUpdate();
 		}
-		// cancel cashbook entry
-		if(type.equals("sales") || type.equals("cash")) {
-			query = session.createNativeQuery(updateCashbook);
-			query.setParameter("id", salesId);
-			query.executeUpdate();
-		}
-		
-		// cancel credit entry
-		query = session.createNativeQuery(updateCreditBook);
-		query.setParameter("id", salesId);
-		query.executeUpdate();
-		
 		// cancel ledger entry
 		query = session.createNativeQuery(updateLedger);
 		query.setParameter("id", salesId);
@@ -800,7 +706,7 @@ public class MineDAO {
 		CriteriaQuery<GeneralData> criteria = builder.createQuery(GeneralData.class);
 		Root<GeneralData> from = criteria.from(GeneralData.class);
 		criteria.where(builder.and(builder.equal(from.get("category"),category),builder.isNull(from.get("endDate"))));
-		
+		criteria.orderBy(builder.asc(from.get("description")));
 		TypedQuery<GeneralData> query = session.createQuery(criteria);
 		List<GeneralData> objectList = query.getResultList();
 		return objectList;

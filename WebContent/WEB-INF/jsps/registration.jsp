@@ -14,9 +14,13 @@
 </head>
 <body>
 	<div class="container mt-3">
+	<div class="row">
+		<h4 class="card-title display-4 border-bottom border-danger py-2 my-3 col-8">Create User</h4>
+		<div class="col-2 align-right ml-auto pl-5 mt-4 mr-5"><i id="home_icon" class="fa fa-home fa-2x" aria-hidden="true"></i></div>
+		<div class="col-1"><a class="btn btn-danger btn-sm mt-4" style="font-size: .6em;" href="${pageContext.request.contextPath}/logout">Logout</a></div>
+		</div>
 	<div class="card bg-light">
 	<article class="card-body mx-auto" style="max-width: 350px;">
-		<h4 class="card-title text-center display-4 border-bottom border-danger py-2 my-3">Create User</h4>
 		<form method="POST" action="create_user">
 		<!--  alert msgs -->
 			<c:if test='${status.equals("success")}'>

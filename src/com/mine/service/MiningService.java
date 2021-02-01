@@ -4,8 +4,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
@@ -37,7 +39,7 @@ public class MiningService {
 	
 	public Map<Integer,String> getClientList(int companyId, int clientTypeId, boolean type){
 		List<Client> clientList = dao.getClientList(companyId, clientTypeId, type);
-		Map<Integer,String> map = new HashMap<>();
+		Map<Integer,String> map = new LinkedHashMap<>();
 		for(Client client : clientList) {
 			map.put(client.getClientId(), client.getName());
 		}
@@ -134,22 +136,16 @@ public class MiningService {
 		}
 		Client sanchalanPerson = dao.getSanchalanPerson(companyId);
 		dao.addDepositeOrExpense(sanchalanPerson.getClientId(), sancalanAmount, 
-				"Expense", DefineTypesAndCategories.creditExpenseSanchalan.getCashbookType(), 
-				DefineTypesAndCategories.creditExpenseSanchalan.getCashbookCategory(), 
-				DefineTypesAndCategories.creditExpenseSanchalan.getCreditType(), 
-				DefineTypesAndCategories.creditExpenseSanchalan.getCreditCategory(), 
-				DefineTypesAndCategories.creditExpenseSanchalan.getLedgerType(),"Credit", supplyDetails, "Sanchalan Expense Credited", user, dateTime);
+				"Expense", "Sanchalan","Sanchalan", 
+				"Credit", supplyDetails, null, user, dateTime);
 		
 		
 		// If it is comission agent vehicle add comission expense too. if vehicle is not a free vehicle.
 		if(client.getClientType().getDescription().equalsIgnoreCase("Contractor")) {
 			if(supplyDetails.getFinalRate() != 0.0) {
 				dao.addDepositeOrExpense(client.getClientId(), supplyDetails.getVehicle().getClientId().getComission(), 
-						"Expense", DefineTypesAndCategories.creditExpenseComission.getCashbookType(), 
-						DefineTypesAndCategories.creditExpenseComission.getCashbookCategory(), 
-						DefineTypesAndCategories.creditExpenseComission.getCreditType(), 
-						DefineTypesAndCategories.creditExpenseComission.getCreditCategory(), 
-						DefineTypesAndCategories.creditExpenseComission.getLedgerType(),"Credit",supplyDetails,"Contractor Sales Commission Credited", user, dateTime);
+						"Expense", "Sale Commission","Sale Commission", 
+						"Credit",supplyDetails,null, user, dateTime);
 			}
 		}
 		// if driver wapsi is there then it will be a cash expense. 
@@ -179,14 +175,12 @@ public class MiningService {
 	}
 	
 	public boolean cancleSales(int salesId) {
-		System.out.println(salesId);
 		return dao.cancleEntry("sales", salesId);
 	}
 	
 	// One Day Sale Count
 	public long getTodaySaleCount() {
 		long count = dao.getSaleCount();
-		System.out.println(count);
 		return count;
 	}
 	// ----------------------------- End Supply Service ------------------------------------
@@ -195,25 +189,16 @@ public class MiningService {
 	// ----------------------------- Ledger Entries ----------------------------------------
 	public void ledgerEntries(String partyName, double amount, String type, 
 			String expenseCategory, String remarks, User user, LocalDateTime date) {
-			System.out.println(partyName);
 			Client party = dao.clientExists(partyName);
 			String partyType = party.getClientType().getDescription();
 			if(type.equalsIgnoreCase("income")) {
 				if(partyType.equalsIgnoreCase("owner")) {
 				dao.addDepositeOrExpense(party.getClientId(), amount, "deposite", 
-						DefineTypesAndCategories.deposite.getCashbookType(), 
-						DefineTypesAndCategories.deposite.getCashbookCategory(), 
-						DefineTypesAndCategories.deposite.getCreditType(), 
-						DefineTypesAndCategories.deposite.getCreditCategory(), 
-						DefineTypesAndCategories.deposite.getLedgerType(),expenseCategory, null,remarks,user, date);
+						null,null,expenseCategory, null,remarks,user, date);
 				}
 				else {
 					dao.addDepositeOrExpense(party.getClientId(), amount, "deposite", 
-							DefineTypesAndCategories.otherDeposite.getCashbookType(), 
-							DefineTypesAndCategories.otherDeposite.getCashbookCategory(), 
-							DefineTypesAndCategories.otherDeposite.getCreditType(), 
-							DefineTypesAndCategories.otherDeposite.getCreditCategory(), 
-							DefineTypesAndCategories.otherDeposite.getLedgerType(),expenseCategory,null,remarks, user,date);
+							null,null,expenseCategory,null,remarks, user,date);
 				}
 		}
 		else {
@@ -221,58 +206,34 @@ public class MiningService {
 				if(partyType.equalsIgnoreCase("office")) {
 				dao.addDepositeOrExpense(
 						party.getClientId(), amount, "CashExpense", 
-						DefineTypesAndCategories.cashExpenseOffice.getCashbookType(), 
-						DefineTypesAndCategories.cashExpenseOffice.getCashbookCategory(), 
-						DefineTypesAndCategories.cashExpenseOffice.getCreditType(),
-						DefineTypesAndCategories.cashExpenseOffice.getCreditCategory(), 
-						DefineTypesAndCategories.cashExpenseOffice.getLedgerType(),expenseCategory,null,remarks, user,date);
+						null,null,expenseCategory,null,remarks, user,date);
 				}
 				else if(partyType.equalsIgnoreCase("contractor")) {
 					dao.addDepositeOrExpense(
 							party.getClientId(), amount, "CashExpense", 
-							DefineTypesAndCategories.cashExpenseComission.getCashbookType(), 
-							DefineTypesAndCategories.cashExpenseComission.getCashbookCategory(), 
-							DefineTypesAndCategories.cashExpenseComission.getCreditType(),
-							DefineTypesAndCategories.cashExpenseComission.getCreditCategory(), 
-							DefineTypesAndCategories.cashExpenseComission.getLedgerType(),expenseCategory,null,remarks, user,date);
+							null, null ,expenseCategory,null,remarks, user,date);
 				}
 				else if(partyType.equalsIgnoreCase("sanchalan")) {
 					dao.addDepositeOrExpense(
 							party.getClientId(), amount, "CashExpense", 
-							DefineTypesAndCategories.cashExpenseSanchalan.getCashbookType(), 
-							DefineTypesAndCategories.cashExpenseSanchalan.getCashbookCategory(), 
-							DefineTypesAndCategories.cashExpenseSanchalan.getCreditType(),
-							DefineTypesAndCategories.cashExpenseSanchalan.getCreditCategory(), 
-							DefineTypesAndCategories.cashExpenseSanchalan.getLedgerType(),expenseCategory,null,remarks, user,date);
+							null, null,expenseCategory,null,remarks, user,date);
 				}
 				else {
 					dao.addDepositeOrExpense(
 							party.getClientId(), amount, "CashExpense", 
-							DefineTypesAndCategories.cashExpenseOther.getCashbookType(), 
-							DefineTypesAndCategories.cashExpenseOther.getCashbookCategory(), 
-							DefineTypesAndCategories.cashExpenseOther.getCreditType(),
-							DefineTypesAndCategories.cashExpenseOther.getCreditCategory(), 
-							DefineTypesAndCategories.cashExpenseOther.getLedgerType(),expenseCategory,null,remarks, user,date);
+							null, null,expenseCategory,null,remarks, user,date);
 				}
 			}
 			else {
 				if(partyType.equalsIgnoreCase("sanchalan")) {
 					dao.addDepositeOrExpense(
 							party.getClientId(), amount, "CreditExpense", 
-							DefineTypesAndCategories.creditExpenseSanchalan.getCashbookType(), 
-							DefineTypesAndCategories.creditExpenseSanchalan.getCashbookCategory(), 
-							DefineTypesAndCategories.creditExpenseSanchalan.getCreditType(),
-							DefineTypesAndCategories.creditExpenseSanchalan.getCreditCategory(), 
-							DefineTypesAndCategories.creditExpenseSanchalan.getLedgerType(),expenseCategory,null,remarks, user,date);
+							null, null,expenseCategory,null,remarks, user,date);
 				}
 				else {
 					dao.addDepositeOrExpense(
 							party.getClientId(), amount, "CreditExpense", 
-							DefineTypesAndCategories.creditExpenseOther.getCashbookType(), 
-							DefineTypesAndCategories.creditExpenseOther.getCashbookCategory(), 
-							DefineTypesAndCategories.creditExpenseOther.getCreditType(),
-							DefineTypesAndCategories.creditExpenseOther.getCreditCategory(), 
-							DefineTypesAndCategories.creditExpenseOther.getLedgerType(),expenseCategory,null,remarks, user, date);
+							null, null,expenseCategory,null,remarks, user, date);
 				}
 			}
 		}
@@ -283,7 +244,7 @@ public class MiningService {
 	}
 	
 	public boolean cancelEntries(String id) {
-		String [] idParts = id.split("_");
+		String [] idParts = id.split("_"); 
 		return dao.cancleEntry(idParts[0], Integer.parseInt(idParts[1]));
 	}
 	
@@ -348,7 +309,7 @@ public class MiningService {
 	// ----------------------------- Misc Service ----------------------------------------
 	public Map<Integer,String> getLookupMap(String category){
 		List<GeneralData> objList = dao.getLookupMap(category);
-		Map<Integer,String> map = new HashMap<>();
+		Map<Integer,String> map = new LinkedHashMap<>();
 		for(GeneralData obj : objList) {
 			map.put(obj.getId(), obj.getDescription());
 		}

@@ -26,13 +26,10 @@ public class Ledger {
 	//@Generated(GenerationTime.INSERT)
 	protected LocalDateTime entryDate;
 	
-	protected String type;
+	protected String description;
 	
 	// target will be giving
-	protected String target;
-	
-	// source will get the money
-	protected String source;
+	protected String account;
 	
 	@Column(name="debit_amount")
 	protected double debitAmount;
@@ -48,12 +45,12 @@ public class Ledger {
 	protected User createdBy;
 	
 	@OneToOne
-	@JoinColumn(name="cashbook_link")
-	protected CashBookRecord cashbookLinking;
+	@JoinColumn(name="parent_link")
+	protected Ledger parentEntryLink;
 	
-	@OneToOne
-	@JoinColumn(name="creditbook_link")
-	protected CreditRecord creditRecordLinking;
+	@OneToOne(mappedBy="parentEntryLink")
+	@JoinColumn(name="child_link")
+	protected Ledger childLink;
 	
 	@OneToOne
 	@JoinColumn(name="sales_id")
@@ -69,28 +66,20 @@ public class Ledger {
 		this.entryDate = entryDate;
 	}
 
-	public String getType() {
-		return type;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setType(String type) {
-		this.type = type;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
-	public String getTarget() {
-		return target;
+	public String getAccount() {
+		return account;
 	}
 
-	public void setTarget(String target) {
-		this.target = target;
-	}
-
-	public String getSource() {
-		return source;
-	}
-	// Source will get the money
-	public void setSource(String source) {
-		this.source = source;
+	public void setAccount(String target) {
+		this.account = target;
 	}
 
 	public double getDebitAmount() {
@@ -111,22 +100,6 @@ public class Ledger {
 
 	public int getId() {
 		return id;
-	}
-
-	public CashBookRecord getCashbookLinking() {
-		return cashbookLinking;
-	}
-
-	public void setCashbookLinking(CashBookRecord cashbookLinking) {
-		this.cashbookLinking = cashbookLinking;
-	}
-
-	public CreditRecord getCreditRecordLinking() {
-		return creditRecordLinking;
-	}
-
-	public void setCreditRecordLinking(CreditRecord creditRecordLinking) {
-		this.creditRecordLinking = creditRecordLinking;
 	}
 
 	public SupplyDetails getSalesLink() {
@@ -158,5 +131,21 @@ public class Ledger {
 	
 	public boolean getStatus() {
 		return this.status;
+	}
+
+	public Ledger getParentEntryLink() {
+		return parentEntryLink;
+	}
+
+	public void setParentEntryLink(Ledger parentEntryLink) {
+		this.parentEntryLink = parentEntryLink;
+	}
+
+	public Ledger getChildLink() {
+		return childLink;
+	}
+
+	public void setChildLink(Ledger childLink) {
+		this.childLink = childLink;
 	}
 }

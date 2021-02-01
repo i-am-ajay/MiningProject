@@ -17,61 +17,61 @@
 	
 	<div class="container mt-4">
 	<div class="row">
-		<h4 class="border-bottom border-danger mt-1 mx-3 mb-3 pb-2 display-5 col-8" id="form_title">Report Dashboard</h4>
+		<h5 class="border-bottom border-danger mt-1 mx-3 mb-3 pb-2 display-5 col-8" id="form_title">Report Dashboard</h5>
 		<div class="col-2 align-right ml-auto pl-5 mt-2 mr-5"><i id="home_icon" class="fa fa-home fa-2x" aria-hidden="true"></i></div>
 		<div class="col-1"><a class="btn btn-danger btn-sm mt-2" style="font-size: .5em;" href="${pageContext.request.contextPath}/logout">Logout</a></div>
 	</div>
 	<div class="row mt-3">
-		<div class="col-sm-12 col-md-4">
+		<div class="col-sm-12 col-md-2">
 			<div class="card bg-light my-1 py-1" id="sales_report">
 			<article class="card-body mx-auto">
-				<h4 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Sales<br/>Report</h4>
-				<p class="text-center mt-3"><i class="fa fa-line-chart fa-4x" aria-hidden="true"></i></i></p>	
+				<h5 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Sales<br/>Report</h5>
+				<p class="text-center mt-3"><i class="fa fa-line-chart fa-2x" aria-hidden="true"></i></i></p>	
 			</article>
 			</div>
 		</div>
-		<div class=" col-sm-12 col-md-4">
+		<div class=" col-sm-12 col-md-2">
 			<div class="card bg-light my-1 py-1" id="client">
 			<article class="card-body mx-auto">
-				<h4 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Client<br/> Report</h4>
-				<p class="text-center mt-3"><i class="fa fa-user fa-4x" aria-hidden="true"></i></p>
+				<h5 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Client<br/> Report</h5>
+				<p class="text-center mt-3"><i class="fa fa-user fa-2x" aria-hidden="true"></i></p>
 			</article>
 			</div>
 		</div>
-		<div class=" col-sm-12 col-md-4">
+		<div class=" col-sm-12 col-md-2">
 			<div class="card bg-light my-1 py-1" id="vehicle">
 			<article class="card-body mx-auto">
-				<h4 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Vehicle<br/> Report</h4>
-				<p class="text-center mt-3"><i class="fa fa-truck fa-4x" aria-hidden="true"></i></p>
+				<h5 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Vehicle<br/> Report</h5>
+				<p class="text-center mt-3"><i class="fa fa-truck fa-2x" aria-hidden="true"></i></p>
 			</article>
 			</div>
 		</div>
-		
-	</div>
-	<div class="row mt-3">
-		<div class="col-sm-12 col-md-4">
+		<div class="col-sm-12 col-md-2">
 			<div class="card bg-light my-1 py-1" id="rates">
 			<article class="card-body mx-auto">
-				<h4 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Rates<br/>Report</h4>
-				<p class="text-center mt-3"><i class="fa fa-money fa-4x" aria-hidden="true"></i></p>	
+				<h5 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Rates<br/>Report</h5>
+				<p class="text-center mt-3"><i class="fa fa-money fa-2x" aria-hidden="true"></i></p>	
 			</article>
 			</div>
 		</div>
-		<div class=" col-sm-12 col-md-4">
+		<div class=" col-sm-12 col-md-2">
 			<div class="card bg-light my-1 py-1" id="ledger">
 			<article class="card-body mx-auto">
-				<h4 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Ledger<br/>&nbsp;</h4>
-				<p class="text-center mt-3"><i class="fa fa-calculator fa-4x" aria-hidden="true"></i></p>
+				<h5 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Ledger<br/>&nbsp;</h5>
+				<p class="text-center mt-3"><i class="fa fa-calculator fa-2x" aria-hidden="true"></i></p>
 			</article>
 			</div>
 		</div>
-		<div class=" col-sm-12 col-md-4">
+		<div class=" col-sm-12 col-md-2">
 			<div class="card bg-light my-1 py-1" id="ledger_summary">
 			<article class="card-body mx-auto">
-				<h3 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Ledger<br/> Summary</h3>
-				<p class="text-center mt-3"><i class="fa fa-file-text-o fa-3x" aria-hidden="true"></i></p>
+				<h5 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Ledger<br/> Summary</h5>
+				<p class="text-center mt-3"><i class="fa fa-file-text-o fa-2x" aria-hidden="true"></i></p>
 			</article>
 			</div
+	</div>
+	<div class="row mt-3">
+		
 		</div>
 	</div>
 	</div> 

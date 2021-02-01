@@ -98,6 +98,9 @@
 					      		</div>
 					      		<f:input id="discount" class="form-control form-control-sm" placeholder="Enter Discount Amount" path="discount" />
 					    	</div>
+					    	<div id="deactivate_div" class="form-check">
+	        					<label class="form-check-label"><input type="checkbox" class="form-check-input mr-3" id="check" name="status"/> Deactivate User</label>
+	    					</div>
 			  			</div>
 			  		</div>
 			  	</div>
@@ -121,6 +124,7 @@
 				$("#vehicle_no").attr("required","true");
 				$("#type").attr("required","true");
 				$(".belong").attr("required","true");
+				$("#deactivate_div").hide();
 			});
 		$(document).ready(e => {
 			$("#home_icon").hover( e => {
@@ -151,6 +155,9 @@
 						$('vehicle_no').val(json['vehicle_no']);
 						$('#vehicle_no').prop('readOnly',true);
 						$('#discount').val(json['discount']);
+						$("#deactivate_div").show();
+						console.log(json['status']);
+						$("#check").prop("checked",!json['status']);
 
 						// set belongs to checkbox.
 						let belongsTo = json['belongs_to'];

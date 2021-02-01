@@ -39,8 +39,7 @@ public class User{
 	@Column(nullable=false)
 	private boolean active;
 	
-	@Generated(GenerationTime.INSERT)
-	@Column(nullable=false, insertable=false, updatable=false, name="creation_date")
+	@Column(name="creation_date")
 	private LocalDate creationDate;
 	
 	private String role;

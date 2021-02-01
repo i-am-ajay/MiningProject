@@ -48,6 +48,7 @@ public class MainController {
 		if(session.getAttribute("user") == null) {
 			return "login";
 		}
+		model.addAttribute("role",(String)session.getAttribute("role"));
 		return "admin_panel";
 	}
 	
@@ -156,9 +157,6 @@ public class MainController {
 		}
 		
 		Map<Integer, String> clientMap = service.getClientList(companyId, 0);
-		clientMap.forEach((e,x) ->{
-			System.out.println(x);
-		});
 		model.addAttribute("party_list",service.getClientList(companyId, 0));
 		model.addAttribute("subtype_list",service.getLookupMap("SubType"));
 		model.addAttribute("minDate", this.setMinDate(user.getRole()));
@@ -226,6 +224,7 @@ public class MainController {
 			object.put("vehicle_type", vehicle.getVehicleType());
 			object.put("tyre_type", vehicle.getTyreType());
 			object.put("vehicle_of", vehicle.getClientId().getName());
+			object.put("status", vehicle.isStatus());
 			// Discount logic 
 			Client client = vehicle.getClientId();
 			//String clientDescription = client.getClientType().getDescription();
@@ -245,95 +244,7 @@ public class MainController {
 	
 	// --------------------------------- User authentication Control ----------------------
 	
-	@RequestMapping("authenticate_user")
-	public String authenticateUser(Model model,HttpSession session, @RequestParam(name="username") String userName, @RequestParam(name="password") String password ) {
-		String page = "login";
-		userName = userName.toLowerCase();
-		User user = service.getUser(userName);
-		if( user != null && user.isActive()) {
-			if(user.getPassword().equals(password.trim())) {
-				String role = user.getRole();
-				session.setAttribute("username", user.getUsername());
-				session.setAttribute("user", user);
-				session.setAttribute("role", role);
-				
-				role = role.toLowerCase();
-				if(role.equals("admin")) {
-					page="redirect:admin_panel";
-				}
-				else if(role.equals("user")) {
-					page = "redirect:admin_panel";
-				}
-				else {
-					page = "login";
-				}
-			}
-		}
-		return page;
-	}
 	
-	@RequestMapping("change_password")
-	public String changePassword(HttpSession session, Model model,  @RequestParam(name="password", required=false)String password,@RequestParam(name="rpassword", required=false)String rpassword) {
-		if(session.getAttribute("user") == null) {
-			return "login";
-		}
-		model.addAttribute("username",session.getAttribute("username"));
-		User user = service.getUser(session.getAttribute("username").toString());
-		if(password != null && password.length() > 0 ) {
-			user.setPassword(password);
-			service.updatePassword(user);
-			model.addAttribute("status", "updated");
-		}
-		
-		return "password_change";
-	}
-	
-	// Create User
-	@RequestMapping("create_user")
-	public String createUser(Model model, @RequestParam("username") String username, @RequestParam("password") String password, 
-			@RequestParam("role") String role, @RequestParam(name="inactive", required=false) boolean activeStatus, HttpSession session) {
-		if(session.getAttribute("user") == null){
-			return "login";
-		}
-		if(!session.getAttribute("role").toString().equalsIgnoreCase("Admin")) {
-			return "admin_panel";
-		}
-		String requestStatus = null;
-		boolean active = true;
-		if(activeStatus == true) {
-			active = false;
-		}
-		boolean status = service.createUser(username, password, role, (User)session.getAttribute("user"), active);
-		if(status == true) {
-			requestStatus = "success";
-		}
-		else {
-			requestStatus = "exists";
-		}
-		model.addAttribute("status",requestStatus);
-		return "registration";
-	}
-	
-	// fetch user details.
-	@RequestMapping("user_load")
-	public @ResponseBody String userSearch(@RequestParam("user")String username) {
-		User user = service.getUser(username);
-		JSONObject obj = null;
-		if(user != null) {
-			obj = new JSONObject();
-			obj.put("user", user.getUsername());
-			obj.put("password", user.getPassword());
-			obj.put("role", user.getRole());
-			obj.put("deactive", !user.isActive());
-		}
-		return obj.toString();
-	}
-	
-	@RequestMapping("logout")
-	public String logout(HttpSession session) {
-		session.invalidate();
-		return "login";
-	}
 	// ---------------------------------End User authentication control -------------------
 	
 	// --------------------------------- Print token -------------------------------
@@ -365,15 +276,6 @@ public class MainController {
 	
 	//---------------------------------- Test methods -----------------------------
 	
-	@RequestMapping("test")
-	public String test() {
-		service.saveLedger();
-		return "test";
-	}
 	
-	@RequestMapping("test_2")
-	public String test2() {
-		return "test2";
-	}
 	//---------------------------------- End Of Test ------------------------------
 }

@@ -19,8 +19,6 @@ import org.hibernate.annotations.GenerationTime;
 import com.mine.component.master.Client;
 import com.mine.component.master.Vehicle;
 
-@Entity
-@Table(name="cashbook_table")
 public class CashBookRecord {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -56,7 +54,7 @@ public class CashBookRecord {
 	@OneToOne(mappedBy = "cashbookDepositeLink")
 	CreditRecord creditRecord;
 	
-	@OneToOne(mappedBy = "cashbookLinking")
+	//@OneToOne(mappedBy = "cashbookLinking")
 	Ledger ledger;
 
 	public Client getParty() {

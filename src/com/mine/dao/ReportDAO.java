@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.lang.Double;
+import java.lang.Long;
 
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -105,12 +107,12 @@ public class ReportDAO {
 			predicateList.add(builder.equal(from.get("clientContact"),clientContact));
 		}
 		if(clientType != 0) {
-			System.out.println("clientType"+ clientType);
 			initiateSearch = true;
 			predicateList.add(builder.equal(from.get("clientType").get("id"), clientType));
 		}
 		if(initiateSearch) {
 			criteria.where(builder.and(predicateList.toArray(new Predicate[predicateList.size()])));
+			criteria.orderBy(builder.desc(from.get("name")));
 			TypedQuery<Client> clientQuery = session.createQuery(criteria);
 			clientList = clientQuery.getResultList();
 		}
@@ -214,25 +216,24 @@ public class ReportDAO {
 	
 	@Transactional
 	public List<Object[]> salesSummary(int selectionCode){
-		/*Session session = factory.getCurrentSession();
+		Session session = factory.getCurrentSession();
 		CriteriaBuilder builder = session.getCriteriaBuilder();
 		CriteriaQuery<Object[]> query = builder.createQuery(Object[].class);
 		Root<Client> clientRoot = query.from(Client.class);
 		// create SubQuery
 		
-		 * Subquery<Double> subQuery = query.subquery(Double.class); Root<Ledger>
-		 * subQueryRoot = subQuery.from(Ledger.class);
-		 * 
-		 * subQuery.select(builder.diff(builder.sum(subQueryRoot.get("creditAmount")),
-		 * builder.sum(subQueryRoot.get("debitAmount")))).where(builder.and(builder.or(
-		 * builder.equal(subQueryRoot.get("target"), clientRoot.get("name")),
-		 * builder.equal(subQueryRoot.get("source"),
-		 * clientRoot.get("name")))),builder.equal(subQueryRoot.get("status"), 1));
+		Subquery<Double> subQuery = query.subquery(Double.class); 
+		Root<Ledger>subQueryRoot = subQuery.from(Ledger.class);
+		  
+		subQuery.select(builder.diff(builder.sum(subQueryRoot.get("creditAmount")),
+		builder.sum(subQueryRoot.get("debitAmount")))).where(builder.and(
+		builder.equal(subQueryRoot.get("account"), clientRoot.get("name")),
+		builder.equal(subQueryRoot.get("status"), 1)));
 		 
-		Subquery<Double> subQueryDebit = query.subquery(Double.class); 
+		/*Subquery<Double> subQueryDebit = query.subquery(Double.class); 
 		Subquery<Double> subQueryCredit = query.subquery(Double.class);
 		Root<Ledger> subQueryRootDebit = subQueryDebit.from(Ledger.class);
-		Root<Ledger> subQueryRootCredit = subQueryCredit.from(Ledger.class);
+		Root<Ledger> subQueryRootCredit = subQueryCredit.from(Ledger.class);*/
 		
 		// create seperate subqueryf or credita and debit amount.
 		// Get predicate for general data.
@@ -240,24 +241,37 @@ public class ReportDAO {
 		Root<GeneralData> generalDataRoot = generalSubQuery.from(GeneralData.class);
 		// client predicate
 		if (selectionCode == 1){
-			generalSubQuery.select(generalDataRoot).where(builder.or(builder.equal(generalDataRoot.get("description"),"Owner"),
-					builder.equal(generalDataRoot.get("description"),"Contractor")));
+			generalSubQuery.select(generalDataRoot).where(builder.equal(generalDataRoot.get("description"),"Owner"));
 			query.multiselect(clientRoot.get("name"),subQuery).where(clientRoot.get("clientType").in(generalSubQuery));
 		}
-		else if(selectionCode == 2) {
+		else if(selectionCode == 2){
+			generalSubQuery.select(generalDataRoot).where(builder.equal(generalDataRoot.get("description"), "Contractor"));
+			query.multiselect(clientRoot.get("name"),subQuery).where(clientRoot.get("clientType").in(generalSubQuery));
+		}
+		else if(selectionCode == 3) {
 			generalSubQuery.select(generalDataRoot).where(builder.equal(generalDataRoot.get("description"),"Sanchalan"));
+			query.multiselect(clientRoot.get("name"),subQuery).where(clientRoot.get("clientType").in(generalSubQuery));
+		}
+		else if(selectionCode == 4) {
+			generalSubQuery.select(generalDataRoot).where(builder.equal(generalDataRoot.get("description"), "Office"));
+			query.multiselect(clientRoot.get("name"),subQuery).where(clientRoot.get("clientType").in(generalSubQuery));
+		}
+		else if(selectionCode == 5) {
+			generalSubQuery.select(generalDataRoot).where(builder.equal(generalDataRoot.get("description"),"Journal"));
 			query.multiselect(clientRoot.get("name"),subQuery).where(clientRoot.get("clientType").in(generalSubQuery));
 		}
 		else {
 			generalSubQuery.select(generalDataRoot).where(builder.or(builder.equal(generalDataRoot.get("description"),"Owner"),
 					builder.equal(generalDataRoot.get("description"),"Contractor"),
-					builder.equal(generalDataRoot.get("description"),"Sanchalan")));
+					builder.equal(generalDataRoot.get("description"),"Sanchalan"),
+					builder.equal(generalDataRoot.get("description"), "Office"),
+					builder.equal(generalDataRoot.get("description"),"Journal")));
 			query.multiselect(clientRoot.get("name"),subQuery).where(clientRoot.get("clientType").in(generalSubQuery).not());
 		}
+		query.orderBy(builder.desc(clientRoot.get("name")));
 		
 		TypedQuery<Object[]> summaryObj = session.createQuery(query);
-		return summaryObj.getResultList();*/
-		return new ArrayList<>();
+		return summaryObj.getResultList();
 	}
 	
 	//-------------------------------- End Sales Report --------------------------------------------
@@ -271,12 +285,12 @@ public class ReportDAO {
 		CriteriaQuery<Ledger> query = builder.createQuery(Ledger.class);
 		Root<Ledger> from = query.from(Ledger.class);
 		List<Predicate> predicateList = new ArrayList<>();
-		predicateList.add(builder.equal(from.get("source"), name));
-		predicateList.add(builder.equal(from.get("target"), name));
+		predicateList.add(builder.equal(from.get("account"), name));
 		predicateList.add(builder.between(from.get("entryDate"), startDate, endDate));
 		predicateList.add(builder.equal(from.get("status"),true));
 		//query.where(builder.and(predicateList.toArray(new Predicate[predicateList.size()]))).orderBy(builder.desc(from.get("entryDate")));
-		query.where(builder.and(builder.or(builder.equal(from.get("source"), name),builder.equal(from.get("target"), name)),builder.between(from.get("entryDate"), startDate, endDate),builder.equal(from.get("status"), true)));
+		query.where(builder.and(builder.equal(from.get("account"), name),builder.between(from.get("entryDate"), startDate, endDate),builder.equal(from.get("status"), true)));
+		query.orderBy(builder.asc(from.get("entryDate")));
 		TypedQuery<Ledger> ledgerQuery = session.createQuery(query);
 		return ledgerQuery.getResultList();
 	}
@@ -284,66 +298,45 @@ public class ReportDAO {
 	@Transactional
 	public Double[] getBalances(String name, LocalDateTime startDate, LocalDateTime endDate) {
 		Session session = factory.getCurrentSession();
-		String openingBalanceDebitQuery = " SELECT SUM(l.debitAmount) FROM Ledger l WHERE l.source = :name"
+		String openingBalance = " SELECT SUM(l.creditAmount), SUM(l.debitAmount), SUM(l.creditAmount) - SUM(l.debitAmount) FROM Ledger l WHERE l.account = :name"
 				+ " AND l.entryDate < :sDate and status = 1 ";
-		String openingBalanceCreditQuery = "SELECT SUM(l.creditAmount) FROM Ledger l WHERE "
-				+ "(l.target= :name) AND l.entryDate < :sDate and status = 1";
 		
-		String rangeBalanceDebitQuery = "SELECT SUM(l.debitAmount) FROM Ledger l WHERE "
-				+ "(l.source = :name) AND (l.entryDate BETWEEN :sDate AND :eDate) AND status = 1";
-		String rangeBalanceCreditQuery = "SELECT SUM(l.creditAmount) FROM Ledger l WHERE "
-				+ "l.target = :name AND (l.entryDate BETWEEN :sDate AND :eDate) AND status = 1";
-		TypedQuery<Double> creditDebitAmount = session.createQuery(openingBalanceDebitQuery,Double.class);
+		String rangeBalanceDebitQuery = "SELECT SUM(l.creditAmount), SUM(l.debitAmount),SUM(l.creditAmount) - SUM(l.debitAmount) FROM Ledger l WHERE "
+				+ "(l.account = :name) AND (l.entryDate BETWEEN :sDate AND :eDate) AND status = 1";
+		TypedQuery<Object[]> creditDebitAmount = session.createQuery(openingBalance,Object[].class);
 		creditDebitAmount.setParameter("name", name);
 		creditDebitAmount.setParameter("sDate", startDate);
-		Double openingBalanceDebit = null;
-		Double openingBalanceCredit = null;
+		double openingBalanceAmount = 0.0;
+		double openingCreditBalance = 0.0;
+		double openingDebitBalance = 0.0;
 		try {
-			openingBalanceDebit = (Double)creditDebitAmount.getSingleResult();
-		}
-		catch(Exception ex) {
-			ex.printStackTrace();
-		}
-		
-		creditDebitAmount = session.createQuery(openingBalanceCreditQuery,Double.class);
-		creditDebitAmount.setParameter("name", name);
-		creditDebitAmount.setParameter("sDate", startDate);
-		try {
-			openingBalanceCredit = (Double)creditDebitAmount.getSingleResult();
+			Object [] openingBalanceArray = creditDebitAmount.getSingleResult();
+			openingBalanceAmount = (Double)openingBalanceArray[2] != null ? (Double)openingBalanceArray[2] : 0.0;
+			openingCreditBalance = (Double)openingBalanceArray[0] != null ? (Double)openingBalanceArray[0] : 0.0;
+			openingDebitBalance = (Double)openingBalanceArray[1] != null ? (Double)openingBalanceArray[1] : 0.0;
 		}
 		catch(Exception ex) {
 			ex.printStackTrace();
 		}
 		
 		// Get balance of selected records
-		creditDebitAmount = session.createQuery(rangeBalanceDebitQuery, Double.class);
+		creditDebitAmount = session.createQuery(rangeBalanceDebitQuery, Object[].class);
 		creditDebitAmount.setParameter("name", name);
 		creditDebitAmount.setParameter("sDate", startDate);
 		creditDebitAmount.setParameter("eDate", endDate);
-		Double selectedRecordsBalanceDebit = null;
+		double selectedRecordsBalance = 0.0;
+		double selectedRangeCredit = 0.0;
+		double selectedRangeDebit = 0.0;
 		try {
-			selectedRecordsBalanceDebit = (Double)creditDebitAmount.getSingleResult();
+			Object [] openingBalanceArray = creditDebitAmount.getSingleResult();
+			selectedRecordsBalance = (Double)openingBalanceArray[2] != null ? (Double)openingBalanceArray[2] : 0.0 ;
+			selectedRangeCredit = (Double)openingBalanceArray[0] != null ? (Double)openingBalanceArray[0] : 0.0; 
+			selectedRangeDebit = (Double)openingBalanceArray[1] != null ? (Double)openingBalanceArray[1] : 0.0; 
 		}
 		catch(Exception ex) {
 			ex.printStackTrace();
 		}
-		
-		creditDebitAmount = session.createQuery(rangeBalanceCreditQuery, Double.class);
-		creditDebitAmount.setParameter("name", name);
-		creditDebitAmount.setParameter("sDate", startDate);
-		creditDebitAmount.setParameter("eDate", endDate);
-		Double selectedRecordsBalanceCredit = null;
-		try {
-			selectedRecordsBalanceCredit = (Double)creditDebitAmount.getSingleResult();
-		}
-		catch(Exception ex) {
-			ex.printStackTrace();
-		}
-		double openingBalance = (openingBalanceCredit == null ? 0.0 : openingBalanceCredit) - 
-				(openingBalanceDebit == null ? 0.0 : openingBalanceDebit);
-		Double selectedRecordBalance = (selectedRecordsBalanceCredit == null ? 0.0 : selectedRecordsBalanceCredit) - 
-				(selectedRecordsBalanceDebit == null ? 0.0 : selectedRecordsBalanceDebit);
-		return new Double[]{openingBalance , selectedRecordBalance};
+		return new Double[]{openingBalanceAmount , selectedRecordsBalance, (openingDebitBalance + selectedRangeDebit), (openingCreditBalance + selectedRangeCredit)};
 	}
 	
 	

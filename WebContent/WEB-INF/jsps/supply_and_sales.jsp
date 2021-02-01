@@ -322,12 +322,14 @@
 				success: function(result, status, xhr){
 					if(result != null && result != ""){
 						let json = JSON.parse(result);
-						$("#vehicle_type").val(json['vehicle_type']);
-						$("#tyre_type").val(json['tyre_type']);
-						$("#discount").val(json['discount']);
-						$("#vehicle_type").attr("readonly",true);
-						$("#tyre_type").attr("readonly",true);
-						$("#vehicle_of").val(json['vehicle_of']);
+						if(json['status']){
+							$("#vehicle_type").val(json['vehicle_type']);
+							$("#tyre_type").val(json['tyre_type']);
+							$("#discount").val(json['discount']);
+							$("#vehicle_type").attr("readonly",true);
+							$("#tyre_type").attr("readonly",true);
+							$("#vehicle_of").val(json['vehicle_of']);
+						}
 
 					}
 					else{

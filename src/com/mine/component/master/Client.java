@@ -45,6 +45,8 @@ public class Client {
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="company_id")
 	private Company company;
+	
+	private boolean status;
 
 	public String getName() {
 		return name;
@@ -136,5 +138,13 @@ public class Client {
 	
 	public double getComission() {
 		return this.comission;
+	}
+
+	public boolean isStatus() {
+		return status;
+	}
+
+	public void setStatus(boolean status) {
+		this.status = status;
 	}
 }

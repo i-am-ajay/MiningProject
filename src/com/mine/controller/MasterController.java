@@ -1,6 +1,8 @@
 package com.mine.controller;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpSession;
 
@@ -55,12 +57,20 @@ public class MasterController {
 	}
 	
 	@RequestMapping("save_client")
-	public String clientSaved(HttpSession session,@ModelAttribute Client client, BindingResult result, @RequestParam(value="client_type", required=false)int id, Model model) {
+	public String clientSaved(HttpSession session,@ModelAttribute Client client, BindingResult result, @RequestParam(value="client_type", required=false)int id,
+			@RequestParam(defaultValue= "false") boolean status,Model model) {
 		if(result.hasErrors()) {
 			System.out.println(result.toString());
 		}
 		else {
+			System.out.println(status);
 			User user = (User)session.getAttribute("user");
+			if(!status) {
+				client.setStatus(true);
+			}
+			else {
+				client.setStatus(false);
+			}
 			model.addAttribute("status",service.saveClient(client, id,user, companyId,user.getRole()));
 		}
 		return "redirect:client_creation";
@@ -93,14 +103,21 @@ public class MasterController {
 	@RequestMapping("client_list")
 	@ResponseBody public String getClientList(@RequestParam("client_id") int id) {
 		Map<Integer,String> clientMap = service.getClientList(companyId, id);
+		Map<String,String> clientMapString = new LinkedHashMap<>();
+		clientMap.forEach((k,v) ->{
+			clientMapString.put(k.toString(), v);
+		});
 		String dataString = null;
-		if(clientMap != null && clientMap.size()>0) {
+		/*if(clientMap != null && clientMap.size()>0) {
 			JSONObject obj = new JSONObject();
-			for(Integer key : clientMap.keySet()) {
+			for(Entry<Integer,String> e: clientMap.entrySet()) {
+				obj.put(e.getKey().toString(), e.getValue());
+			}*/
+			/*for(Integer key : clientMap.keySet()) {
 				obj.put(key.toString(), clientMap.get(key));
-			}
-			dataString = obj.toString();
-		}
+			}*/
+		JSONObject obj = new JSONObject(clientMapString);
+		dataString = obj.toString();
 		return dataString;
 	}
 	
@@ -197,12 +214,21 @@ public class MasterController {
 	}
 	
 	@RequestMapping("save_vehicle")
-	public String saveVehicle(HttpSession session,Model model, @ModelAttribute("vehicle") Vehicle vehicle,BindingResult result, @RequestParam("client_name") int clientId) {
+	public String saveVehicle(HttpSession session,Model model, @ModelAttribute("vehicle") Vehicle vehicle,BindingResult result, @RequestParam("client_name") int clientId,
+			@RequestParam(name="status",defaultValue="false") boolean disableVehicle) {
 		if(result.hasErrors()) {
 			System.out.println("Got some errors");
 		}
 		else {
 			User user = (User)session.getAttribute("user");
+			System.out.println(disableVehicle);
+			if(!disableVehicle) {
+				vehicle.setStatus(true);
+			}
+			else {
+				System.out.println("Disable vehicle true");
+				vehicle.setStatus(false);
+			}
 			model.addAttribute("status",service.saveVehicle(vehicle, clientId, 1, user,user.getRole()));
 		}
 		return "redirect:create_vehicle";
@@ -223,6 +249,7 @@ public class MasterController {
 			object.put("belongs_to", vehicle.getClientId().getClientType().getId());
 			object.put("client", vehicle.getClientId().getClientId());
 			object.put("discount", vehicle.getDiscount() != 0.0 ? vehicle.getDiscount() : vehicle.getClientId().getDiscount());
+			object.put("status",vehicle.isStatus());
 			result = object.toString();
 		}
 		return result;

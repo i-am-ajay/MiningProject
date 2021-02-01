@@ -68,7 +68,7 @@
 					    <div id="expense_type" class="col-1">
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Sub Type</label>
-					      		<select id="e_type" class="form-control form-control-sm" name="expense_type">
+					      		<select id="e_type_" class="form-control form-control-sm" name="expense_type">
 					      			<option value="cash_expense">Cash</option>
 					      			<option value="bank">Bank</option>
 					      			<!-- <option id="credit_id" value="credit_expense">Credit</option> -->
