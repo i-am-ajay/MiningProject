@@ -140,7 +140,7 @@
 		            <tr class="text-center">
 		            	<th>Date</th>
 		                <th>Particulars</th>
-		                <th>Credit Amount</th>
+		                <th>Debit Amount</th>
 		                <th>Remarks</th>
 		            </tr>
 		        </thead>
@@ -182,7 +182,7 @@
 		            <tr class="text-center">
 		            	<th>Date</th>
 		                <th>Particulars</th>
-		                <th>Debit Amount</th>
+		                <th>Credit Amount</th>
 		                <th>Remarks</th>
 		            </tr>
 		        </thead>

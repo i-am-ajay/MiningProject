@@ -134,12 +134,13 @@ public class MiningService {
 		if(!supplyDetails.getMaterial().equalsIgnoreCase("bugada")) {
 			sancalanAmount = supplyDetails.getFinalRate() <= params.getFreeLimit()  ? params.getSanchalanOnFree() : ParameterValueFetcher.getSanchalanAmount(params,supplyDetails.getVehicle().getVehicleType());
 		}
-		Client sanchalanPerson = dao.getSanchalanPerson(companyId);
-		dao.addDepositeOrExpense(sanchalanPerson.getClientId(), sancalanAmount, 
-				"Expense", "Sanchalan","Sanchalan", 
-				"Credit", supplyDetails, null, user, dateTime);
+		if(!params.isDisableSanchalan()) {
+			Client sanchalanPerson = dao.getSanchalanPerson(companyId);
+			dao.addDepositeOrExpense(sanchalanPerson.getClientId(), sancalanAmount, 
+					"Expense", "Sanchalan","Sanchalan", 
+					"Credit", supplyDetails, null, user, dateTime);
 		
-		
+		}
 		// If it is comission agent vehicle add comission expense too. if vehicle is not a free vehicle.
 		if(client.getClientType().getDescription().equalsIgnoreCase("Contractor")) {
 			if(supplyDetails.getFinalRate() != 0.0) {

@@ -1,13 +1,11 @@
-* Add fields in database tables.
-	supply_details - clientName varchar
-	parameters - sanchalanTrolly
-	
-	
-* Update column
-	driverReturn in supply table to double.
-	
+Note :
 
-* New Columns
-	driver_return_normal
-	driver_return_small_vehicle
-	sanchalan_normal
+1) Debit means amount comes into ledger
+2) Credit means it goes out of ledger.
+
+3) Debit column in database is credit column in application and credit column of database is debit column in databae.
+That means amount we recive in application it will be debit amount but in database credit column will have it.
+Amount we pay in application it will be credit amount at database level it will be in debit column.
+
+4) Journal entry Debitor account entry will go in credit table of database and Creditor entry will go in debit
+table of database.

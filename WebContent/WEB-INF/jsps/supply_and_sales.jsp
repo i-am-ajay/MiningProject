@@ -380,7 +380,7 @@
 						let discount = $("#discount").val();
 						// check if nrl is selected.
 						if($("#nrl").prop("checked")){
-							nrl = $("#royalty").val();
+							rate = rate - $("#royalty").val();
 							$("#royalty_save").val($("#royalty").val());
 						}
 						else{
@@ -403,7 +403,7 @@
 							$("#numberofDiv").show();
 							return 1;
 						}
-						finalRate = finalRate - driverReturn - nrl; 
+						finalRate = finalRate - driverReturn; 
 						$("#final_rate").val(finalRate);
 					}
 				}

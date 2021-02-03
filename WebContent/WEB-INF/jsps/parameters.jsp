@@ -109,6 +109,14 @@
 					      		<f:input class="form-control form-control-sm" id="amountAfterLimit" path="sanchalanTrolly"/>
 					    	</div>
 					    </div>
+					    <div class="col-3">	
+					    	<div class="form-group form-group-check">
+					    		<div>
+					      			<label class="font-weight-bold">Disable Sanchalan</label>
+					      		</div>
+					      		<f:checkbox class="form-check-input ml-1" id="disable" path="disableSanchalan"/>
+					    	</div>
+					    </div>
 		  			</div>
 			 
 			  	</div>

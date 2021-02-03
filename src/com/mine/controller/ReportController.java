@@ -121,21 +121,25 @@ public class ReportController {
 	@RequestMapping("rate_report")
 	public String vehicleReport(HttpSession session,Model model, @RequestParam(name="material",required=false) String material,@RequestParam(name="quantity",required=false) String quantity, @RequestParam(name="vehicle_type",required=false) String vehicleType,
 				@RequestParam(name="tyre_type",required=false, defaultValue="0") int tyreType) {
-		if(session.getAttribute("user") == null) {
+		User user = (User)session.getAttribute("user");
+		if(user == null) {
 				return "login";
-			}
-			List<Rate> rateList = reportService.getRateList(vehicleType, tyreType, quantity, material);
-			model.addAttribute("vehicle_lookup",miningService.getLookupMap("vehicleType"));
-			model.addAttribute("tyre_lookup", miningService.getLookupMap("tyreType"));
-			model.addAttribute("material_lookup", miningService.getLookupMap("materialType"));
-			model.addAttribute("quantity_lookup", miningService.getLookupMap("quantity"));
-			model.addAttribute("rateList",rateList);
-			return "report/rate_report";
+		}
+		
+		List<Rate> rateList = reportService.getRateList(vehicleType, tyreType, quantity, material);
+		model.addAttribute("vehicle_lookup",miningService.getLookupMap("vehicleType"));
+		model.addAttribute("tyre_lookup", miningService.getLookupMap("tyreType"));
+		model.addAttribute("material_lookup", miningService.getLookupMap("materialType"));
+		model.addAttribute("quantity_lookup", miningService.getLookupMap("quantity"));
+		model.addAttribute("rateList",rateList);
+		model.addAttribute("role",user.getRole());
+		return "report/rate_report";
 	}
 	
 	@RequestMapping("rate_update_report")
 	public String updateRateList(HttpSession session, Model model){
-		if(session.getAttribute("user") == null) {
+		User user = (User)session.getAttribute("user");
+		if( user == null || user.getRole().equalsIgnoreCase("user")) {
 			return "login";
 		}
 		List<Rate> rateList = reportService.getRateList(null, 0, null, null);
@@ -197,10 +201,12 @@ public class ReportController {
 	
 	// ------------------------------ Report Panel ----------------------------------------
 	@RequestMapping("report_panel")
-	public String reportPanel(HttpSession session) {
-		if(session.getAttribute("user") == null) {
+	public String reportPanel(HttpSession session, Model model) {
+		User user = (User) session.getAttribute("user");
+		if(user == null) {
 			return "login";
 		}
+		model.addAttribute("role",user.getRole());
 		return "report/report_panel";
 	}
 	// -------------------------------End Report Panel -----------------------------------
@@ -232,7 +238,6 @@ public class ReportController {
 		double closingCredit = balances[3];
 		double closingDebit = balances[2];
 		
-		System.out.println("Closing Balance "+closingBalance);
 		List<String[]> listOfRecords = new ArrayList<>();
 		
 		String [] strArray = null;
@@ -271,8 +276,8 @@ public class ReportController {
 				rowId = "ledger_"+childLink;
 			}
 			strArray = new String[] {ledger.getEntryDate().toLocalDate().toString(),ledger.getDescription(),
-						Double.toString(ledger.getCreditAmount()),
 						Double.toString(ledger.getDebitAmount()),
+						Double.toString(ledger.getCreditAmount()),
 						ledger.getRemarks(),buttonEnableFlag, rowId, tokenNumber};
 			listOfRecords.add(strArray);
 		}
@@ -280,7 +285,7 @@ public class ReportController {
 		BigDecimal bgClosingBalance = BigDecimal.valueOf(Math.abs(closingBalance));
 		BigDecimal bgClosingDebit = BigDecimal.valueOf(Math.abs(closingDebit));
 		BigDecimal bgClosingCredit = BigDecimal.valueOf(Math.abs(closingCredit));
-		strArray = new String[] {endDate.toString(),"Total",bgClosingCredit.toPlainString(),bgClosingDebit.toPlainString(),"","f","",""};
+		strArray = new String[] {endDate.toString(),"Total",bgClosingDebit.toPlainString(),bgClosingCredit.toPlainString(),"","f","",""};
 		listOfRecords.add(strArray);
 		if(closingBalance >= 0) {
 			strArray = new String[] {endDate.toString(),"Closing Balance",bgClosingBalance.toPlainString(),"","","f","",""};

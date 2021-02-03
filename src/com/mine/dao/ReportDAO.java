@@ -298,10 +298,10 @@ public class ReportDAO {
 	@Transactional
 	public Double[] getBalances(String name, LocalDateTime startDate, LocalDateTime endDate) {
 		Session session = factory.getCurrentSession();
-		String openingBalance = " SELECT SUM(l.creditAmount), SUM(l.debitAmount), SUM(l.creditAmount) - SUM(l.debitAmount) FROM Ledger l WHERE l.account = :name"
+		String openingBalance = " SELECT SUM(l.debitAmount), SUM(l.creditAmount), SUM(l.debitAmount) - SUM(l.creditAmount) FROM Ledger l WHERE l.account = :name"
 				+ " AND l.entryDate < :sDate and status = 1 ";
 		
-		String rangeBalanceDebitQuery = "SELECT SUM(l.creditAmount), SUM(l.debitAmount),SUM(l.creditAmount) - SUM(l.debitAmount) FROM Ledger l WHERE "
+		String rangeBalanceDebitQuery = "SELECT SUM(l.debitAmount), SUM(l.creditAmount),SUM(l.debitAmount) - SUM(l.creditAmount) FROM Ledger l WHERE "
 				+ "(l.account = :name) AND (l.entryDate BETWEEN :sDate AND :eDate) AND status = 1";
 		TypedQuery<Object[]> creditDebitAmount = session.createQuery(openingBalance,Object[].class);
 		creditDebitAmount.setParameter("name", name);
@@ -312,8 +312,8 @@ public class ReportDAO {
 		try {
 			Object [] openingBalanceArray = creditDebitAmount.getSingleResult();
 			openingBalanceAmount = (Double)openingBalanceArray[2] != null ? (Double)openingBalanceArray[2] : 0.0;
-			openingCreditBalance = (Double)openingBalanceArray[0] != null ? (Double)openingBalanceArray[0] : 0.0;
-			openingDebitBalance = (Double)openingBalanceArray[1] != null ? (Double)openingBalanceArray[1] : 0.0;
+			openingCreditBalance = (Double)openingBalanceArray[1] != null ? (Double)openingBalanceArray[1] : 0.0;
+			openingDebitBalance = (Double)openingBalanceArray[0] != null ? (Double)openingBalanceArray[0] : 0.0;
 		}
 		catch(Exception ex) {
 			ex.printStackTrace();
@@ -330,8 +330,8 @@ public class ReportDAO {
 		try {
 			Object [] openingBalanceArray = creditDebitAmount.getSingleResult();
 			selectedRecordsBalance = (Double)openingBalanceArray[2] != null ? (Double)openingBalanceArray[2] : 0.0 ;
-			selectedRangeCredit = (Double)openingBalanceArray[0] != null ? (Double)openingBalanceArray[0] : 0.0; 
-			selectedRangeDebit = (Double)openingBalanceArray[1] != null ? (Double)openingBalanceArray[1] : 0.0; 
+			selectedRangeCredit = (Double)openingBalanceArray[1] != null ? (Double)openingBalanceArray[1] : 0.0; 
+			selectedRangeDebit = (Double)openingBalanceArray[0] != null ? (Double)openingBalanceArray[0] : 0.0; 
 		}
 		catch(Exception ex) {
 			ex.printStackTrace();

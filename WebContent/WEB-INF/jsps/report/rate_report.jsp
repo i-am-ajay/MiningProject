@@ -76,9 +76,11 @@
 			    <div class="col-md-2 mt-3">
 			    	 <input id="button" type="submit" class=" btn btn-secondary btn-sm btn-block w-50 mt-2 mx-auto text-center" value="search" />
 			    </div>
-			    <div class="col-md-2 mt-3">
-			    	<a href="${pageContext.request.contextPath}/rate_update_report" class=" btn btn-danger btn-sm btn-block w-75 mt-2 mx-auto text-center">Rate Update</a>
-			    </div>
+			    <c:if test="${role.equals('Admin')}">
+				    <div class="col-md-2 mt-3">
+				    	<a href="${pageContext.request.contextPath}/rate_update_report" class=" btn btn-danger btn-sm btn-block w-75 mt-2 mx-auto text-center">Rate Update</a>
+				    </div>
+			    </c:if>
 			   </div>
 			    <!-- <input id="button" type="submit" class=" btn btn-secondary btn-sm btn-block w-50 mt-2 mx-auto text-center" value="search" /> -->
 			</form>

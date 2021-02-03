@@ -42,6 +42,13 @@
 			<!-- <div class="col font-weight-bold">Vehicle No: <span class="pl-2 font-weight-normal">MH-1222</span></div>
 			<div class="col font-weight-bold">Vehicle Tyre: <span class="pl-2 font-weight-normal">12</span></div> -->
 		</div>
+		<c:if test="${supply.nrl == 0.0}">
+			<div class="row">
+				<div class="col-3 font-weight-bold small px-2 p-1">R : <span class="font-weight-normal">Yes</span></div>
+			
+			<%-- <div class="col-3 font-weight-bold small px-2">Royalty Given: <span class="font-weight-normal">${supply.nrl != 0.0 ? 'Yes':'No'}</span></div> --%>
+			</div>
+		</c:if>	
 		
 		</div>
 		<div class="col-6 ">
@@ -64,6 +71,13 @@
 			<!-- <div class="col font-weight-bold">Vehicle No: <span class="pl-2 font-weight-normal">MH-1222</span></div>
 			<div class="col font-weight-bold">Vehicle Tyre: <span class="pl-2 font-weight-normal">12</span></div> -->
 		</div>
+		<c:if test="${supply.nrl == 0.0}">
+			<div class="row">
+				<div class="col-3 font-weight-bold small px-2 p-1">R : <span class="font-weight-normal">Yes</span></div>
+			
+			<%-- <div class="col-3 font-weight-bold small px-2">Royalty Given: <span class="font-weight-normal">${supply.nrl != 0.0 ? 'Yes':'No'}</span></div> --%>
+			</div>
+		</c:if>	
 		</div>
 		</div>
 		<div class="row">
@@ -88,6 +102,9 @@
 		<div class="row p-1">
 			<div class="px-2 col-3 font-weight-bold p-1">Rate: <span class="font-weight-normal">${supply.finalRate}</span></div>
 			<div class="px-2 col-3 font-weight-bold p-1">Vehicle Of:<span class="font-weight-normal">&nbsp;${supply.vehicle.clientId.name}</span></div>
+			<c:if test="${supply.nrl == 0.0}">
+				<div class="col-3 font-weight-bold small px-2 p-1">R : <span class="font-weight-normal">Yes</span></div>
+			</c:if>	
 		</div>
 		</div>
 		</div>

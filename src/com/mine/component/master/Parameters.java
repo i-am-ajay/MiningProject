@@ -31,6 +31,9 @@ public class Parameters {
 	// FinalRate <= freeLimit : Sanchalan will be equal to sanchalanOnFree.
 	protected double freeLimit;
 	
+	@Column(name="disable_sanchalan")
+	protected boolean disableSanchalan;
+	
 	protected double sanchalanOnFree;
 	
 	// when vehicle filled is less than threshhold
@@ -124,5 +127,13 @@ public class Parameters {
 
 	public void setSanchalanTrolly(double sanchalanTrolly) {
 		this.sanchalanTrolly = sanchalanTrolly;
+	}
+
+	public boolean isDisableSanchalan() {
+		return disableSanchalan;
+	}
+
+	public void setDisableSanchalan(boolean disableSanchalan) {
+		this.disableSanchalan = disableSanchalan;
 	}	
 }

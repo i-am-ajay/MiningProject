@@ -96,8 +96,8 @@
 		            	<th>Date</th>
 		            	<th>Token</th>
 		                <th>Particulars</th>
-		                <th>Credit Amount</th>
 		                <th>Debit Amount</th>
+		                <th>Credit Amount</th>
 		                <th>Remarks</th>
 		                <c:if test="${allow_cancel == true }">
 		                	<th>Cancel Record</th>

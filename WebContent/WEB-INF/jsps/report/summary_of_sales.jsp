@@ -73,6 +73,10 @@
 						    	<input type="submit" class="btn btn-sm btn-success btn-block mx-auto" value="submit"/>
 					    </div>
 				 	</div>
+				 	<p class="small font-weight-light">
+				 		<span class="font-weight-bold">Note:&nbsp;&nbsp;</span><span class="text-danger">-ve balance</span> : amount to be received from party || 
+				 		<span class="text-primary">+ve balance</span> : amount to be paid to the party
+				 	</p>
 			  	</div>
 			</div>
 		</div>

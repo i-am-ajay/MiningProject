@@ -67,14 +67,6 @@
 	</div>
 	<div class="row mt-3">
 		<div class=" col-sm-12 col-md-2">
-			<div class="card bg-light my-1 py-1" id="journal">
-			<article class="card-body mx-auto">
-				<h5 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Journal<br/>Entry</h5>
-				<p class="text-center mt-3"><i class="fa fa-pencil fa-2x" aria-hidden="true"></i></p>
-			</article>
-			</div>
-		</div>
-		<div class=" col-sm-12 col-md-2">
 			<div class="card bg-light my-1 py-1" id="report">
 			<article class="card-body mx-auto">
 				<h5 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Reports<br/>&nbsp;</h5>
@@ -83,6 +75,14 @@
 			</div>
 		</div>
 		<c:if test="${role.equals('Admin')}">
+		<div class=" col-sm-12 col-md-2">
+			<div class="card bg-light my-1 py-1" id="journal">
+			<article class="card-body mx-auto">
+				<h5 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Journal<br/>Entry</h5>
+				<p class="text-center mt-3"><i class="fa fa-pencil fa-2x" aria-hidden="true"></i></p>
+			</article>
+			</div>
+		</div>
 		<div class=" col-sm-12 col-md-2">
 			<div class="card bg-light my-1 py-1" id="params">
 			<article class="card-body mx-auto">
@@ -99,14 +99,14 @@
 			</article>
 			</div>
 		</div>
-		<div class="col-sm-12 col-md-2">
+		<!-- <div class="col-sm-12 col-md-2">
 			<div class="card bg-light my-1 py-1" id="company">
 			<article class="card-body mx-auto">
 				<h5 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Create<br/>Company</h5>
 				<p class="text-center mt-3"><i class="fa fa-building fa-2x" aria-hidden="true"></i></i></p>	
 			</article>
 			</div>
-		</div>
+		</div> -->
 		</c:if>
 	</div>
 	

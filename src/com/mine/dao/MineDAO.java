@@ -454,6 +454,7 @@ public class MineDAO {
 		ledgerCredit.setStatus(true);
 		ledgerCredit.setEntryDate(currentDateTime);
 		ledgerCredit.setSalesLink(details);
+		ledgerCredit.setAccount("Sales");
 		
 		// Ledger record for payment
 		Ledger ledgerDebit = new Ledger();
@@ -462,27 +463,26 @@ public class MineDAO {
 		ledgerDebit.setStatus(true);
 		ledgerDebit.setEntryDate(currentDateTime);
 		ledgerDebit.setSalesLink(details);
-		ledgerDebit.setAccount("Sales");
 		
 				
 		if(details.getPaymentType().equalsIgnoreCase("cash") || details.getPaymentType().equalsIgnoreCase("bank")){
 			if(details.getPaymentType().equalsIgnoreCase("cash")) {
 				// ledger record for cash
-				ledgerCredit.setAccount("Cash");
-				ledgerCredit.setDescription("Sales To Cash");
-				ledgerDebit.setDescription("Sales In Cash");
+				ledgerDebit.setAccount("Cash");
+				ledgerDebit.setDescription("Cash To Sales");
+				ledgerCredit.setDescription("Sales In Cash");
 			}
 			else {
-				ledgerCredit.setAccount("Bank");
-				ledgerCredit.setDescription("Sales To Bank");
-				ledgerDebit.setDescription("Sales in Bank");
+				ledgerDebit.setAccount("Bank");
+				ledgerDebit.setDescription("Bank To Sales");
+				ledgerCredit.setDescription("Sales in Bank");
 			}
 		}
 		else {
 			// ledger record
-			ledgerCredit.setAccount(details.getClientName());
-			ledgerCredit.setDescription("Credit Sale To ".concat(details.getClientName()));
-			ledgerDebit.setDescription("Sale To ".concat(details.getClientName()));
+			ledgerDebit.setAccount(details.getClientName());
+			ledgerDebit.setDescription("Credit Sale");
+			ledgerCredit.setDescription(details.getClientName().concat(" To Sales"));
 		}
 		//session.save(details);
 		session.save(ledgerCredit);
@@ -499,7 +499,7 @@ public class MineDAO {
 		Root<SupplyDetails> rootSupply = cQuery.from(SupplyDetails.class);
 		LocalDateTime fromDate = LocalDateTime.of(LocalDate.now(),LocalTime.of(0, 0,0));
 		LocalDateTime endDate = LocalDateTime.of(LocalDate.now(), LocalTime.of(23,59,59));
-		cQuery.multiselect(builder.count(rootSupply.get("id"))).where(builder.between(rootSupply.get("salesDate"), fromDate, endDate));
+		cQuery.multiselect(builder.count(rootSupply.get("id"))).where(builder.and(builder.between(rootSupply.get("salesDate"), fromDate, endDate),builder.equal(rootSupply.get("status"), true)));
 		// Execute Query
 		TypedQuery<Long> query = session.createQuery(cQuery);
 		Long count = 0L;
@@ -581,43 +581,45 @@ public class MineDAO {
 			/* debit and credit entry of ledger i.e amount recieved is debited
 			 * either in cash or bank and party account is credited with equivalent amount. 
 			*/
-			ledgerDebit.setAccount(client.getName());
+			ledgerCredit.setAccount(client.getName());
 			
 			if(natureOfTransaction.equalsIgnoreCase("bank")) {
-				ledgerCredit.setAccount("Bank");
-				ledgerDebit.setDescription("Bank Payment From ".concat(client.getName()));
-				ledgerCredit.setDescription(client.getName().concat(" To Bank "));
+				ledgerDebit.setAccount("Bank");
+				//ledgerCredit.setDescription("Bank /Payment From ".concat(client.getName()));
+				ledgerDebit.setDescription("Bank To ".concat(client.getName()));
+				ledgerCredit.setDescription(client.getName().concat("Bank Payment"));
 			}
 			else {
-				ledgerCredit.setAccount("Cash");
-				ledgerDebit.setDescription("Cash Payment From ".concat(client.getName()));
-				ledgerCredit.setDescription(client.getName().concat(" To Cash "));
+				ledgerDebit.setAccount("Cash");
+				ledgerDebit.setDescription("Cash To ".concat(client.getName()));
+				ledgerCredit.setDescription("Cash Payment");
 			}
 		}
 		else {
 			// if it's not deposite then it's expense and expense can be cash or credit.
 			if(type.equalsIgnoreCase("CashExpense")) {
-				ledgerCredit.setAccount(client.getName());
+				ledgerDebit.setAccount(client.getName());
 				
 				if(natureOfTransaction.equalsIgnoreCase("bank")) {
-					ledgerDebit.setAccount("Bank");
-					ledgerCredit.setDescription("Bank Payment To ".concat(client.getName()));
-					ledgerDebit.setDescription("Bank To ".concat(client.getName()));
+					ledgerCredit.setAccount("Bank");
+					ledgerDebit.setDescription("Payment From Bank");
+					ledgerCredit.setDescription(client.getName().concat(" To Bank"));
 				}
 				else {
-					ledgerDebit.setAccount("Cash");
-					ledgerCredit.setDescription("Cash Payment To ".concat(client.getName()));
-					ledgerDebit.setDescription("Cash To ".concat(client.getName()));
+					ledgerCredit.setAccount("Cash");
+					ledgerCredit.setDescription(client.getName().concat(" To Cash"));
+					ledgerDebit.setDescription("Payment In Cash");
+					//"Payment In Cash ".concat(client.getName())
 					
 				}
 				ledgerDebit.setParentEntryLink(ledgerCredit);
 				ledgerCredit.setChildLink(ledgerDebit);
 			}
 			else {
-				ledgerCredit.setAccount("Expense");
-				ledgerDebit.setAccount(client.getName());
-				ledgerCredit.setDescription(debitDescription.concat(" Amount Payble to ".concat(client.getName())));
-				ledgerDebit.setDescription(creditDescription.concat(" Amount Recivable by ".concat(client.getName())));
+				ledgerDebit.setAccount("Expense");
+				ledgerCredit.setAccount(client.getName());
+				ledgerDebit.setDescription(debitDescription.concat(" Amount Payble To".concat(client.getName())));
+				ledgerCredit.setDescription(creditDescription.concat(" Amount To be Recieved"));
 				ledgerCredit.setParentEntryLink(ledgerDebit);
 				ledgerDebit.setChildLink(ledgerCredit);
 			}
@@ -636,7 +638,7 @@ public class MineDAO {
 		ledgerCredit.setStatus(true);
 		ledgerCredit.setEntryDate(dateTime);
 		ledgerCredit.setAccount(creditor);
-		ledgerCredit.setDescription("Journal Entry: To "+creditor + " From "+ debtor);
+		ledgerCredit.setDescription("Journal Entry: "+ debtor);
 		ledgerCredit.setRemarks(remarks);
 		
 		// Ledger record for payment
@@ -645,7 +647,7 @@ public class MineDAO {
 		ledgerDebit.setCreatedBy(user);
 		ledgerDebit.setStatus(true);
 		ledgerDebit.setEntryDate(dateTime);
-		ledgerDebit.setDescription("Journal Entry: From "+debtor+" To "+creditor);
+		ledgerDebit.setDescription("Journal Entry: "+debtor+" To "+creditor);
 		ledgerDebit.setRemarks(remarks);
 		ledgerDebit.setAccount(debtor);
 		
