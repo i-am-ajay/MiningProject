@@ -20,7 +20,7 @@ import com.mine.component.master.Client;
 import com.mine.component.master.Vehicle;
 
 public class CashBookRecord {
-	@Id
+	/*@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 	
@@ -140,4 +140,4 @@ public class CashBookRecord {
 	public void setPaymentType(String paymentType) {
 		this.paymentType = paymentType;
 	}
-}
+*/}

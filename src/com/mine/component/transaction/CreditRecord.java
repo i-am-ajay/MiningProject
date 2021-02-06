@@ -20,7 +20,7 @@ import com.mine.component.master.Client;
 import com.mine.component.master.Vehicle;
 
 public class CreditRecord {
-	@Id
+	/*@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 	
@@ -132,4 +132,4 @@ public class CreditRecord {
 	public void setLedgerLinking(Ledger ledgerLinking) {
 		this.ledgerLinking = ledgerLinking;
 	}
-}
+*/}
