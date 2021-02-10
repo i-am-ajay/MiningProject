@@ -324,7 +324,6 @@
 				data : {"vehicle_num":this.value},
 				success: function(result, status, xhr){
 					if(result != null && result != ""){
-						console.log(result);
 						let json = JSON.parse(result);
 						if(json['status']){
 							$("#vehicle_type").val(json['vehicle_type']);
