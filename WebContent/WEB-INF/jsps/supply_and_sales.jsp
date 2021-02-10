@@ -247,6 +247,9 @@
 				$("#address").attr("required","true");
 				$("#final_rate").attr("readonly",true);
 				$("#vehicle_of").attr("readonly",true);
+				$("#vehicle_type").attr("readonly",true);
+				$("#tyre_type").attr("readonly",true);
+				$("#")
 
 				let quantityType = $("#quantity").val();
 				quantityType = quantityType.toLowerCase();
@@ -321,6 +324,7 @@
 				data : {"vehicle_num":this.value},
 				success: function(result, status, xhr){
 					if(result != null && result != ""){
+						console.log(result);
 						let json = JSON.parse(result);
 						if(json['status']){
 							$("#vehicle_type").val(json['vehicle_type']);
@@ -330,10 +334,12 @@
 							$("#tyre_type").attr("readonly",true);
 							$("#vehicle_of").val(json['vehicle_of']);
 						}
-
+						else{
+							alert("You Selected a disabled Vehicle.");
+						}
 					}
 					else{
-						alert("This vehicle is not registered.");
+						alert("This vehicle is not registered. Outer");
 					}
 				},
 				error : function(result,status,xhr){

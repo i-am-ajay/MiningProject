@@ -336,10 +336,8 @@ public class ReportDAO {
 		catch(Exception ex) {
 			ex.printStackTrace();
 		}
-		return new Double[]{openingBalanceAmount , selectedRecordsBalance, (openingDebitBalance + selectedRangeDebit), (openingCreditBalance + selectedRangeCredit)};
+		return new Double[]{openingBalanceAmount , selectedRecordsBalance, ((selectedRangeDebit > 0.0) ? openingDebitBalance + selectedRangeDebit : 0.0), ((selectedRangeCredit > 0.0)? openingCreditBalance + selectedRangeCredit : 0.0)};
 	}
-	
-	
 	// ------------------------------ End Ledger DAO ---------------------------------------------
 	
 	// ------------------------------ Utility DAO ----------------------------------------

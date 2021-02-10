@@ -218,7 +218,6 @@ public class MainController {
 		System.out.println(vehicleNo);
 		Vehicle vehicle = service.getVehicle(vehicleNo);
 		String stringObj = null;
-		System.out.println(vehicle.getVehicleType());
 		if(vehicle != null) {
 			JSONObject object = new JSONObject();
 			object.put("vehicle_type", vehicle.getVehicleType());
@@ -238,6 +237,7 @@ public class MainController {
 			// Add client information
 			stringObj = object.toString();
 		}
+		System.out.println(stringObj);
 		return stringObj;
 	}	
 	//---------------------------------- End Of Control -----------------------------------
