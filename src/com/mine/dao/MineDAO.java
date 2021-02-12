@@ -576,8 +576,8 @@ public class MineDAO {
 		
 		
 		if(type.equals("deposite")) {
-			ledgerDebit.setChildLink(ledgerCredit);
 			ledgerCredit.setParentEntryLink(ledgerDebit);
+			ledgerDebit.setChildLink(ledgerCredit);
 			/* debit and credit entry of ledger i.e amount recieved is debited
 			 * either in cash or bank and party account is credited with equivalent amount. 
 			*/
@@ -675,6 +675,7 @@ public class MineDAO {
 			updateLedger = "UPDATE ledger SET status = 0 WHERE sales_id = :id";
 		}
 		else{
+			System.out.println("Sales Id "+salesId);
 			updateLedger = "UPDATE ledger SET status = 0 WHERE id = :id OR parent_link = :id OR child_link = :id";
 		}
 		
