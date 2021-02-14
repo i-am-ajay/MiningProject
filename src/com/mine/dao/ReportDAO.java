@@ -298,28 +298,25 @@ public class ReportDAO {
 	@Transactional
 	public Double[] getBalances(String name, LocalDateTime startDate, LocalDateTime endDate) {
 		Session session = factory.getCurrentSession();
-		String openingBalance = " SELECT SUM(l.debitAmount), SUM(l.creditAmount), SUM(l.debitAmount) - SUM(l.creditAmount) FROM Ledger l WHERE l.account = :name"
+		String openingBalance = " SELECT SUM(l.debitAmount) - SUM(l.creditAmount) FROM Ledger l WHERE l.account = :name"
 				+ " AND l.entryDate < :sDate and status = 1 ";
 		
 		String rangeBalanceDebitQuery = "SELECT SUM(l.debitAmount), SUM(l.creditAmount),SUM(l.debitAmount) - SUM(l.creditAmount) FROM Ledger l WHERE "
 				+ "(l.account = :name) AND (l.entryDate BETWEEN :sDate AND :eDate) AND status = 1";
-		TypedQuery<Object[]> creditDebitAmount = session.createQuery(openingBalance,Object[].class);
-		creditDebitAmount.setParameter("name", name);
-		creditDebitAmount.setParameter("sDate", startDate);
+		TypedQuery<Double> openingBalanceQuery = session.createQuery(openingBalance,Double.class);
+		openingBalanceQuery.setParameter("name", name);
+		openingBalanceQuery.setParameter("sDate", startDate);
 		double openingBalanceAmount = 0.0;
-		double openingCreditBalance = 0.0;
-		double openingDebitBalance = 0.0;
 		try {
-			Object [] openingBalanceArray = creditDebitAmount.getSingleResult();
-			openingBalanceAmount = (Double)openingBalanceArray[2] != null ? (Double)openingBalanceArray[2] : 0.0;
-			openingCreditBalance = (Double)openingBalanceArray[1] != null ? (Double)openingBalanceArray[1] : 0.0;
-			openingDebitBalance = (Double)openingBalanceArray[0] != null ? (Double)openingBalanceArray[0] : 0.0;
+			Double openingBalanceDouble = openingBalanceQuery.getSingleResult();
+			openingBalanceAmount = openingBalanceDouble != null ? openingBalanceDouble : 0.0;
 		}
 		catch(Exception ex) {
 			ex.printStackTrace();
 		}
 		
 		// Get balance of selected records
+		TypedQuery<Object[]> creditDebitAmount = session.createQuery(openingBalance,Object[].class);
 		creditDebitAmount = session.createQuery(rangeBalanceDebitQuery, Object[].class);
 		creditDebitAmount.setParameter("name", name);
 		creditDebitAmount.setParameter("sDate", startDate);
@@ -336,7 +333,31 @@ public class ReportDAO {
 		catch(Exception ex) {
 			ex.printStackTrace();
 		}
-		return new Double[]{openingBalanceAmount , selectedRecordsBalance, ((selectedRangeDebit > 0.0) ? openingDebitBalance + selectedRangeDebit : 0.0), ((selectedRangeCredit > 0.0)? openingCreditBalance + selectedRangeCredit : 0.0)};
+		/** For total of debit and credit.
+		 * If There is a transaction on debit side only then total will display else total is 0.0.
+		 * If opening balance is in debit side then total will be opening balance + today's transaction debit else today's tranaction debit.
+		 * If opening balance is credit side then total will be opening balance + today's transaction credit else today's tranaction debit.
+		 */
+		double debitTotal = 0.0;
+		double creditTotal = 0.0;
+		// set debit total
+		if(selectedRangeDebit > 0.0) {
+			if(openingBalanceAmount > 0.0) {
+				debitTotal = openingBalanceAmount + selectedRangeDebit;
+			}
+			else {
+				debitTotal = selectedRangeDebit;
+			}
+		}
+		if(selectedRangeCredit > 0.0) {
+			if(openingBalanceAmount < 0.0) {
+				creditTotal = Math.abs(openingBalanceAmount) + selectedRangeCredit; 
+			}
+			else {
+				creditTotal = selectedRangeCredit;
+			}
+		}
+		return new Double[]{openingBalanceAmount , selectedRecordsBalance, debitTotal, selectedRangeCredit};
 	}
 	// ------------------------------ End Ledger DAO ---------------------------------------------
 	

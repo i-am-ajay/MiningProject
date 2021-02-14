@@ -675,7 +675,6 @@ public class MineDAO {
 			updateLedger = "UPDATE ledger SET status = 0 WHERE sales_id = :id";
 		}
 		else{
-			System.out.println("Sales Id "+salesId);
 			updateLedger = "UPDATE ledger SET status = 0 WHERE id = :id OR parent_link = :id OR child_link = :id";
 		}
 		
