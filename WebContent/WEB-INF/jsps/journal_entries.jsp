@@ -95,7 +95,7 @@
 					    </div> -->
 					    </c:if>
 				 	</div>
-				 	<input type="submit" id="save_btn" class="btn btn-sm btn-success btn-block w-50 mx-auto" value="submit"/>
+				 	<input type="submit" id="save_btn" class="btn btn-sm btn-success btn-block w-50 mx-auto disable_button" value="submit"/>
 			  	</div>
 			</div>
 		</div>

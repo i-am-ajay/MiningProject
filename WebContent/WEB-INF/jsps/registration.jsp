@@ -65,24 +65,17 @@
 			    <span class="input-group-text"> <i class="fa fa-building"></i> </span>
 			</div>
 			<select id="role" name="role" class="form-control">
-				<option value="User"> Select Role</option>
-				<option value="Admin">Admin</option>
 				<option value="User">User</option>
+				<option value="Admin">Admin</option>
 			</select>
 		</div> <!-- form-group end.// -->
 	    <!-- form-group// -->
 	     <div id="deactivate_div" class="form-group input-group">
 	        <label class="form-check-label"><input type="checkbox" class="form-chek mr-3" id="check" name="inactive" class="form-control"/> Deactivate User</label>
 	    </div>
-	    <!--  
-	    <div class="form-group input-group">
-	    	<div class="input-group-prepend">
-			    <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
-			</div>
-	        <input id="rpassword" name="repeat_password" class="form-control" placeholder="Repeat password" type="password">
-	    </div> <!-- form-group// -->                                      
+	                                  
 	    <div class="form-group"> 
-	        <button type="submit" class="btn btn-primary btn-block"> Create User  </button>
+	        <button type="submit" class="btn btn-primary btn-block disable_button"> Create User  </button>
 	    </div> <!-- form-group// -->                                                              
 	</form>
 	</article>
@@ -101,7 +94,7 @@
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-	 <script src="https://use.fontawesome.com/80a486f3d9.js"></script>
+	<script src="https://use.fontawesome.com/80a486f3d9.js"></script>
 	<script>
 		$(document).ready(e =>{
 			$("#home_icon").click(
@@ -117,28 +110,7 @@
 			$("#deactivate_div").hide();
 		});
 
-		/* // search for user on focusout
-		$("#user").focusout(e =>{
-				$.ajax({
-					type: "POST",
-					url : "${home}user_load",
-					data: {"user":$("#user").val()},
-					success: function(result, status, xhr){
-						let resultObj = JSON.parse(result);
-						$("#deactivate_div").show();
-						$("#user").val(resultObj.user);
-						$("#password").val(resultObj.password);
-						$("#role").attr("select",resultObj.role);
-						if(resultObj.deactive == true){
-							$("#check").prop("checked",true);
-						}
-						
-					},
-					error: function(result, status, xhr){
-					}
-				});
-		});
- */
+		
 
 		$("#user").focusout( e =>{
 			$.ajax({
@@ -161,7 +133,7 @@
 					
 				}
 			});
-		});
+		}); 
 		
 	</script>
 </body>

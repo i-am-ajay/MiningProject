@@ -63,7 +63,7 @@ public class MasterController {
 			System.out.println(result.toString());
 		}
 		else {
-			System.out.println(status);
+			//System.out.println(status);
 			User user = (User)session.getAttribute("user");
 			if(!status) {
 				client.setStatus(true);
@@ -221,12 +221,12 @@ public class MasterController {
 		}
 		else {
 			User user = (User)session.getAttribute("user");
-			System.out.println(disableVehicle);
+			//System.out.println(disableVehicle);
 			if(!disableVehicle) {
 				vehicle.setStatus(true);
 			}
 			else {
-				System.out.println("Disable vehicle true");
+				//System.out.println("Disable vehicle true");
 				vehicle.setStatus(false);
 			}
 			model.addAttribute("status",service.saveVehicle(vehicle, clientId, 1, user,user.getRole()));

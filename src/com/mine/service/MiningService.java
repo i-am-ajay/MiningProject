@@ -142,9 +142,11 @@ public class MiningService {
 		
 		}
 		// If it is comission agent vehicle add comission expense too. if vehicle is not a free vehicle.
+		// And comission is not 0.
 		if(client.getClientType().getDescription().equalsIgnoreCase("Contractor")) {
-			if(supplyDetails.getFinalRate() != 0.0) {
-				dao.addDepositeOrExpense(client.getClientId(), supplyDetails.getVehicle().getClientId().getComission(), 
+			double comissionAmount = supplyDetails.getVehicle().getClientId().getComission();
+			if((supplyDetails.getFinalRate() != 0.0) && (comissionAmount != 0.0)) {
+				dao.addDepositeOrExpense(client.getClientId(), comissionAmount,
 						"Expense", "Sale Commission","Sale Commission", 
 						"Credit",supplyDetails,null, user, dateTime);
 			}

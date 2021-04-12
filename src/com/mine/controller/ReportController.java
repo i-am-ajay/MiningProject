@@ -261,19 +261,14 @@ public class ReportController {
 		for(Ledger ledger : ledgerEntries) {
 			buttonEnableFlag = "f";
 			parentLink = ledger.getParentEntryLink() != null? Integer.toString(ledger.getParentEntryLink().getId()) : "";
-			childLink = ledger.getChildLink() != null? Integer.toString(ledger.getChildLink().getId()) : "";
 			salesLink = ledger.getSalesLink() != null? Integer.toString(ledger.getSalesLink().getId()) : "";
 			tokenNumber = ledger.getSalesLink() != null ? ledger.getSalesLink().getToken() : "";
 			if(!salesLink.equals("")) {
 				buttonEnableFlag = "f";
 			}
-			else if(!parentLink.equals("")) {
+			else{
 				buttonEnableFlag = "t";
-				rowId = "ledger_"+parentLink;
-			}
-			else if(!childLink.equals("")) {
-				buttonEnableFlag = "t";
-				rowId = "ledger_"+childLink;
+				rowId = "ledger_"+ledger.getId();
 			}
 			strArray = new String[] {ledger.getEntryDate().toLocalDate().toString(),ledger.getDescription(),
 						Double.toString(ledger.getDebitAmount()),

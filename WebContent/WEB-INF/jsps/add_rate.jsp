@@ -90,7 +90,7 @@
 					    	</div>
 					    	<div class="form-group">
 					    		<label class="font-weight-bold">Rate</label>
-					      		<f:input id="rate_id" class="form-control form-control-sm" placeholder="Enter Rate" path="rate" />
+					      		<f:input id="rate_id" class="form-control form-control-sm disable_button" placeholder="Enter Rate" path="rate" />
 					    	</div>
 			  			</div>
 			  		</div>
@@ -107,6 +107,7 @@
 	<script src="${pageContext.request.contextPath}/static_resources/js/bootstrap_min.js"></script>
 	<script src="${pageContext.request.contextPath}/static_resources/js/jquery_3.5.1_min.js"></script>
 	<script src="${pageContext.request.contextPath}/static_resources/js/popper.js"></script>
+	<script src="${pageContext.request.contextPath}/static_resources/js/utility.js"></script>
 	<script src="https://use.fontawesome.com/80a486f3d9.js"></script>
 	<!--  <script src="${pageContext.request.contextPath}/static_resources/js/header_manipulate.js"></script>-->
 	<script>

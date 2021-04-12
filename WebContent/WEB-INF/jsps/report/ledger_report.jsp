@@ -172,19 +172,22 @@
 		
 		// ----------------------------------- Ajax Calls from Page ----------------------------------
 		 function cancelEntry(id, rowId){
-			$.ajax({
-				type : 'POST',
-				url : "${home}cancel_entries",
-				data: {"id":id},
-				success: function(result, status, xhr){
-					if(result){
-						$(rowId).hide();
+			let result = confirm("Do you want to cancel ledger entry?"); 
+			if(result){
+				$.ajax({
+					type : 'POST',
+					url : "${home}cancel_entries",
+					data: {"id":id},
+					success: function(result, status, xhr){
+						if(result){
+							$(rowId).hide();
+						}
+					},
+					error: function(resut, status, xhr){
+						
 					}
-				},
-				error: function(resut, status, xhr){
-					
-				}
-			});
+				});
+			}
 		}
 		//------------------------------------ End Ajax Calls ----------------------------------------
 		

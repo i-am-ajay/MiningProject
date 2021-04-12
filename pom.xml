@@ -89,6 +89,12 @@
 	    <version>2.5</version>
 	    <scope>provided</scope>
 	</dependency>
+	<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-envers -->
+	<dependency>
+	    <groupId>org.hibernate</groupId>
+	    <artifactId>hibernate-envers</artifactId>
+	    <version>5.4.12.Final</version>
+	</dependency>
 	
   </dependencies>
 </project>

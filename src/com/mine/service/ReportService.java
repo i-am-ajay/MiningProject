@@ -33,11 +33,6 @@ public class ReportService {
 	
 	// ----------------------- Vehicle Report Service ---------------------------
 	public List<Vehicle> getVehicleList(String vehicleNo, String vehicleType, int tyreType, String client, int clientType){
-		/*System.out.println("Vehicle No"+vehicleNo);
-		System.out.println("Vehicle Type"+vehicleType);
-		System.out.println("Tyre Type"+tyreType);
-		System.out.println("Client"+client);
-		System.out.println("Client Type"+clientType);*/
 		return reportDAO.getVehicleList(vehicleNo, vehicleType, tyreType, client, clientType);
 	}
 	
@@ -46,11 +41,6 @@ public class ReportService {
 	
 	// ----------------------- Client Report Service ----------------------------
 	public List<Client> getClientList(String name, String clientContact, int clientType){
-		/*System.out.println("Vehicle No"+vehicleNo);
-		System.out.println("Vehicle Type"+vehicleType);
-		System.out.println("Tyre Type"+tyreType);
-		System.out.println("Client"+client);
-		System.out.println("Client Type"+clientType);*/
 		return reportDAO.getClientList(name, clientContact, clientType);
 	}
 

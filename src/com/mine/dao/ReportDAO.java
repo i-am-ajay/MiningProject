@@ -48,27 +48,27 @@ public class ReportDAO {
 		Root<Vehicle> from = criteria.from(Vehicle.class);
 		List<Predicate> predicateList = new ArrayList<>();
 		if(vehicleNo != null && vehicleNo.length() > 0) {
-			System.out.println("VehicleNo"+ vehicleNo);
+			//System.out.println("VehicleNo"+ vehicleNo);
 			initiateSearch = true;
 			predicateList.add(builder.equal(from.get("vehicleNo"),vehicleNo));
 		}
 		if(vehicleType != null && vehicleType.length() > 0) {
-			System.out.println("VehicleType"+ vehicleType);
+			//System.out.println("VehicleType"+ vehicleType);
 			initiateSearch = true;
 			predicateList.add(builder.equal(from.get("vehicleType"),vehicleType));
 		}
 		if(tyreType != 0) {
-			System.out.println("tyreType"+ tyreType);
+			//System.out.println("tyreType"+ tyreType);
 			initiateSearch = true;
 			predicateList.add(builder.equal(from.get("tyreType"),tyreType));
 		}
 		if(clientName != null && clientName.length() > 0) {
-			System.out.println("client"+ clientName.length());
+			//System.out.println("client"+ clientName.length());
 			initiateSearch = true;
 			predicateList.add(builder.equal(from.get("clientId").get("name"), clientName));
 		}
 		if(clientType != 0) {
-			System.out.println("clientType"+ clientType);
+			//System.out.println("clientType"+ clientType);
 			initiateSearch = true;
 			predicateList.add(builder.equal(from.get("clientId").get("clientType").get("id"), clientType));
 		}
@@ -76,11 +76,6 @@ public class ReportDAO {
 			criteria.where(builder.and(predicateList.toArray(new Predicate[predicateList.size()])));
 			TypedQuery<Vehicle> vehicleQuery = session.createQuery(criteria);
 			vehicleList = vehicleQuery.getResultList();
-		}
-		if(vehicleList != null) {
-			vehicleList.forEach(e ->{
-				System.out.println(e.getVehicleNo());
-			});
 		}
 		return vehicleList;
 	}
@@ -284,11 +279,6 @@ public class ReportDAO {
 		CriteriaBuilder builder = session.getCriteriaBuilder();
 		CriteriaQuery<Ledger> query = builder.createQuery(Ledger.class);
 		Root<Ledger> from = query.from(Ledger.class);
-		List<Predicate> predicateList = new ArrayList<>();
-		predicateList.add(builder.equal(from.get("account"), name));
-		predicateList.add(builder.between(from.get("entryDate"), startDate, endDate));
-		predicateList.add(builder.equal(from.get("status"),true));
-		//query.where(builder.and(predicateList.toArray(new Predicate[predicateList.size()]))).orderBy(builder.desc(from.get("entryDate")));
 		query.where(builder.and(builder.equal(from.get("account"), name),builder.between(from.get("entryDate"), startDate, endDate),builder.equal(from.get("status"), true)));
 		query.orderBy(builder.asc(from.get("entryDate")));
 		TypedQuery<Ledger> ledgerQuery = session.createQuery(query);

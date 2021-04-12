@@ -73,6 +73,7 @@ public class MineDAO {
 		vehicle.setClientId(client);
 		vehicle.setCompanyId(company);
 		vehicle.setCreatedById(createdBy);
+		vehicle.setCreationTime(LocalDate.now());
 		if(exists){
 			session.merge(vehicle);
 		}
@@ -81,6 +82,8 @@ public class MineDAO {
 		}
 		if(!status.equalsIgnoreCase("updated"))
 			status = "success";
+		System.out.println("Creation Time :"+vehicle.getCreationTime());
+		session.flush();
 		return status;
 	}
 	
@@ -229,6 +232,7 @@ public class MineDAO {
 		client.setClientType(data);
 		client.setCompany(company);
 		client.setCreatedBy(createdBy);
+		//client.setCreationDate(LocalDate.now());
 		session.saveOrUpdate(client);
 		if(!exists)
 			status = "success";
@@ -340,6 +344,7 @@ public class MineDAO {
 		Company company = session.get(Company.class, companyId);
 		rate.setCompany(company);
 		rate.setCreatedById(user);
+		rate.setCreatedDate(LocalDate.now());
 		session.save(rate);
 		rateSaved = "success";
 		return rateSaved;
@@ -388,6 +393,7 @@ public class MineDAO {
 		Session session = factory.getCurrentSession();
 		Rate dbRate = session.get(Rate.class, id);
 		dbRate.setRate(rate);
+		dbRate.setCreatedDate(LocalDate.now());
 		session.update(dbRate);
 		tempRate = dbRate.getRate();
 		return tempRate;
@@ -577,7 +583,7 @@ public class MineDAO {
 		
 		if(type.equals("deposite")) {
 			ledgerCredit.setParentEntryLink(ledgerDebit);
-			ledgerDebit.setChildLink(ledgerCredit);
+			ledgerDebit.setParentEntryLink(ledgerCredit);
 			/* debit and credit entry of ledger i.e amount recieved is debited
 			 * either in cash or bank and party account is credited with equivalent amount. 
 			*/
@@ -613,7 +619,7 @@ public class MineDAO {
 					
 				}
 				ledgerDebit.setParentEntryLink(ledgerCredit);
-				ledgerCredit.setChildLink(ledgerDebit);
+				ledgerCredit.setParentEntryLink(ledgerDebit);
 			}
 			else {
 				ledgerDebit.setAccount("Expense");
@@ -621,7 +627,7 @@ public class MineDAO {
 				ledgerDebit.setDescription(debitDescription.concat(" Amount Payble To".concat(client.getName())));
 				ledgerCredit.setDescription(creditDescription.concat(" Amount To be Recieved"));
 				ledgerCredit.setParentEntryLink(ledgerDebit);
-				ledgerDebit.setChildLink(ledgerCredit);
+				ledgerDebit.setParentEntryLink(ledgerCredit);
 			}
 		}
 		session.save(ledgerCredit);
@@ -652,7 +658,7 @@ public class MineDAO {
 		ledgerDebit.setAccount(debtor);
 		
 		ledgerDebit.setParentEntryLink(ledgerCredit);
-		ledgerCredit.setChildLink(ledgerDebit);
+		ledgerCredit.setParentEntryLink(ledgerDebit);
 		Session session = factory.getCurrentSession();
 		session.save(ledgerDebit);
 		session.save(ledgerCredit);
@@ -675,7 +681,7 @@ public class MineDAO {
 			updateLedger = "UPDATE ledger SET status = 0 WHERE sales_id = :id";
 		}
 		else{
-			updateLedger = "UPDATE ledger SET status = 0 WHERE id = :id OR parent_link = :id OR child_link = :id";
+			updateLedger = "UPDATE ledger SET status = 0 WHERE id = :id OR parent_link = :id";
 		}
 		
 		Query query = null;
@@ -789,6 +795,7 @@ public class MineDAO {
 	public boolean updateParameters(Parameters param) {
 		Session session = factory.getCurrentSession();
 		boolean status = false;
+		param.setCreationDate(LocalDate.now());
 		try {
 				session.update(param);
 				status = true;
@@ -809,7 +816,7 @@ public class MineDAO {
 			System.out.println(ex);
 			// write code to check why their are multiple active parameters and disable parameter except latest one.
 		}
-		System.out.println("Id" +parameter.getId());
+		//System.out.println("Id" +parameter.getId());
 		return parameter;
 	}
 	// ------------------------------ End Parameter DAO --------------------------------

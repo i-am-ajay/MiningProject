@@ -104,7 +104,7 @@
 	        			<td class="demo">${vehicleList.clientId.clientType.description}</td>
 	        			<td class="demo">${vehicleList.clientId.name}</td>
 	        			<td id="address">${vehicleList.discount}</td>
-	        			<td>${vehicleList.createdBy}</td>
+	        			<td>${vehicleList.creationTime}</td>
 	        			</tr>
 	        		</c:forEach>
 	        	</tbody>

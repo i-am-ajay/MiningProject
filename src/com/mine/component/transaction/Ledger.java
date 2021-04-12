@@ -13,10 +13,13 @@ import javax.persistence.OneToOne;
 
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 import com.mine.component.master.User;
 
 @Entity
+@Audited
 public class Ledger {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -40,6 +43,7 @@ public class Ledger {
 	@Column(name="remarks")
 	protected String remarks;
 	
+	@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 	@ManyToOne
 	@JoinColumn(name="created_by")
 	protected User createdBy;
@@ -47,10 +51,6 @@ public class Ledger {
 	@OneToOne
 	@JoinColumn(name="parent_link")
 	protected Ledger parentEntryLink;
-	
-	@OneToOne(mappedBy="parentEntryLink")
-	@JoinColumn(name="child_link")
-	protected Ledger childLink;
 	
 	@OneToOne
 	@JoinColumn(name="sales_id")
@@ -139,13 +139,5 @@ public class Ledger {
 
 	public void setParentEntryLink(Ledger parentEntryLink) {
 		this.parentEntryLink = parentEntryLink;
-	}
-
-	public Ledger getChildLink() {
-		return childLink;
-	}
-
-	public void setChildLink(Ledger childLink) {
-		this.childLink = childLink;
 	}
 }

@@ -12,6 +12,9 @@ import javax.persistence.ManyToOne;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 @Entity
 public class GeneralData {
@@ -20,8 +23,11 @@ public class GeneralData {
 	private int id;
 	private String category;
 	private String description;
+	
+	@UpdateTimestamp
 	private LocalDate createdOn;
 	
+	@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 	@ManyToOne
 	@JoinColumn(name="created_by")
 	private User createdBy;

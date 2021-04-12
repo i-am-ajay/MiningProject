@@ -21,6 +21,8 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.envers.Audited;
 import org.springframework.stereotype.Component;
 
 @Entity
@@ -40,6 +42,7 @@ public class User{
 	private boolean active;
 	
 	@Column(name="creation_date")
+	@UpdateTimestamp
 	private LocalDate creationDate;
 	
 	private String role;

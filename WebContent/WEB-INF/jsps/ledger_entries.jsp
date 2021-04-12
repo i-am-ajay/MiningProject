@@ -11,6 +11,7 @@
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/static_resources/css/style.css" >
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/static_resources/css/bootstrap_min.css" >
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/static_resources/css/datatable_min.css" >
+
 	<!--  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" />-->
 </head>
@@ -123,7 +124,7 @@
 					    </div> -->
 					    </c:if>
 				 	</div>
-				 	<input type="submit" id="save_btn" class="btn btn-sm btn-success btn-block w-50 mx-auto" value="submit"/>
+				 	<input type="submit" id="save_btn" class="btn btn-sm btn-success btn-block w-50 mx-auto disable_button" value="submit"/>
 			  	</div>
 			</div>
 		</div>

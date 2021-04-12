@@ -14,11 +14,14 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 import com.mine.component.master.User;
 import com.mine.component.master.Vehicle;
 
 @Entity
+@Audited
 public class SupplyDetails {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -44,6 +47,11 @@ public class SupplyDetails {
 	private double discount;
 	private double rate;
 	
+	@Column(name="unit_rate")
+	private double unitRate;
+	
+	private int unit;
+	
 	private boolean status;
 	
 	@Column(name="final_rate")
@@ -55,6 +63,7 @@ public class SupplyDetails {
 	@Column(name="sales_date", insertable=false, updatable=false)
 	private LocalDateTime salesDate;
 	
+	@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 	@JoinColumn(name="sold_by")
 	@ManyToOne
 	private User user;
@@ -188,13 +197,16 @@ public class SupplyDetails {
 	 * @param unitRate
 	 * @return
 	 */
-	public String getFormattedQuantity(double unitRate) {
+	public String getFormattedQuantity(int unitRate) {
 		String qty = this.quantity;
+		int unit = this.unit;
 		if(this.quantity.equalsIgnoreCase("bucket") 
 				|| this.quantity.equalsIgnoreCase("foot")
 				|| this.quantity.equalsIgnoreCase("ton")) {
-			long r = Math.round(this.rate / unitRate);
-			qty = Long.toString(r).concat(" ").concat(this.quantity);
+			
+			if(unit > 0) {
+				qty = Integer.toString(unit).concat(" ").concat(qty);
+			}
 		}
 		return qty;	
 	}
@@ -208,15 +220,27 @@ public class SupplyDetails {
 	public boolean isDataCorrect() {
 		boolean flag = false;
 		if((this.clientName != null || this.clientName.length() > 0) && 
-			(this.driverName != null || this.clientName.length() > 0) &&
+			(this.clientName != null || this.clientName.length() > 0) &&
 			(this.driverName != null || this.driverName.length() > 0) &&
 			(this.driverNumber != null || this.driverNumber.length() >0) &&
 			(this.material != null || this.material.length() > 0) &&
 			(this.quantity != null || this.material.length() > 0) &&
-			(this.rate != 0.0)) {
+			(this.rate != 0.0) && (this.unitRate != 0.0)) {
 			flag = true;
 		}
 		return flag;
+	}
+	public double getUnitRate() {
+		return unitRate;
+	}
+	public void setUnitRate(double unitRate) {
+		this.unitRate = unitRate;
+	}
+	public int getUnit() {
+		return unit;
+	}
+	public void setUnit(int unit) {
+		this.unit = unit;
 	}
 }
 

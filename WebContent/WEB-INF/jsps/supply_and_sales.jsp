@@ -105,6 +105,8 @@
 				  			<div class="form-group">
 					    		<label class="font-weight-bold">Rate</label>
 					     		<f:input id="rate" class="form-control form-control-sm" placeholder="Rate" path="rate" />
+					     		<f:input type="hidden" id="unitRate" path="unitRate" />
+					     		<f:input type="hidden" id="unit" path="unit" />
 			  				</div>
 			  			</div>
 			  			<div class="col-2">
@@ -309,8 +311,11 @@
 		
 		// cancel button logic
 		$(".cancel_btn").click( function(){
-			console.log(this.id);
-			cancelSales(this.id);
+			let result = confirm("Do you want to cancle sales?");
+			if(result){
+				cancelSales(this.id);
+				location.reload();
+			}
 		})
 		//------------------------------------ On Page Action End --------------------------------------
 		
@@ -379,8 +384,12 @@
 						let nrl = 0.0;
 						let quantity = $("#quantity").val();
 						quantity = quantity.toLowerCase();
+						$("#unitRate").val(rate);
+						$("#unit").val(1);
 						if(quantity == 'bucket' || quantity == 'foot' || quantity == 'ton'){
-							rate = rate * $("#numberof").val();
+							let unit = $("#numberof").val()
+							$("#unit").val(unit);
+							rate = rate * unit;
 						}
 						let discount = $("#discount").val();
 						// check if nrl is selected.
@@ -480,7 +489,7 @@
 	//var driverReturnRemoved = false;
 	
 	$("#driver_return").click(e =>{
-		let vehicleNo = $('#vehicle_no').val()
+		let vehicleNo = $('#vehicle_no').val();
 		if( vehicleNo == null || vehicleNo == ""){
 			alert("Select a vehicle.");
 			$("#driver_return").prop("checked",false);

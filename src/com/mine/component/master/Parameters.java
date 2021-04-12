@@ -11,8 +11,10 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
+import org.hibernate.envers.Audited;
 
 @Entity
+@Audited
 @Table(name="parameters")
 public class Parameters {
 	@Id

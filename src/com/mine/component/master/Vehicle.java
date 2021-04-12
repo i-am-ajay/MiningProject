@@ -11,7 +11,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
+
 @Entity
+@Audited
 public class Vehicle {
 	@Id
 	private String vehicleNo;
@@ -27,14 +34,18 @@ public class Vehicle {
 	@JoinColumn(name="client_id")
 	private Client clientId;
 	
+	@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="company_id")
 	private Company companyId;
 	
-	private LocalDate createdBy;
+	//@Generated(GenerationTime.ALWAYS)
+	@Column(name="creation_time_stamp")
+	private LocalDate creationTime;
 	
 	private LocalDate endDate;
 	
+	@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 	@ManyToOne
 	@JoinColumn(name="created_by")
 	private User createdById;
@@ -83,12 +94,12 @@ public class Vehicle {
 		this.companyId = companyId;
 	}
 
-	public LocalDate getCreatedBy() {
-		return createdBy;
+	public LocalDate getCreationTime() {
+		return creationTime;
 	}
 
-	public void setCreatedBy(LocalDate createdBy) {
-		this.createdBy = createdBy;
+	public void setCreationTime(LocalDate createdBy) {
+		this.creationTime = createdBy;
 	}
 
 	public LocalDate getEndDate() {

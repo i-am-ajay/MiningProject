@@ -22,4 +22,14 @@
 		<property name="prefix" value="/WEB-INF/jsps/"></property>
 		<property name="suffix" value=".jsp"></property>
 	</bean>
+	
+	<!-- Property Editor -->
+	
+	<bean id="customEditor" class="org.springframework.beans.factory.config.CustomEditorConfigurer">
+		<property name="propertyEditorRegistrars">
+			<list>
+				<bean id="inbuilt_editor" class="com.mine.utilities.InbuiltPropertyEditors"></bean>
+			</list>
+		</property>
+	</bean>
 </beans>

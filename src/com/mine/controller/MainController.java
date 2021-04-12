@@ -98,8 +98,9 @@ public class MainController {
 		if((details.getQuantity().equalsIgnoreCase("foot")) || (details.getQuantity().equalsIgnoreCase("bucket")) ||
 				(details.getQuantity().equalsIgnoreCase("ton"))) {
 			//System.out.println("In print quantity test");
-			double rate = service.getRate(details.getTyreType(), details.getMaterial(), details.getVehicleType(), details.getQuantity(), companyId);
-			double quantity = details.getRate() / rate;
+			//double rate = service.getRate(details.getTyreType(), details.getMaterial(), details.getVehicleType(), details.getQuantity(), companyId);
+			//double quantity = details.getRate() / rate;
+			double quantity = details.getUnit();
 			model.addAttribute("qty",Long.toString(Math.round(quantity)).concat(" ").concat(details.getQuantity()));
 		}
 		else {
@@ -215,7 +216,7 @@ public class MainController {
 	//get Vehicle and Associated Discount
 	@RequestMapping("vehicle_fetch")
 	public @ResponseBody String fetchVehicleDetails(@RequestParam("vehicle_num") String vehicleNo) {
-		System.out.println(vehicleNo);
+		//System.out.println(vehicleNo);
 		Vehicle vehicle = service.getVehicle(vehicleNo);
 		String stringObj = null;
 		if(vehicle != null) {
@@ -237,7 +238,7 @@ public class MainController {
 			// Add client information
 			stringObj = object.toString();
 		}
-		System.out.println(stringObj);
+		//System.out.println(stringObj);
 		return stringObj;
 	}	
 	//---------------------------------- End Of Control -----------------------------------

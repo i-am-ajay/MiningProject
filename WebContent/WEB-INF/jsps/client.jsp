@@ -113,7 +113,7 @@
 		</div>
 	</div>
 			    
-	<input type="submit" class="btn btn-small btn-secondary btn-block w-50 mx-auto" value="Save Client"/>
+	<input type="submit" class="btn btn-small btn-secondary btn-block w-50 mx-auto disable_button" value="Save Client"/>
 	<input type="hidden" id="role" value="${role}" />
 	</f:form>
 	</div>
@@ -121,6 +121,7 @@
 	<script src="${pageContext.request.contextPath}/static_resources/js/bootstrap_min.js"></script>
 	<script src="${pageContext.request.contextPath}/static_resources/js/jquery_3.5.1_min.js"></script>
 	<script src="${pageContext.request.contextPath}/static_resources/js/popper.js"></script>
+	<script src="${pageContext.request.contextPath}/static_resources/js/utility.js"></script>
 	<script src="https://use.fontawesome.com/80a486f3d9.js"></script>
 	<!--  <script src="${pageContext.request.contextPath}/static_resources/js/header_manipulate.js"></script>-->
 	<script>

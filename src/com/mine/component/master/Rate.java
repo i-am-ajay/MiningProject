@@ -10,8 +10,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
+
 
 @Entity
+@Audited
 public class Rate {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -28,21 +33,24 @@ public class Rate {
 	
 	private Double rate;
 	
+	@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 	@ManyToOne
 	@JoinColumn(name="company_id")
 	private Company company;
 	
+	@UpdateTimestamp
 	private LocalDate createdDate;
 	
 	private LocalDate endDate;
 	
+	@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 	@ManyToOne
 	@JoinColumn(name="created_by")
 	private User createdById;
 	
-	@ManyToOne
+	/*@ManyToOne
 	private User endedById;
-
+*/
 	public String getTyreType() {
 		return tyreType;
 	}
@@ -107,13 +115,13 @@ public class Rate {
 		this.createdById = createdById;
 	}
 
-	public User getEndedById() {
+	/*public User getEndedById() {
 		return endedById;
 	}
 
 	public void setEndedById(User endedById) {
 		this.endedById = endedById;
-	}
+	}*/
 
 	public int getRateId() {
 		return rateId;
