@@ -55,7 +55,7 @@
 		   <div class="text-dark bg-light px-3 mb-3 mx-auto" style="{transform:scale(0.8);}">
   				<div class="card-body">
   					<div class="row">
-  						<div class="col-8">
+  						<div class="col-6">
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Ledger Type</label>
 					      		<select class="form-control form-control-sm" placeholder="Choose Party Type" id="party_name" name="param">
@@ -66,6 +66,16 @@
 						      		<option value=5>Journal</option>
 						      		<option value=6>Others</option>
 					      		</select>
+					    	</div>
+					    </div>
+					    <div class="col-2">
+					    	<div class="form-group">
+					    		<label class="font-weight-bold">Period</label>
+					    		<select class="form-control form-control-sm">
+					    			<c:forEach var="val" items="${periodList}">
+					    				<option>${val}</option>
+					    			</c:forEach>
+					    		</select>
 					    	</div>
 					    </div>
 					    <div class="col-4">	    	

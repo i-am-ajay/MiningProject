@@ -210,7 +210,7 @@ public class ReportDAO {
 	}
 	
 	@Transactional
-	public List<Object[]> salesSummary(int selectionCode){
+	public List<Object[]> salesSummary(int selectionCode,LocalDateTime sDate, LocalDateTime eDate){
 		Session session = factory.getCurrentSession();
 		CriteriaBuilder builder = session.getCriteriaBuilder();
 		CriteriaQuery<Object[]> query = builder.createQuery(Object[].class);
@@ -219,11 +219,17 @@ public class ReportDAO {
 		
 		Subquery<Double> subQuery = query.subquery(Double.class); 
 		Root<Ledger>subQueryRoot = subQuery.from(Ledger.class);
-		  
+		
+		List<Predicate> predicateList = new ArrayList<>();
+		predicateList.add(builder.equal(subQueryRoot.get("account"), clientRoot.get("name")));
+		predicateList.add(builder.equal(subQueryRoot.get("status"), 1));
+		if(sDate != null && eDate != null) {
+			predicateList.add(builder.between(subQueryRoot.get("entryDate"), sDate, eDate));
+		}
+		Predicate [] predArray = predicateList.toArray(new Predicate[predicateList.size()]);
+		
 		subQuery.select(builder.diff(builder.sum(subQueryRoot.get("creditAmount")),
-		builder.sum(subQueryRoot.get("debitAmount")))).where(builder.and(
-		builder.equal(subQueryRoot.get("account"), clientRoot.get("name")),
-		builder.equal(subQueryRoot.get("status"), 1)));
+		builder.sum(subQueryRoot.get("debitAmount")))).where(builder.and(predArray));
 		 
 		/*Subquery<Double> subQueryDebit = query.subquery(Double.class); 
 		Subquery<Double> subQueryCredit = query.subquery(Double.class);

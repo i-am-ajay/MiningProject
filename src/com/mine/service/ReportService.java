@@ -2,6 +2,9 @@ package com.mine.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Month;
+import java.time.YearMonth;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +16,7 @@ import com.mine.component.master.Vehicle;
 import com.mine.component.transaction.Ledger;
 import com.mine.component.transaction.SupplyDetails;
 import com.mine.dao.ReportDAO;
+import com.mine.utilities.MonthName;
 
 @Service("reportService")
 public class ReportService {
@@ -24,8 +28,22 @@ public class ReportService {
 		return reportDAO.getSalesList(vehicleNo, quantity, material, paymentType,client, fromDate, toDate);
 	}
 	
+	/**
+	 * 
+	 * @param code - specify which type of client should be picked.
+	 * @param period - month-year combination
+	 * @return
+	 */
+	//public List<Object[]> combinedSalesReport(int code, String period){
 	public List<Object[]> combinedSalesReport(int code){
-		return reportDAO.salesSummary(code);
+		String period = "Mar-2021";
+		String [] periodArray = period.split("-");
+		String month = periodArray[0];
+		int year = Integer.parseInt(periodArray[1]);
+		YearMonth yearMonth = YearMonth.of(year, Month.valueOf(MonthName.getMonth(month)));
+		LocalDateTime startDate = LocalDateTime.of(yearMonth.atDay(1),LocalTime.MIDNIGHT);
+		LocalDateTime endDate = LocalDateTime.of(yearMonth.atEndOfMonth(),LocalTime.MAX);
+		return reportDAO.salesSummary(code,startDate, endDate);
 	}
 	
 	// ----------------------- End Sales Report Service -----------------------
