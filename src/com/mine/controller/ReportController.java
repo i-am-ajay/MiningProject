@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -68,15 +69,79 @@ public class ReportController {
 	}
 	
 	@RequestMapping("ledger_summary")
-	public String salesSummary(HttpSession session, Model model, @RequestParam(name="param", required=false, defaultValue="0") int param) {
+	public String salesSummary(HttpSession session, Model model, @RequestParam(name="param", required=false, defaultValue="0") int param,
+			@RequestParam(name="start_date",required=false) @DateTimeFormat(iso= ISO.DATE) LocalDate startDate,
+			@RequestParam(name="end_date",required=false) @DateTimeFormat(iso=ISO.DATE) LocalDate endDate
+			) {
 		if(session.getAttribute("user") == null) {
 			return "login";
 		}
 		List<Object[]> obj = null;
-		if(param != 0)
-			obj = reportService.combinedSalesReport(param);
+		if(param != 0) {
+			LocalDate sDate = startDate;
+			LocalDate eDate = endDate;
+			if(startDate == null) {
+				sDate = LocalDate.EPOCH;
+			}
+			if(endDate == null) {
+				eDate = LocalDate.now();
+			}
+			obj = reportService.combinedSalesReport(param, sDate, eDate);
+		}
+			
 		model.addAttribute("records", obj);
+		model.addAttribute("startDate", startDate);
+		model.addAttribute("endDate", endDate);
+		String paramValue = "NA";
+		switch(param) {
+			case 1 : {
+				paramValue = "Owner";
+				break;
+			}
+			case 2 : {
+				paramValue = "Contractor";
+				break;
+			}
+			case 3 : {
+				paramValue = "Sanchalan";
+				break;
+			}
+			case 4 : {
+				paramValue = "Office Expense";
+				break;
+			}
+			case 5 : {
+				paramValue = "Journal";
+				break;
+			}
+			case 6 : {
+				paramValue = "Others";
+				break;
+			}
+			
+		}
+		model.addAttribute("param_value",paramValue);
 		return "report/summary_of_sales";
+	}
+	
+	@RequestMapping("daywise_summary")
+	public String daywiseSalesSummaryControl(Model model, HttpSession session,
+			@RequestParam(name="s_date", required=false) @DateTimeFormat(iso = ISO.DATE) LocalDate startDate,
+			@RequestParam(name="e_date", required=false) @DateTimeFormat(iso=ISO.DATE) LocalDate endDate) {
+		
+		if(session.getAttribute("user") == null){
+			return "login";
+		}
+		if(startDate == null) {
+			startDate = LocalDate.now();
+		}
+		if(endDate == null) {
+			endDate = LocalDate.now();
+		}
+		model.addAttribute("summary_sales",reportService.daywiseSalesSummary(startDate, endDate));
+		model.addAttribute("s_date", startDate);
+		model.addAttribute("e_date", endDate);
+		return "report/daywise_sales_summary";
 	}
 	// ------------------------------ End Sales Control ----------------------------------
 	
@@ -223,6 +288,33 @@ public class ReportController {
 	
 	// ------------------------------ End Cancel Entries --------------------------------
 	
+	
+	
+	// ------------------------------ Journal Entry Control -----------------------------
+	@RequestMapping(value="journal_list")
+	public String journalEntries(Model model, 
+			@RequestParam(name="start_date", required=false)@DateTimeFormat(iso=ISO.DATE)LocalDate startDate, 
+			@RequestParam(name="end_date", required=false)@DateTimeFormat(iso=ISO.DATE)LocalDate endDate,
+			HttpSession session) {
+		
+		User user = (User)session.getAttribute("user");
+		if(user == null) {
+				return "login";
+		}
+		if(startDate == null) {
+			startDate = LocalDate.now();
+		}
+		if(endDate == null) {
+			endDate = LocalDate.now();
+		}
+		model.addAttribute("journal_details",reportService.getJournalReportService(startDate, endDate));
+		model.addAttribute("start_date",startDate);
+		model.addAttribute("end_date", endDate);
+		return "report/journal_report";
+	}
+	
+	
+	// ------------------------------ End Journal Entry Control -------------------------
 	
 	
 	// ------------------------------- Support Methods -----------------------------------

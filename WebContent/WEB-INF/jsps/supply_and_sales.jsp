@@ -129,9 +129,14 @@
 			  			</div>
 				  </div>
 				  <div class="row">
-				  <div class="col-2">
-				  		<div id="numberofDiv" class="form-group">
+				  <div class="col-1">
+				  		<div id="numberofDiv" class="form-group p-0">
 				  			<input type="number" value="1" class="form-control form-control-sm" id="numberof" placeholder="Enter Quantity No"/>
+				  		</div>
+				  	</div>
+				  	<div class="col-1">
+				  		<div id="freeDiv" class="form-group">
+				  			<f:input type="number" class="form-control form-control-sm" id="free" placeholder="Free" path="freeMaterial"/>
 				  		</div>
 				  	</div>
 				  	<div class="col-2">
@@ -190,7 +195,7 @@
                 <th>NRL</th>
                 <th>Driver Return</th>
                 <th>Date</th>
-                <th>Reprint Token</th>
+                <th>Free Material</th>
                 <c:if test="${role.equalsIgnoreCase('admin')}">
                 	<th>Cancel Sale</th>
                 </c:if>
@@ -214,7 +219,7 @@
 	                <td>${item.vehicle.vehicleType}</td>
 	                <td>${item.vehicle.tyreType}</td>
 	                <td>${item.material }</td>
-	                <td>${item.quantity}</td>
+	                <td>${item.getQuantityDetail()}</td>
 	                <td>${item.paymentType }</td>
 	                <td>${item.rate}</td>
 	                <td>${item.discount}</td>
@@ -222,7 +227,7 @@
 	                <td>${item.nrl}</td>
 	                <td>${item.driverReturn}</td>
 	                <td>${item.salesDate}</td>
-	                <td><button class="btn btn-sm btn-sucess reprint_btn" id="p${item.id}">&nbsp;&nbsp;&nbsp;</button></td>
+	                <td>${item.freeMaterial}</button></td>
 	                 <c:if test="${role.equalsIgnoreCase('admin')}">
                 		<td>
                 		<c:if test="${role.equalsIgnoreCase('admin') && item.status == true}">
@@ -251,12 +256,15 @@
 				$("#vehicle_of").attr("readonly",true);
 				$("#vehicle_type").attr("readonly",true);
 				$("#tyre_type").attr("readonly",true);
-				$("#")
+				$("#free").attr("readonly",true);
 
 				let quantityType = $("#quantity").val();
 				quantityType = quantityType.toLowerCase();
 				if(!(quantityType == 'bucket' || quantityType == 'ton' || quantityType == 'foot')){
 					$("#numberofDiv").hide();
+					$("#freeDiv").hide();
+					$("#free").attr("readonly",true);
+					$("#free").val(null);
 				}
 			});
 		$(document).ready(e => {
@@ -279,16 +287,23 @@
 		// ------------------------------ Page Load Configuration End ---------------------------------
 		
 		// ------------------------------ On Page Actions ------------------------------------------
+		$("#numberof").on("focus",e=>{
+			$("#free").attr("readonly",false);
+		})
 		// If quantity is changed to bucket, foot, ton then show the field to enter number.
 		$("#quantity").change(e =>{
 			let quantityType = $("#quantity").val();
 			quantityType = quantityType.toLowerCase();
 			if((quantityType == 'bucket' || quantityType == 'ton' || quantityType == 'foot')){
 				$("#numberofDiv").show();
+				$("#freeDiv").show();
 				//$("#numberof").attr("required",true);
 			}
 			else{
 				$("#numberofDiv").hide();
+				$("#freeDiv").hide();
+				$("#free").attr("readonly",true);
+				$("#free").val("");
 			}
 			
 		});
@@ -407,6 +422,7 @@
 							alert("Rate can not be 0 or -ve. Kindly select your parameters again.");
 							$("#sales_form").trigger("reset");
 							$("#numberofDiv").show();
+							$("#freeDiv").show();
 							return 1;
 						}
 						
@@ -415,6 +431,7 @@
 							alert("Final Rate can't be negative, Kindly select your parameters again.");
 							$("#sales_form").trigger("reset");
 							$("#numberofDiv").show();
+							$("#freeDiv").show();
 							return 1;
 						}
 						finalRate = finalRate - driverReturn; 

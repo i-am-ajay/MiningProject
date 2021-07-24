@@ -95,7 +95,7 @@ public class MainController {
 		User user = (User)session.getAttribute("user");
 		service.saveSupplyDetails(details, user, companyId);
 		model.addAttribute("supply",details);
-		if((details.getQuantity().equalsIgnoreCase("foot")) || (details.getQuantity().equalsIgnoreCase("bucket")) ||
+		/*if((details.getQuantity().equalsIgnoreCase("foot")) || (details.getQuantity().equalsIgnoreCase("bucket")) ||
 				(details.getQuantity().equalsIgnoreCase("ton"))) {
 			//System.out.println("In print quantity test");
 			//double rate = service.getRate(details.getTyreType(), details.getMaterial(), details.getVehicleType(), details.getQuantity(), companyId);
@@ -105,7 +105,8 @@ public class MainController {
 		}
 		else {
 			model.addAttribute("qty",details.getQuantity());
-		}
+		}*/
+		model.addAttribute("qty",details.getFormattedQuantity(0));
 		page = "print_token";
 		return page;
 	}

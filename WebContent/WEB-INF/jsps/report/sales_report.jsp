@@ -123,6 +123,7 @@
 		                <th>Driver Return</th>
 		                <th>Status</th>
 		                <th>Date</th>
+		                <th>Free Material</th>
            			 </tr>
 	        	</thead>
 	        	<tbody>
@@ -144,7 +145,7 @@
 				                <td>${item[0].vehicle.vehicleType}</td>
 				                <td>${item[0].vehicle.tyreType}</td>
 				                <td>${item[0].material }</td>
-				                <td>${item[0].getFormattedQuantity(item[1])}</td>
+				                <td>${item[0].getQuantityDetail()}</td>
 				                <td>${item[0].paymentType }</td>
 				                <td>${item[0].rate}</td>
 				                <td>${item[0].discount}</td>
@@ -153,6 +154,7 @@
 				                <td>${item[0].driverReturn}</td>
 				                <td>${item[0].status}</td>
 				                <td>${item[0].salesDate}</td>
+				                <td>${item[0].freeMaterial}</td>
 		              		</tr>
 		             </c:forEach>
 	        	</tbody>

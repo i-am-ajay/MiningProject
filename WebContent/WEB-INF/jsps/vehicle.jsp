@@ -179,7 +179,6 @@
 						$('#type').find('option[value="'+json["vehicle_type"]+'"]').attr("selected",'selected');
 
 						getClientList(json['client']);
-						console.log(json['client']);
 						$('#client').find('option[value='+json["client"]+']').attr("selected",'selected');
 						// set owner / contractor
 					}

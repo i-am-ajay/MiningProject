@@ -6,7 +6,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Ledger Of Sales</title>
+<title>Journal Report</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" href="${pageContext.request.contextPath}/static_resources/css/style.css" >
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/static_resources/css/bootstrap_min.css" >
@@ -42,53 +42,33 @@
 <body class=mt-1>
 	<div class="px-2 pb-2 m-auto" style="width:95%;">
 		<div class="row">
-			<h4 class=" col-8 border-bottom border-danger mt-1 mx-3 mb-3 pb-2 display-5" id="form_title">Ledger Summary</h4>
+			<h4 class=" col-8 border-bottom border-danger mt-1 mx-3 mb-3 pb-2 display-5" id="form_title">Ledger</h4>
 			<div class="col-2 align-right ml-auto pl-5 mr-5"><i id="home_icon" class="fa fa-home fa-x" aria-hidden="true"></i></div>
 			<div class="col-1"><a class="btn btn-danger btn-sm" style="font-size: .5em;" href="${pageContext.request.contextPath}/logout">Logout</a></div>
 		</div>
-		<form method="POST" action="ledger_summary" id="eledger">
+		<form method="POST" action="journal_list" id="eledger">
 		   <!-- Patient Vitals -->
 		   <!--  <h4 class="border-bottom m-3 text-muted pb-2" id="form_title">Patient Report Card</h4>-->
 		   <!-- Card Vitals -->
 		   <div class="row pt-1">
 		   <div class="col">
-		   <div class="text-dark bg-light px-3 mx-auto" style="{transform:scale(0.8);}">
+		   <div class="text-dark bg-light px-3 mb-3 mx-auto" style="{transform:scale(0.8);}">
   				<div class="card-body">
   					<div class="row">
-  						<div class="col-3">
-					    	<div class="form-group">
-					      		<label class="font-weight-bold">Ledger Type</label>
-					      		<select class="form-control form-control-sm" placeholder="Choose Party Type" id="party_name" name="param">
-						      		<option value=1>Owner</option>
-						      		<option value=2>Contractor</option>
-						      		<option value=3>Sanchalan</option>
-						      		<option value=4>Office Expense</option>
-						      		<option value=5>Journal</option>
-						      		<option value=6>Others</option>
-					      		</select>
-					    	</div>
-					    </div>
-					    <div class="col-3">
-					    	<div class="form-group">
-					    		<label class="font-weight-bold">Start Date</label>
-					    		<input class="form-control form-control-sm" type="date" name="start_date" />
-					    	</div>
-					    </div>
-					    <div class="col-3">
-					    	<div class="form-group">
-					    		<label class="font-weight-bold">End Date</label>
-					    		<input class="form-control form-control-sm" type="date" name="end_date" />
-					    	</div>
-					    </div>
-					    <div class="col-3">	    	
-						    	<label>&nbsp;</label>
-						    	<input type="submit" class="btn btn-sm btn-success btn-block mx-auto" value="submit"/>
-					    </div>
+  					<div class="col-md-2">
+  						<label for="fdate" class="font-weight-bold">From Date</label>
+  					</div>
+					<div class="form-group col-md-2">
+				      	<input type="date" class="form-control form-control-sm" id="fDate" name="start_date"/>
+				    </div>	
+				    <div class="col-md-2">
+  						<label for="tdate" class="font-weight-bold">To Date</label>
+  					</div>
+				    <div class="form-group col-md-2">
+				      	<input type="date" class="form-control form-control-sm" id="tDate" name="end_date" />
+				    </div>	
 				 	</div>
-				 	<p class="small font-weight-light">
-				 		<span class="font-weight-bold">Note:&nbsp;&nbsp;</span><span class="text-danger">-ve balance</span> : amount to be received from party || 
-				 		<span class="text-primary">+ve balance</span> : amount to be paid to the party
-				 	</p>
+				 	<input type="submit" class="btn btn-sm btn-success btn-block w-50 mx-auto" value="submit"/>
 			  	</div>
 			</div>
 		</div>
@@ -97,35 +77,45 @@
 	<input type="hidden" id="role" value="${role}" />
 	</form>
 	</div>
-	<p class="row">
-		<div class="col">
-			<c:if test="${param_value != 'NA' }">
-			<c:choose>
-				<c:when test="${startDate != null && endDate != null }"><span class="small"><b><em class="px-1">Ledger Summary Of <span class="text-success">${param_value}</span> Between :</em></b>${startDate} to ${endDate }</span></c:when>
-				<c:when test="${startDate != null &&  endDate == null }"><span class="small"><b><em class="px-1">Ledger Summary Of <span class="text-success">${param_value}</span> Between :</em></b> ${startDate} to Till Date</span></c:when>
-				<c:when test="${startDate == null &&  endDate != null }"><span class="small"><b><em class="px-1">Ledger Summary Of <span class="text-success">${param_value}</span> Between :</em></b> From Beginning to ${endDate }</span></c:when>
-				<c:when test="${startDate == null &&  endDate == null }"><span class="small"><b><em class="px-1">Ledger Summary Of <span class="text-success">${param_value}</span> Between :</em></b> From Beginning to Till Date</span></c:when>
-			</c:choose>
-			</c:if>
-		</div>
-	</p>
+	<h5 class="display-5">Journal From - ${start_date} to ${end_date}</h5>
 	<div id="table_section" class="row">
 		<div class="col" id="credit_table">
 			<table id="data_table" class="table table-striped table-sm display mx-auto col" style="width:95%; font-size:13px;">
 		        <thead class="thead-dark">
 		            <tr class="text-center">
-		                <th>Particulars</th>
-		                <th>Amount</th>
-					</tr>
+		            	<th class="col-1">Date</th>
+		          		<th class="col-2">Account</th>
+		                <th class="col-3">Particulars</th>
+		                <th class="col-2">Debit Amount</th>
+		                <th class="col-2">Credit Amount</th>
+		                <th class="col-4">Remarks</th>
+		                <%-- <c:if test="${allow_cancel == true }">
+		                	<th>Cancel Record</th>
+		                </c:if> --%>
+		            </tr>
 		        </thead>
 		        <tbody id="table_body">
-			        <c:forEach var="record" items="${records}">
-			        	<c:if test="${record[1] != null}">
-			        	<tr>
-	        				<td>${record[0]}</td>
-	        				<td>${record[1]}</td>
+			        <c:forEach var="record" items="${journal_details}">
+			        	<tr id="b_${record.account}">
+			        		<td>${record.entryDate.toLocalDate()}</td>
+	        				<td>${record.account}</td>
+	        				<td>${record.description}</td>
+	        				<td class="table-success">${record.debitAmount}</td>
+	        				<td class="table-danger">${record.creditAmount}</td>
+	        				<td>${record.remarks}</td>
+	        				<%-- <c:if test="${allow_cancel == true }">
+	        					<td>
+	        						<c:choose>
+	        							<c:when test="${record[5].equals('f') }">
+	        								<button class="btn btn-danger cancel_btn" id="${record[6]}" disabled></button>
+	        							</c:when>
+	        							<c:otherwise>
+	        								<button class="btn btn-danger cancel_btn" id="${record[6]}"></button>
+	        							</c:otherwise>
+	        						</c:choose>
+	        					</td>
+	        				</c:if> --%>
         				</tr>
-        				</c:if>
 			        	</c:forEach>
 			    </tbody>
 		 	</table>
@@ -172,19 +162,22 @@
 		
 		// ----------------------------------- Ajax Calls from Page ----------------------------------
 		 function cancelEntry(id, rowId){
-			$.ajax({
-				type : 'POST',
-				url : "${home}cancel_entries",
-				data: {"id":id},
-				success: function(result, status, xhr){
-					if(result){
-						$(rowId).hide();
+			let result = confirm("Do you want to cancel ledger entry?"); 
+			if(result){
+				$.ajax({
+					type : 'POST',
+					url : "${home}cancel_entries",
+					data: {"id":id},
+					success: function(result, status, xhr){
+						if(result){
+							$(rowId).hide();
+						}
+					},
+					error: function(resut, status, xhr){
+						
 					}
-				},
-				error: function(resut, status, xhr){
-					
-				}
-			});
+				});
+			}
 		}
 		//------------------------------------ End Ajax Calls ----------------------------------------
 		

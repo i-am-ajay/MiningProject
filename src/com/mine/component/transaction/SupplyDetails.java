@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
 import org.hibernate.envers.Audited;
@@ -47,12 +48,16 @@ public class SupplyDetails {
 	private double discount;
 	private double rate;
 	
-	@Column(name="unit_rate")
-	private double unitRate;
+	@Column(name="unit_rate", columnDefinition = "double default=0.0")
+	private Double unitRate = 0.0;
 	
-	private int unit;
+	
+	private Integer unit = 0;
 	
 	private boolean status;
+	
+	@Column(name="free_material")
+	private Integer freeMaterial;
 	
 	@Column(name="final_rate")
 	private double finalRate;
@@ -182,12 +187,16 @@ public class SupplyDetails {
 	}	
 	
 	
-	public String getQuantityDetail(double unitRate) {
+	public String getQuantityDetail() {
 		String qty = quantity;
+		if(unit == null) {
+			unit = 0;
+		}
 		if(quantity.equalsIgnoreCase("foot") || quantity.equalsIgnoreCase("bucket") ||
 				quantity.equalsIgnoreCase("ton")){
-			int q = (int)(rate / unitRate);
-			qty = (Integer.toString(q).concat(" ")).concat(quantity);
+			if(unit > 0) {
+				qty = (Integer.toString(unit).concat(" ")).concat(quantity);
+			}
 		}
 		return qty;
 	}
@@ -199,13 +208,24 @@ public class SupplyDetails {
 	 */
 	public String getFormattedQuantity(int unitRate) {
 		String qty = this.quantity;
+		if(unit == null) {
+			unit = 0;
+		}
+		if(freeMaterial == null) {
+			freeMaterial = 0;
+		}
 		int unit = this.unit;
 		if(this.quantity.equalsIgnoreCase("bucket") 
 				|| this.quantity.equalsIgnoreCase("foot")
 				|| this.quantity.equalsIgnoreCase("ton")) {
 			
 			if(unit > 0) {
-				qty = Integer.toString(unit).concat(" ").concat(qty);
+				if(freeMaterial > 0) {
+					qty = Integer.toString(unit).concat("+").concat(Integer.toString(freeMaterial)).concat(" ").concat(qty);
+				}
+				else {
+					qty = Integer.toString(unit).concat(" ").concat(qty);
+				}
 			}
 		}
 		return qty;	
@@ -230,17 +250,40 @@ public class SupplyDetails {
 		}
 		return flag;
 	}
-	public double getUnitRate() {
+	
+	public Double getUnitRate() {
 		return unitRate;
 	}
-	public void setUnitRate(double unitRate) {
-		this.unitRate = unitRate;
+	public void setUnitRate(Double unitRate){
+		if(unitRate != null) {	
+			this.unitRate = unitRate;
+		}
+		else {
+			this.unitRate = 0.0;
+		}
 	}
-	public int getUnit() {
+	
+	public Integer getUnit(){
 		return unit;
 	}
-	public void setUnit(int unit) {
-		this.unit = unit;
+	
+	@Column
+	public void setUnit(Integer unitOf){
+		if(unitOf != null) {
+			this.unit = unitOf;
+		}
+		else{
+			this.unit = 0;
+		}
 	}
+	public Integer getFreeMaterial() {
+		return freeMaterial;
+	}
+	
+	public void setFreeMaterial(Integer freeMaterial) {
+		this.freeMaterial = freeMaterial;
+	}
+	
+	
 }
 

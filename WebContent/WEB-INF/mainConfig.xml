@@ -31,5 +31,10 @@
 				<bean id="inbuilt_editor" class="com.mine.utilities.InbuiltPropertyEditors"></bean>
 			</list>
 		</property>
+		<property name="customEditors">
+			<map>
+				<entry key="java.time.LocalDate" value="com.mine.utilities.DatePropertyEditor"></entry>
+			</map>
+		</property>
 	</bean>
 </beans>

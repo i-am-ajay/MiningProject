@@ -7,10 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.lang.Double;
 import java.lang.Long;
+import java.sql.Date;
 
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
@@ -258,8 +260,8 @@ public class ReportDAO {
 			query.multiselect(clientRoot.get("name"),subQuery).where(clientRoot.get("clientType").in(generalSubQuery));
 		}
 		else if(selectionCode == 5) {
-			generalSubQuery.select(generalDataRoot).where(builder.equal(generalDataRoot.get("description"),"Journal"));
-			query.multiselect(clientRoot.get("name"),subQuery).where(clientRoot.get("clientType").in(generalSubQuery));
+			/*generalSubQuery.select(generalDataRoot).where(builder.equal(generalDataRoot.get("description"),"Journal"));
+			query.multiselect(clientRoot.get("name"),subQuery).where(clientRoot.get("clientType").in(generalSubQuery));*/
 		}
 		else {
 			generalSubQuery.select(generalDataRoot).where(builder.or(builder.equal(generalDataRoot.get("description"),"Owner"),
@@ -273,6 +275,100 @@ public class ReportDAO {
 		
 		TypedQuery<Object[]> summaryObj = session.createQuery(query);
 		return summaryObj.getResultList();
+	}
+	
+	
+	/**
+	 * Return daywise summary of sales for a given time period.
+	 * @param name
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	
+	@Transactional
+	public List<Object[]> getSummaryOfSale(LocalDate startDate, LocalDate endDate) {
+		Session session = factory.getCurrentSession();
+		CriteriaBuilder builder = session.getCriteriaBuilder();
+		CriteriaQuery<Object[]> query = builder.createQuery(Object[].class);
+		Root<SupplyDetails> from = query.from(SupplyDetails.class);
+		
+		// subquery for bank details
+		Subquery<Double> bankSubquery = query.subquery(Double.class);
+		Root<SupplyDetails> subQueryFrom = bankSubquery.from(SupplyDetails.class);
+		bankSubquery.select(builder.sum(subQueryFrom.get("finalRate"))).where(
+			builder.and(
+				builder.equal(subQueryFrom.get("paymentType"), builder.literal("bank")),
+				builder.equal(subQueryFrom.get("status"), 1),
+				builder.equal(
+					builder.function("DATE",Date.class,subQueryFrom.get("salesDate")),
+					builder.function("DATE",Date.class, from.get("salesDate")
+					)
+				)
+			)
+		);
+		
+		// subquery for credit details;
+		Subquery<Double> creditSubquery = query.subquery(Double.class);
+		Root<SupplyDetails> creditSubQueryFrom = creditSubquery.from(SupplyDetails.class);
+		creditSubquery.select(builder.sum(creditSubQueryFrom.get("finalRate"))).where(
+			builder.and(
+				builder.equal(creditSubQueryFrom.get("paymentType"), builder.literal("credit")),
+				builder.equal(creditSubQueryFrom.get("status"), 1),
+				builder.equal(
+					builder.function("DATE",Date.class,creditSubQueryFrom.get("salesDate")),
+					builder.function("DATE",Date.class, from.get("salesDate")
+					)
+				)
+			)
+		);
+		
+		// subquery to get number of trucks
+		Subquery<Long> truckCounts = query.subquery(Long.class);
+		Root<SupplyDetails> truckCountSubQueryFrom = truckCounts.from(SupplyDetails.class);
+		truckCounts.select(builder.count(truckCountSubQueryFrom.get("vehicle"))).where(
+			builder.and(
+				builder.notEqual(truckCountSubQueryFrom.get("vehicle").get("vehicleType"), "Tralla"),
+				builder.notEqual(truckCountSubQueryFrom.get("vehicle").get("vehicleType"), "Trolly"),
+				builder.equal(truckCountSubQueryFrom.get("status"), 1),
+				builder.equal(
+					builder.function("DATE",Date.class,truckCountSubQueryFrom.get("salesDate")),
+					builder.function("DATE",Date.class, from.get("salesDate")
+					)
+				)
+			)
+		);
+		// subquery to get number of trallies
+		Subquery<Long> trallCounts = query.subquery(Long.class);
+		Root<SupplyDetails> trallCountSubQueryFrom = trallCounts.from(SupplyDetails.class);
+		trallCounts.select(builder.count(trallCountSubQueryFrom.get("vehicle"))).where(
+			builder.and(
+				builder.or(
+						builder.equal(trallCountSubQueryFrom.get("vehicle").get("vehicleType"), "Tralla"),
+						builder.equal(trallCountSubQueryFrom.get("vehicle").get("vehicleType"), "Trolly")
+				),
+				builder.equal(trallCountSubQueryFrom.get("status"), 1),
+				builder.equal(
+					builder.function("DATE",Date.class,trallCountSubQueryFrom.get("salesDate")),
+					builder.function("DATE",Date.class, from.get("salesDate")
+					)
+				)
+			)
+		);
+		
+		query.multiselect(builder.function("DATE", Date.class, from.get("salesDate")),truckCounts,trallCounts,builder.sum(from.get("finalRate")),creditSubquery,bankSubquery)
+				.where(
+					builder.and(
+							builder.equal(from.get("paymentType"), builder.literal("cash")),
+							builder.equal(from.get("status"), 1),
+							builder.between(builder.function("DATE", Date.class, from.get("salesDate")), 
+							Date.valueOf(startDate), Date.valueOf(endDate))
+					)	
+				).groupBy(builder.function("DATE", Date.class, from.get("salesDate")));
+		
+		TypedQuery<Object[]> objQuery = session.createQuery(query);
+		List<Object[]> objList = objQuery.getResultList();
+		return objList;
 	}
 	
 	//-------------------------------- End Sales Report --------------------------------------------
@@ -356,6 +452,27 @@ public class ReportDAO {
 		return new Double[]{openingBalanceAmount , selectedRecordsBalance, debitTotal, selectedRangeCredit};
 	}
 	// ------------------------------ End Ledger DAO ---------------------------------------------
+	
+	// ----------------------------- Journal Report ----------------------------------------------
+	@Transactional
+	public List<Ledger> getJournalReport(LocalDateTime startDate, LocalDateTime endDate) {
+		Session session = factory.getCurrentSession();
+		CriteriaBuilder builder = session.getCriteriaBuilder();
+		CriteriaQuery<Ledger> query = builder.createQuery(Ledger.class); 
+		Root<Ledger> rootFrom = query.from(Ledger.class);
+		
+		query.where(builder.and(builder.like(rootFrom.get("description"), "%journal%"),
+				builder.equal(rootFrom.get("status"),true),
+				builder.between(rootFrom.get("entryDate"), startDate, endDate)));
+		query.orderBy(builder.asc(rootFrom.get("entryDate")));
+		TypedQuery<Ledger> journalQuery = session.createQuery(query);
+		List<Ledger> ledgerQuery = journalQuery.getResultList();
+		return ledgerQuery;
+	}
+	
+	// ---------------------------- End Journal Report -----------------------------------------
+	
+	
 	
 	// ------------------------------ Utility DAO ----------------------------------------
 	@Transactional

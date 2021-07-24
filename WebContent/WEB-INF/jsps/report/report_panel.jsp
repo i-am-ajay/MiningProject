@@ -69,14 +69,30 @@
 					<h5 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Ledger<br/> Summary</h5>
 					<p class="text-center mt-3"><i class="fa fa-file-text-o fa-2x" aria-hidden="true"></i></p>
 				</article>
-				</div
+				</div>
 			</div>
 		</c:if>
-	<div class="row mt-3">
-		
-		</div>
 	</div>
-	</div> 
+	<div class="row mt-3">
+		<div class=" col-sm-12 col-md-2">
+				<div class="card bg-light my-1 py-1" id="daywise_sales">
+				<article class="card-body mx-auto">
+					<h5 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Dayswise<br/> Sales</h5>
+					<p class="text-center mt-3"><i class="fa fa-inr fa-2x" aria-hidden="true"></i></p>
+				</article>
+				</div>
+			</div>	
+			
+		<div class=" col-sm-12 col-md-2">
+				<div class="card bg-light my-1 py-1" id="jr">
+				<article class="card-body mx-auto">
+					<h5 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Jouranl<br/> Report</h5>
+					<p class="text-center mt-3"><i class="fa fa-file-text-o fa-2x" aria-hidden="true"></i></p>
+				</article>
+				</div>
+			</div>
+	</div>
+	</div>
 	
 	<form id="hidden_form" action="home" method="POST">
 		<input type="hidden" name="page" value="admin" />
@@ -127,6 +143,14 @@
 		$("#ledger_summary").click( e=>{
 			window.location.href ="ledger_summary";
 		});
+
+		$("#daywise_sales").click( e=>{
+			window.location.href ="daywise_summary";
+		});
+
+		$("#jr").click(e=>{
+			window.location.href="journal_list";
+		})
 
 		$(document).ready(e => {
 			$("#home_icon").hover( e => {

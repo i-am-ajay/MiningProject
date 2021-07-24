@@ -1,5 +1,6 @@
 package com.mine.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -35,17 +36,17 @@ public class ReportService {
 	 * @return
 	 */
 	//public List<Object[]> combinedSalesReport(int code, String period){
-	public List<Object[]> combinedSalesReport(int code){
-		String period = "Mar-2021";
-		String [] periodArray = period.split("-");
-		String month = periodArray[0];
-		int year = Integer.parseInt(periodArray[1]);
-		YearMonth yearMonth = YearMonth.of(year, Month.valueOf(MonthName.getMonth(month)));
-		LocalDateTime startDate = LocalDateTime.of(yearMonth.atDay(1),LocalTime.MIDNIGHT);
-		LocalDateTime endDate = LocalDateTime.of(yearMonth.atEndOfMonth(),LocalTime.MAX);
-		return reportDAO.salesSummary(code,startDate, endDate);
+	public List<Object[]> combinedSalesReport(int code, LocalDate startDate, LocalDate endDate){
+		LocalDateTime sTime = LocalDateTime.of(startDate, LocalTime.MIN);
+		LocalDateTime eTime = LocalDateTime.of(endDate, LocalTime.MAX);
+		return reportDAO.salesSummary(code,sTime, eTime);
 	}
 	
+	public List<Object[]> daywiseSalesSummary(LocalDate startDate, LocalDate endDate){
+		List<Object[]> salesArray = reportDAO.getSummaryOfSale(startDate, endDate);
+		salesArray = this.processDayswiseArrayForTotalSale(salesArray);
+		return salesArray;
+	}
 	// ----------------------- End Sales Report Service -----------------------
 	
 	
@@ -97,5 +98,57 @@ public class ReportService {
 	// ----------------------- End Cancel Entry --------------------------------
 	
 	
+	// ----------------------- Support Methods ---------------------------------
+	public List<Object[]> processDayswiseArrayForTotalSale(List<Object[]> list){
+		long sumTrucks = 0;
+		long sumTrallas = 0;
+		double sumCash = 0.0;
+		double sumCredit = 0.0;
+		double sumBank = 0.0;
+		for(Object[] obj : list) {
+			if(obj[1] != null)
+				sumTrucks += (long)obj[1];
+			if(obj[2] != null)
+				sumTrallas += (long)obj[2];
+			if(obj[3] != null)
+				sumCash += (double)obj[3];
+			if(obj[4] != null)
+				sumCredit += (double)obj[4];
+			if(obj[5] != null)
+				sumBank += (double)obj[5];
+		}
+		String strSumCash =  BigDecimal.valueOf(sumCash).toPlainString() ;
+		String strSumCredit =  new BigDecimal(sumCredit).toPlainString();
+		String strSumBank =  new BigDecimal(sumBank).toPlainString();
+		Object [] totalArray = new Object[] {"Total",sumTrucks,sumTrallas,strSumCash,strSumCredit,strSumBank};
+		list.add(totalArray);
+		return list;
+	}
+	
+	// ----------------------- End Support Methods ---------------------------------------------
+	
+	// ---------------------- Journal Service --------------------------------------------------
+	public List<Ledger> getJournalReportService(LocalDate startDate, LocalDate endDate){
+		LocalDateTime startDateTime = null;
+		LocalDateTime endDateTime = null;
+		
+		if(startDate == null) {
+			startDateTime = LocalDateTime.now();
+		}
+		else {
+			startDateTime = LocalDateTime.of(startDate, LocalTime.of(0, 0));
+		}
+		
+		if(endDate == null) {
+			endDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.of(11, 59));
+		}
+		else {
+			endDateTime = LocalDateTime.of(endDate, LocalTime.of(11, 59));
+		}
+		
+		return reportDAO.getJournalReport(startDateTime, endDateTime);
+	}
+	
+	// ---------------------- End Journal Service ----------------------------------------------
 	
 }

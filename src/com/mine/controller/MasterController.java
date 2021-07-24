@@ -337,4 +337,9 @@ public class MasterController {
 	}*/
 	
 	//----------------------------------- End Administrative Controls -----------------------------
+	
+	//---------------------------------- Support Code ---------------------------------------------
+	//Add a row for Self in the database if there isn't a row already.
+	
+	//---------------------------------- End Support Code -----------------------------------------
 }
