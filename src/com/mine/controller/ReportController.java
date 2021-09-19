@@ -81,7 +81,7 @@ public class ReportController {
 			LocalDate sDate = startDate;
 			LocalDate eDate = endDate;
 			if(startDate == null) {
-				sDate = LocalDate.EPOCH;
+				sDate = LocalDate.MIN;
 			}
 			if(endDate == null) {
 				eDate = LocalDate.now();
