@@ -12,8 +12,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.stereotype.Component;
 
-@Component
 @Entity
+@Component
 public class Fuel {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

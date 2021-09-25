@@ -22,9 +22,10 @@ public class FuelDistribution {
 	@GeneratedValue
 	private int id;
 	@Column(name="entry_type")
-	private String entryType;
-	@Column(name="qty")
-	private String qty;
+	private String entryType; // fuel recieved or distributed
+	
+	@Column(name="fuel_qty")
+	private double fuelQty;
 	
 	@OneToOne()
 	@JoinColumn(name="machine_id")
@@ -33,6 +34,9 @@ public class FuelDistribution {
 	@Column(name="entry_date")
 	@DateTimeFormat(iso=ISO.DATE)
 	private LocalDate entryDate;
+	
+	@Column
+	private String remarks;
 
 	public int getId() {
 		return id;
@@ -50,12 +54,12 @@ public class FuelDistribution {
 		this.entryType = entryType;
 	}
 
-	public String getQty() {
-		return qty;
+	public double getFuelQty() {
+		return fuelQty;
 	}
 
-	public void setQty(String qty) {
-		this.qty = qty;
+	public void setFuelQty(double qty) {
+		this.fuelQty = qty;
 	}
 
 	public Machine getMachineName() {
@@ -72,5 +76,13 @@ public class FuelDistribution {
 
 	public void setEntryDate(LocalDate entryDate) {
 		this.entryDate = entryDate;
+	}
+
+	public String getRemarks() {
+		return remarks;
+	}
+
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
 	}
 }
