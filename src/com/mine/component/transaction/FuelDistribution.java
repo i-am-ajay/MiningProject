@@ -27,6 +27,15 @@ public class FuelDistribution {
 	@Column(name="fuel_qty")
 	private double fuelQty;
 	
+	@Column(name="current_units")
+	private double currentUnits;
+	
+	@Column(name="last_units")
+	private double lastUnits;
+	
+	@Column(name="hrs")
+	private double hrs;
+	
 	@OneToOne()
 	@JoinColumn(name="machine_id")
 	private Machine machineName;
@@ -84,5 +93,29 @@ public class FuelDistribution {
 
 	public void setRemarks(String remarks) {
 		this.remarks = remarks;
+	}
+
+	public double getCurrentUnits() {
+		return currentUnits;
+	}
+
+	public void setCurrentUnits(double currentUnits) {
+		this.currentUnits = currentUnits;
+	}
+
+	public double getLastUnits() {
+		return lastUnits;
+	}
+
+	public void setLastUnits(double lastUnits) {
+		this.lastUnits = lastUnits;
+	}
+
+	public double getHrs() {
+		return hrs;
+	}
+
+	public void setHrs(double hrs) {
+		this.hrs = hrs;
 	}
 }

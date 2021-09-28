@@ -63,6 +63,7 @@
 					      		<select id="type_id" class="form-control form-control-sm" name="type">
 					      			<option value="income">Income</option>
 					      			<option value="expense">Expense</option>
+									<option value="purchase">Purchase</option>
 					      		</select>
 					    	</div>
 					    </div>
@@ -72,7 +73,7 @@
 					      		<select id="e_type_" class="form-control form-control-sm" name="expense_type">
 					      			<option value="cash_expense">Cash</option>
 					      			<option value="bank">Bank</option>
-					      			<!-- <option id="credit_id" value="credit_expense">Credit</option> -->
+					      			<option id="credit_id" value="credit_expense">Credit</option>
 					      		</select>
 					    	</div>
 					    </div>

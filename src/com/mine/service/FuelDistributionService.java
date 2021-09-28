@@ -16,10 +16,22 @@ public class FuelDistributionService {
 	@Autowired
 	FuelDistributionDao fuelDao;
 	
+	/*------------------- Machine Service ------------------------------*/
 	public Machine getMachine(int id) {
+		System.out.println("Machine Id "+id);
 		return fuelDao.getMachine(id);
 	}
 	
+	public Machine getMachine(String name) {
+		return fuelDao.getMachine(name);
+	}
+	
+	public void saveMachine(Machine machine) {
+		fuelDao.saveMachine(machine);
+	}
+	/*-------------------- End Machine Service -------------------------*/
+	
+	/*-------------------- Fuel Service --------------------------------*/
 	public void insertFuelRecord(FuelDistribution dist) {
 		fuelDao.insertFuelRecord(dist);
 	}
@@ -38,4 +50,6 @@ public class FuelDistributionService {
 	public double getTotalFuel() {
 		return fuelDao.getTotalFuel().getQty();
 	}
+	/*-------------------------- End Fuel Service --------------------------- */
+	
 }

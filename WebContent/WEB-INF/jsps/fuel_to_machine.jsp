@@ -21,13 +21,13 @@
 
 		<div class="container p-2 m-auto">
 		<div class="row">
-			<h4 class="border-bottom border-danger m-3 pb-2 display-4 col-8" id="form_title">Add Fuel</h4>
+			<h4 class="border-bottom border-danger m-3 pb-2 display-4 col-8" id="form_title">Distribute Fuel</h4>
 			<div class="col-2 align-right ml-auto pl-5 mt-4 mr-5"><i id="home_icon" class="fa fa-home fa-2x" aria-hidden="true"></i></div>
 			<div class="col-1"><a class="btn btn-danger btn-sm mt-4" style="font-size: .6em;" href="${pageContext.request.contextPath}/logout">Logout</a></div>
 		</div>
 		<!-- Success msg -->
 		<c:if test="${status.equalsIgnoreCase('success')}">
-			<div class="alert alert-success alert-dismissible fade show w-50 mx-auto" role="alert"><small>Fuel Given to Machine.</small><button type="button" class="close" data-dismiss="alert" aria-label="Close">
+			<div class="alert alert-success alert-dismissible fade show w-50 mx-auto" role="alert"><small>Fuel Stock Up.</small><button type="button" class="close" data-dismiss="alert" aria-label="Close">
     			<span aria-hidden="true">&times;</span>
   			</button></div>
 		</c:if>
@@ -38,13 +38,13 @@
   			</div>
 		</c:if>
 		<c:if test="${status.equalsIgnoreCase('fails')}">
-			<div class="alert alert-danger alert-dismissible fade show w-50 mx-auto" role="alert"><small>There is some error.</small><button type="button" class="close" data-dismiss="alert" aria-label="Close">
+			<div class="alert alert-danger alert-dismissible fade show w-50 mx-auto" role="alert"><small>There is some error in Fuel entry.</small><button type="button" class="close" data-dismiss="alert" aria-label="Close">
     			<span aria-hidden="true">&times;</span>
   				</button>
   			</div>
 		</c:if>
 		
-		<f:form method="POST" modelAttribute="fuel_dist_obj" action="save_distributed_fuel">
+		<f:form method="POST" modelAttribute="fuel_dist_obj" action="save_fuel_record">
 		   <!-- Patient Vitals -->
 		   <!--  <h4 class="border-bottom m-3 text-muted pb-2" id="form_title">Patient Report Card</h4>-->
 		   <!-- Card Vitals -->
@@ -57,6 +57,7 @@
   							<div class="form-group">
 					      		<label class="font-weight-bold">Fuel On Hand</label>
 					      		<input class="form-control form-control-sm not_eligible" id="total_qty" value="${total_qty}" readonly/>
+					      		<input type="hidden" name="page" value="fuel_to_machine"/>
 					    	</div>
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Choose Date</label>
@@ -71,9 +72,8 @@
 					      		</f:select>
 					    	</div>
 					    	<div class="form-group">
-					      		<label class="font-weight-bold">Machine Name</label>
-					      		<f:select class="form-control form-control-sm" id="machine_id" placeholder="Enter Material Type" path="machineName" >
-					      			<f:option value=""></f:option>
+					      		<label class="font-weight-bold">Choose Machine</label>
+					      		<f:select class="form-control form-control-sm" id="machine_type" placeholder="Enter Material Type" path="machineName" >
 					      			<c:forEach var="item" items="${machine_map}">
 					      				<f:option value="${item.key}">${item.value}</f:option>
 					      			</c:forEach>
@@ -81,19 +81,7 @@
 					    	</div>
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Fuel Quantity (Ltrs)</label>
-					      		<f:input type="number" class="form-control form-control-sm not_eligible" id="fuel_qty" path="fuelQty"/>
-					    	</div>
-					    	<div class="form-group">
-					      		<label class="font-weight-bold">Last Unit</label>
-					      		<f:input type="number" class="form-control form-control-sm not_eligible" id="last_unit" path="lastUnits" readonly="true"/>
-					    	</div>
-					    	<div class="form-group">
-					      		<label class="font-weight-bold">Current Unit</label>
-					      		<f:input type="number" class="form-control form-control-sm not_eligible" id="current_unit" path="currentUnits" />
-					    	</div>
-					    	<div class="form-group">
-					      		<label class="font-weight-bold">No of Hours</label>
-					      		<f:input type="number" class="form-control form-control-sm not_eligible" id="hrs" path="hrs" readonly="true"/>
+					      		<f:input type="number" class="form-control form-control-sm not_eligible" id="fuel_qty" path="fuelQty" />
 					    	</div>
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Remarks (If Any)</label>
@@ -129,36 +117,6 @@
 			$("#logout").hide();
 			}
 		);
-
-	// ---------------------------------- Page methods -----------------------------------
-	$("#current_unit").focusout(e=>{
-		let lastUnit = $("#last_unit").val();
-		let currentUnit = $("#current_unit").val();
-		let hrs = (currentUnit - lastUnit);
-		$("#hrs").val(hrs);
-	})
-	
-	// ---------------------------------- End Page methods -------------------------------
-
-	/*----------------------------------- Ajax method calls -----------------------------*/
-	// Return last unit of selected machine
-		$("#machine_id").change(e=>{
-			$.ajax({
-				type:'POST',
-				url:"${home}last_unit",
-				data:{"machine_id":$("#machine_id").val()},
-				success:function(result,status,xhr){
-					if(result){
-						console.log(result);
-						let jsonObj = JSON.parse(result);
-						$("#last_unit").val(jsonObj.lastUnit);
-					}
-				},
-				error:function(result,status,xhr){
-					
-				}
-			})
-		})
 	</script>
 </body>
 </html>

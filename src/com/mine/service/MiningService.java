@@ -46,6 +46,10 @@ public class MiningService {
 		return map;
 	}
 	
+	public Client getClient(int clientId) {
+		return dao.getClient(clientId);
+	}
+	
 	/*public Map<Integer,String> getPartyList(){
 		List<Client> clientList;
 	}*/
@@ -236,7 +240,7 @@ public class MiningService {
 				else {
 					dao.addDepositeOrExpense(
 							party.getClientId(), amount, "CreditExpense", 
-							null, null,expenseCategory,null,remarks, user, date);
+							remarks, remarks,expenseCategory,null,remarks, user, date);
 				}
 			}
 		}

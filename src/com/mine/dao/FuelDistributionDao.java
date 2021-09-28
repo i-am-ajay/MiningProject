@@ -28,7 +28,7 @@ public class FuelDistributionDao {
 	 */
 	@Autowired
 	SessionFactory factory;
-	
+	// --------------------------------- Fuel Related Methods ---------------------------------------------
 	@Transactional
 	public void insertFuelRecord(FuelDistribution distribution) {
 		Session session = factory.getCurrentSession();
@@ -51,14 +51,32 @@ public class FuelDistributionDao {
 			fuel = new Fuel();
 			fuel.setEntryDate(LocalDate.now());
 			fuel.setQty(0);
+			session.save(fuel);
 		}
 		return fuel;
 	}
+	//--------------------------------------- End Fuel Related Methods -------------------------------------------------
 	
+	//--------------------------------------- Machine Methods ------------------------------------------------------
 	@Transactional
 	public Machine getMachine(int machineId) {
 		Session session = factory.getCurrentSession();
 		return session.get(Machine.class, machineId); 
+	}
+	
+	@Transactional
+	public Machine getMachine(String name) {
+		Machine machine = null;
+		Session session = factory.getCurrentSession();
+		TypedQuery<Machine> machineQuery = session.createQuery("from Machine m WHERE m.name= :name",Machine.class);
+		machineQuery.setParameter("name", name);
+		try {
+			machine = machineQuery.getSingleResult();
+		}
+		catch(Exception ex) {
+			ex.printStackTrace();
+		}
+		return machine;
 	}
 	
 	
@@ -73,5 +91,14 @@ public class FuelDistributionDao {
 		TypedQuery<Machine> machineQuery = session.createQuery(machineCriteria);
 		return machineQuery.getResultList();
 	}
+	
+	@Transactional
+	public void saveMachine(Machine machine) {
+		Session session = factory.getCurrentSession();
+		System.out.println(machine.toString());
+		session.saveOrUpdate(machine);
+	}
+	
+	// ----------------------------------------- End Machine Methods ---------------------------------------------------------
 	
 }

@@ -87,12 +87,6 @@
 					      		<input type="date" id="date_" class="form-control form-control-sm" name="entry_date" min="${minDate }" max="${maxDate}"/>
 					    	</div>
 					    </div>
-					   <!--  <div class="col-1">
-					    	<div class="form-check">
-					      		<br/>
-					      		<input type="checkbox" id="enable_date" class="form-check-input align-middle mt-3"/>
-					    	</div>
-					    </div> -->
 					    </c:if>
 				 	</div>
 				 	<input type="submit" id="save_btn" class="btn btn-sm btn-success btn-block w-50 mx-auto disable_button" value="submit"/>

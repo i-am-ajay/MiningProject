@@ -57,6 +57,7 @@
   							<div class="form-group">
 					      		<label class="font-weight-bold">Fuel On Hand</label>
 					      		<input class="form-control form-control-sm not_eligible" id="total_qty" value="${total_qty}" readonly/>
+					      		<input type="hidden" name="page" value="add_fuel" />
 					    	</div>
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Choose Date</label>
@@ -108,6 +109,10 @@
 			$("#logout").hide();
 			}
 		);
+
+		$(document).ready(e =>{
+			$("#entry_type").find('option[value="Fuel Received"]').attr("selected",true);
+		});
 	</script>
 </body>
 </html>

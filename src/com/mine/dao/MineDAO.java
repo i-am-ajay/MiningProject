@@ -257,6 +257,12 @@ public class MineDAO {
 	}
 	
 	@Transactional
+	public Client getClient(int clientId) {
+		Session session = factory.getCurrentSession();
+		return session.get(Client.class, clientId);
+	}
+	
+	@Transactional
 	public List<Client> getClietList(int companyId, int clientTypeId){
 		return getClientList(companyId, clientTypeId, true);
 	}
@@ -280,6 +286,9 @@ public class MineDAO {
 			predicateList.add(builder.equal(from.get("clientType"), clientType));
 			Predicate[] predicateArray = predicateList.toArray(new Predicate[predicateList.size()]);
 			criteria.where(predicateArray);
+		}
+		else if(clientTypeId == 46) {
+			criteria.where(builder.equal(from.get("clientType"), clientTypeId));
 		}
 		else if(allClients == false) {
 			generalDataSubQuery = criteria.subquery(GeneralData.class);
