@@ -84,9 +84,18 @@
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Vendor</label>
 					      		<f:select class="form-control form-control-sm" id="vendor_id" placeholder="Enter Material Type" path="vendorId" >
+					      			<f:option value=""></f:option>
 					      			<c:forEach var="item" items="${vendor_list}">
 					      				<f:option value="${item.key}">${item.value}</f:option>
 					      			</c:forEach>
+					      		</f:select>
+					    	</div>
+					    	<div class="form-group">
+					      		<label class="font-weight-bold">Machine Type</label>
+					      		<f:select class="form-control form-control-sm" id="vendor_id" placeholder="Enter Material Type" path="vendorId" >
+					      			<f:option value=""></f:option>
+					      			<f:option value="Fixed Cost">Fixed Cost</f:option>
+					      			<f:option value="Variable Cost">Variable Cost</f:option>
 					      		</f:select>
 					    	</div>
 					    	<div class="form-group">

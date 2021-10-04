@@ -19,6 +19,7 @@ import org.springframework.stereotype.Repository;
 import com.mine.component.master.Fuel;
 import com.mine.component.master.Machine;
 import com.mine.component.transaction.FuelDistribution;
+import com.mine.component.transaction.Machine24HrsUnits;
 
 @Repository
 public class FuelDistributionDao {
@@ -35,6 +36,9 @@ public class FuelDistributionDao {
 		Fuel fuel = getTotalFuel();
 		fuel.setQty(fuel.getQty()+distribution.getFuelQty());
 		session.update(fuel);
+		Machine machine = distribution.getMachineName();
+		machine.setLastUnitForFuel(distribution.getCurrentUnits());
+		session.update(machine);
 		session.save(distribution);
 	}
 	
@@ -81,13 +85,12 @@ public class FuelDistributionDao {
 	
 	
 	@Transactional
-	public List<Machine> machineList(){
+	public List<Machine> machineList(LocalDate date){
 		Session session = factory.getCurrentSession();
 		CriteriaBuilder builder = session.getCriteriaBuilder();
 		CriteriaQuery<Machine> machineCriteria = builder.createQuery(Machine.class);
 		Root<Machine> fromMachine = machineCriteria.from(Machine.class);
-		machineCriteria.where(builder.isNull(fromMachine.get("endDate")));
-		
+		machineCriteria.where(builder.and(builder.lessThanOrEqualTo(fromMachine.get("entryDate"), date),builder.isNull(fromMachine.get("endDate"))));
 		TypedQuery<Machine> machineQuery = session.createQuery(machineCriteria);
 		return machineQuery.getResultList();
 	}
@@ -101,4 +104,11 @@ public class FuelDistributionDao {
 	
 	// ----------------------------------------- End Machine Methods ---------------------------------------------------------
 	
+	// ----------------------------------------- Enter 24 hrs List -----------------------------------------------------------
+	
+	public List<Machine24HrsUnits> save24HrsList() {
+		return null;
+	}
+	
+	// ------------------------------------------ End 24 hrs unit list -------------------------------------------------------
 }

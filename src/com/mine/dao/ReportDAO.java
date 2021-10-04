@@ -214,6 +214,7 @@ public class ReportDAO {
 	@Transactional
 	public List<Object[]> salesSummary(int selectionCode,LocalDateTime sDate, LocalDateTime eDate){
 		Session session = factory.getCurrentSession();
+		
 		CriteriaBuilder builder = session.getCriteriaBuilder();
 		CriteriaQuery<Object[]> query = builder.createQuery(Object[].class);
 		Root<Client> clientRoot = query.from(Client.class);

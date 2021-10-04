@@ -74,6 +74,14 @@
 			</article>
 			</div>
 		</div>
+		<div class=" col-sm-12 col-md-2">
+			<div class="card bg-light my-1 py-1" id="fuel">
+			<article class="card-body mx-auto">
+				<h5 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Fuel<br/>Managment</h5>
+				<p class="text-center mt-3"><i class="fa fa-file-text-o fa-2x" aria-hidden="true"></i></p>
+			</article>
+			</div>
+		</div>
 		<c:if test="${role.equals('Admin')}">
 		<div class=" col-sm-12 col-md-2">
 			<div class="card bg-light my-1 py-1" id="journal">
@@ -170,6 +178,10 @@
 
 		$("#rates").click( e=>{
 			window.location.href ="add_rate";
+		});
+
+		$("#fuel").click( e=>{
+			window.location.href ="fuel_panel";
 		});
 		
 		$("#sales").click( e=>{

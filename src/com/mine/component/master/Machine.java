@@ -24,6 +24,9 @@ public class Machine {
 	@Column(name="name")
 	private String name;
 	
+	@Column(name="machine_type")
+	private String machineType;
+	
 	@Column(name="machine_rate")
 	private double machineRate=0.0;
 	

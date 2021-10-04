@@ -1,5 +1,13 @@
 package com.mine.controller;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
+
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,7 +24,9 @@ import com.ajay.customeditor.MachinePropertyEditor;
 import com.ajay.customeditor.VendorIdPropertyEditor;
 import com.mine.component.master.Client;
 import com.mine.component.master.Machine;
+import com.mine.component.master.User;
 import com.mine.component.transaction.FuelDistribution;
+import com.mine.component.transaction.Machine24HrsUnits;
 import com.mine.service.FuelDistributionService;
 import com.mine.service.MiningService;
 
@@ -43,18 +53,13 @@ public class FuleDistributionController{
 	private String addFuelStatus;
 	
 	// --------------------------------- Machine Controls --------------------------------------------
-	@RequestMapping(value="add_fuel")
-	public String showFuelDistributionPage(Model model) {
-		model.addAttribute("status",addFuelStatus);
-		model.addAttribute("fuel_dist_obj",dist);
-		model.addAttribute("machine_map",service.getMachineMap());
-		model.addAttribute("entry_type",forLookupService.getLookupMap("FuelEntryType"));
-		model.addAttribute("total_qty",service.getTotalFuel());
-		addFuelStatus = null;
-		return "add_fuel";
-	}
+	
 	@RequestMapping("add_machine")
-	public String addMachine(Model model) {
+	public String addMachine(Model model, HttpSession session) {
+		if(session.getAttribute("user") == null){
+			return "login";
+		}
+		User user = (User)session.getAttribute("user");
 		model.addAttribute("machine",machine);
 		model.addAttribute("status",machineCreationStatus);
 		model.addAttribute("vendor_list",miningService.getClientList(1, 46));
@@ -116,11 +121,30 @@ public class FuleDistributionController{
 		return "distribute_fuel_to_machines";
 	}*/
 	// --------------------------------- Fuel Controls ---------------------------------------------------
-	@RequestMapping("distribute_fuel")
-	public String distribute_fuel(Model model) {
+	@RequestMapping(value="add_fuel")
+	public String showFuelDistributionPage(Model model, HttpSession session) {
+		if(session.getAttribute("user") == null){
+			return "login";
+		}
+		User user = (User)session.getAttribute("user");
 		model.addAttribute("status",addFuelStatus);
 		model.addAttribute("fuel_dist_obj",dist);
-		model.addAttribute("machine_map",service.getMachineMap());
+		model.addAttribute("machine_map",service.getMachineMap(LocalDate.now(),true));
+		model.addAttribute("entry_type",forLookupService.getLookupMap("FuelEntryType"));
+		model.addAttribute("total_qty",service.getTotalFuel());
+		addFuelStatus = null;
+		return "add_fuel";
+	}
+	
+	@RequestMapping("distribute_fuel")
+	public String distribute_fuel(Model model, HttpSession session) {
+		if(session.getAttribute("user") == null){
+			return "login";
+		}
+		User user = (User)session.getAttribute("user");
+		model.addAttribute("status",addFuelStatus);
+		model.addAttribute("fuel_dist_obj",dist);
+		model.addAttribute("machine_map",service.getMachineMap(LocalDate.now(),true));
 		model.addAttribute("entry_type",forLookupService.getLookupMap("FuelEntryType"));
 		model.addAttribute("total_qty",service.getTotalFuel());
 		addFuelStatus = null;
@@ -172,5 +196,36 @@ public class FuleDistributionController{
 	
 	// --------------------------- End Property Editor Control ---------------------------------------
 	
+	// --------------------------- Fuel Managment Screen ---------------------------------------------
+	
+	@RequestMapping("fuel_panel")
+	public String fuelManagment(Model model, HttpSession session) {
+		if(session.getAttribute("user") == null){
+			return "login";
+		}
+		User user = (User)session.getAttribute("user");
+		return "fuel_panel";
+	}
+	
+	// --------------------------- End Fuel Managment Scree ------------------------------------------
+	
+	// --------------------------- 24 hrs unit managment ---------------------------------------------
+	@RequestMapping("units_24_hrs")
+	public String unit24hrs(Model model, @RequestParam(name="unit_date",required=false) LocalDate date) {
+		if(date == null){
+			date = LocalDate.now();
+		}
+		Map<Integer,Object> activeMachine = service.getMachineMap(date,false);
+		Map<Integer,Machine24HrsUnits> unitMap  = new HashMap<>();
+		for(int key : activeMachine.keySet()) {
+			Machine24HrsUnits machineUnits = new Machine24HrsUnits();
+			machineUnits.setMachineId((Machine)activeMachine.get(key));
+			unitMap.put(key, new Machine24HrsUnits());
+		}
+		model.addAttribute("machines_unit",unitMap);
+		return "units24hrs";
+	}
+	
+	// -------------------------- End 24 hrs unit managment -------------------------------------------
 	
 }
