@@ -3,21 +3,24 @@ package com.mine.component.transaction;
 import java.time.LocalDate;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 
 import com.mine.component.master.Machine;
-
+@Entity
+@Table(name="machine_24hrs_unit")
 public class Machine24HrsUnits {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int id;
+	private Integer id;
 	
 	@DateTimeFormat(iso=ISO.DATE)
 	private LocalDate unitDate;
@@ -35,11 +38,11 @@ public class Machine24HrsUnits {
 	@JoinColumn(name="machine_id")
 	private Machine machineId;
 
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

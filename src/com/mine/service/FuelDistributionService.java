@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.mine.component.master.Machine;
 import com.mine.component.transaction.FuelDistribution;
 import com.mine.component.transaction.Machine24HrsUnits;
+import com.mine.component.transaction.UnitContainer;
 import com.mine.dao.FuelDistributionDao;
 
 @Service("fuel-dist")
@@ -42,6 +43,7 @@ public class FuelDistributionService {
 	public Map<Integer,Object> getMachineMap(LocalDate date, boolean machineDes){
 		Map<Integer,Object> machineMap = new HashMap<>();
 		List<Machine> list = fuelDao.machineList(date);
+		System.out.println("Service Map Size "+list.size());
 		if(list != null && list.size() > 0) {
 			list.forEach(machine ->{
 				machineMap.put(machine.getId(), machineDes== true? machine.getName(): machine);
@@ -57,8 +59,18 @@ public class FuelDistributionService {
 	/*-------------------------- End Fuel Service --------------------------- */
 	
 	/*-------------------------- Capture 24 hrs unit ------------------------*/
-	public List<Machine24HrsUnits> capture24hrsUnit() {
-		return null;
+	public void capture24hrsUnit(UnitContainer container, LocalDate date) {
+		fuelDao.save24HrsList(container, date);
+	}
+	
+	public Map<Integer,Machine24HrsUnits> get24hrsUnitMap(LocalDate date) {
+		List<Machine24HrsUnits> m24HrsUnitList = fuelDao.get24HrsList(date);
+		Map<Integer,Machine24HrsUnits> map24HrsUnits = new HashMap<>();
+		for(Machine24HrsUnits machineUnits : m24HrsUnitList){
+			int machineId = machineUnits.getMachineId().getId();
+			map24HrsUnits.put(machineId, machineUnits);
+		}
+		return map24HrsUnits;
 	}
 	/*-------------------------- End Capture 24 hrs unit ---------------------*/
 }
