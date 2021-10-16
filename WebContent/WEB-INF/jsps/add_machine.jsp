@@ -92,7 +92,7 @@
 					    	</div>
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Machine Type</label>
-					      		<f:select class="form-control form-control-sm" id="vendor_id" placeholder="Enter Material Type" path="vendorId" >
+					      		<f:select class="form-control form-control-sm" id="vendor_id" placeholder="Enter Material Type" path="machineType" >
 					      			<f:option value=""></f:option>
 					      			<f:option value="Fixed Cost">Fixed Cost</f:option>
 					      			<f:option value="Variable Cost">Variable Cost</f:option>

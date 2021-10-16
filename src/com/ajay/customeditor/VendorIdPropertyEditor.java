@@ -13,7 +13,7 @@ public class VendorIdPropertyEditor extends PropertyEditorSupport{
 	}
 	@Override
 	public void setAsText(String vendorId) throws IllegalArgumentException{
-		System.out.println(vendorId);
+		System.out.println("Vendor Id"+vendorId);
 		int id = Integer.parseInt(vendorId);
 		Client client = service.getClient(id);
 		setValue(client);

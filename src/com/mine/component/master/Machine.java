@@ -115,6 +115,12 @@ public class Machine {
 		this.vendorId = vendorId;
 	}
 	
+	public String getMachineType() {
+		return machineType;
+	}
+	public void setMachineType(String machineType) {
+		this.machineType = machineType;
+	}
 	public String toString() {
 		return "id"+id+" machineRate:"+machineRate+"fixedHours:"+fixedHours+"entryDate:"+entryDate+"lastUnitForFuel:"+lastUnitForFuel+"last24HrsUnit"+last24HrsUnit;
 	}

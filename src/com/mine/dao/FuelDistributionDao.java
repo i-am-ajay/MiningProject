@@ -37,8 +37,10 @@ public class FuelDistributionDao {
 		fuel.setQty(fuel.getQty()+distribution.getFuelQty());
 		session.update(fuel);
 		Machine machine = distribution.getMachineName();
-		machine.setLastUnitForFuel(distribution.getCurrentUnits());
-		session.update(machine);
+		if(machine != null) {
+			machine.setLastUnitForFuel(distribution.getCurrentUnits());
+			session.update(machine);
+		}
 		session.save(distribution);
 	}
 	

@@ -46,6 +46,14 @@
 			</article>
 			</div>
 		</div>
+		<div class=" col-sm-12 col-md-2">
+			<div class="card bg-light my-1 py-1" id="24hrs_unit">
+			<article class="card-body mx-auto">
+				<h5 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Manage<br/>24 Hrs Unit</h5>
+				<p class="text-center mt-3"><i class="fa fa-user fa-2x" aria-hidden="true"></i></p>
+			</article>
+			</div>
+		</div>
 	</div>
 	<form id="hidden_form" action="home" method="POST">
 		<input type="hidden" name="page" value="admin" />
@@ -100,7 +108,9 @@
 		$("#daywise_sales").click( e=>{
 			window.location.href ="daywise_summary";
 		});
-
+		$("#24hrs_unit").click( e=>{
+			window.location.href ="units_24_hrs";
+		});
 		$("#jr").click(e=>{
 			window.location.href="journal_list";
 		})
