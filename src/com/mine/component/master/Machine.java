@@ -40,10 +40,10 @@ public class Machine {
 	private LocalDate entryDate;
 	
 	@Column(name="last_unit_for_fuel")
-	private double lastUnitForFuel=0.0;
+	private double lastUnitForFuel;
 	
 	@Column(name="last_24hrs_unit")
-	private double last24HrsUnit=0.0;
+	private double last24HrsUnit;
 	
 	@ManyToOne()
 	@JoinColumn(name="vendor_id")

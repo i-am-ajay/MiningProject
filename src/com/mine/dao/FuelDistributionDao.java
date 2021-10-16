@@ -1,6 +1,7 @@
 package com.mine.dao;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +21,7 @@ import com.mine.component.master.Fuel;
 import com.mine.component.master.Machine;
 import com.mine.component.transaction.FuelDistribution;
 import com.mine.component.transaction.Machine24HrsUnits;
+import com.mine.component.transaction.UnitContainer;
 
 @Repository
 public class FuelDistributionDao {
@@ -108,8 +110,28 @@ public class FuelDistributionDao {
 	
 	// ----------------------------------------- Enter 24 hrs List -----------------------------------------------------------
 	
-	public List<Machine24HrsUnits> save24HrsList() {
-		return null;
+	@Transactional
+	public void save24HrsList(UnitContainer container,LocalDate date) {
+		List<Machine24HrsUnits> unitList = container.getMachineList();
+		
+		Session session = factory.getCurrentSession();
+		for(Machine24HrsUnits machineUnit : unitList){
+			machineUnit.setUnitDate(date);
+			Machine machine = this.getMachine(machineUnit.getMachineId().getId());
+			machine.setLast24HrsUnit(machineUnit.getCurrentUnit());
+			session.update(machine);
+			machineUnit.setMachineId(machine);
+			System.out.println("DAO machine ID"+machineUnit.getId());
+			session.saveOrUpdate(machineUnit);
+		}
+	}
+	
+	@Transactional
+	public List<Machine24HrsUnits> get24HrsList(LocalDate date) {
+		Session session = factory.getCurrentSession();
+		TypedQuery<Machine24HrsUnits> query = session.createQuery("FROM Machine24HrsUnits WHERE unitDate =: unitDate",Machine24HrsUnits.class);
+		query.setParameter("unitDate",date);
+		return query.getResultList();
 	}
 	
 	// ------------------------------------------ End 24 hrs unit list -------------------------------------------------------

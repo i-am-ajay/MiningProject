@@ -1,6 +1,7 @@
 package com.mine.controller;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +28,7 @@ import com.mine.component.master.Machine;
 import com.mine.component.master.User;
 import com.mine.component.transaction.FuelDistribution;
 import com.mine.component.transaction.Machine24HrsUnits;
+import com.mine.component.transaction.UnitContainer;
 import com.mine.service.FuelDistributionService;
 import com.mine.service.MiningService;
 
@@ -46,6 +48,9 @@ public class FuleDistributionController{
 	
 	@Autowired
 	private Machine machine;
+	
+	@Autowired
+	private UnitContainer container;
 	
 	private String page;
 	
@@ -211,19 +216,58 @@ public class FuleDistributionController{
 	
 	// --------------------------- 24 hrs unit managment ---------------------------------------------
 	@RequestMapping("units_24_hrs")
-	public String unit24hrs(Model model, @RequestParam(name="unit_date",required=false) LocalDate date) {
-		if(date == null){
+	public String unit24hrs(Model model, @RequestParam(name="unit_date",required=false) String strDate) {
+		container.getMachineList().clear();
+		LocalDate date = null;
+		System.out.println("Date"+strDate);
+		if(strDate == null){
 			date = LocalDate.now();
 		}
-		Map<Integer,Object> activeMachine = service.getMachineMap(date,false);
-		Map<Integer,Machine24HrsUnits> unitMap  = new HashMap<>();
-		for(int key : activeMachine.keySet()) {
-			Machine24HrsUnits machineUnits = new Machine24HrsUnits();
-			machineUnits.setMachineId((Machine)activeMachine.get(key));
-			unitMap.put(key, new Machine24HrsUnits());
+		else {
+			date = LocalDate.parse(strDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 		}
-		model.addAttribute("machines_unit",unitMap);
-		return "units24hrs";
+		System.out.println("Parsed Date"+date);
+		Map<Integer,Object> activeMachine = service.getMachineMap(date,false);
+		Map<Integer,Machine24HrsUnits> existingUnitMap = service.get24hrsUnitMap(date);
+		Machine24HrsUnits machineUnits = null;
+		for(int key : activeMachine.keySet()){
+			if(existingUnitMap != null && existingUnitMap.get(key)!=null) {
+				machineUnits = existingUnitMap.get(key);
+				System.out.println(machineUnits.getMachineId().getId());
+			}
+			else {
+				machineUnits = new Machine24HrsUnits();
+				Machine machine = (Machine)activeMachine.get(key);
+				machineUnits.setLastUnit(machine.getLast24HrsUnit());
+				machineUnits.setMachineId(machine);
+			}
+			container.getMachineList().add(machineUnits);
+		}
+		model.addAttribute("candidate_machines",container);
+		model.addAttribute("unit_date",date);
+		return "units_24_hrs";
+	}
+	
+	@RequestMapping("save_units_24_hrs")
+	public String save24hrsUnit(@ModelAttribute("candidate_machines") UnitContainer container,@RequestParam(value="u_date", required=false) String strDate,BindingResult bindingResult) {
+		System.out.println("date at save time"+strDate);
+		LocalDate date = null;
+		String page = null;
+		if(strDate == null || strDate.length() == 0) {
+			date = LocalDate.now(); 
+		}
+		else {
+			date = LocalDate.parse(strDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		}
+		service.capture24hrsUnit(container,date);
+		if(bindingResult.hasErrors()) {
+			System.out.println(bindingResult.toString());
+		}
+		else {
+			page = "redirect:units_24_hrs";
+			
+		}
+		return page;
 	}
 	
 	// -------------------------- End 24 hrs unit managment -------------------------------------------
