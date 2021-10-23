@@ -1,0 +1,8 @@
+* Check previous day record at the time of insertion:
+	if previous_day record is not available and previous_day is not less than date of creation, don't allow record insertion
+	and ask user to insert previous day information. 
+	At the time of previous day insertion again repeat the same process.
+	
+* At the time of posting, check if all the records exists within the current cycle, each machine will have cycle begin date
+and cycle end date, if cycle end date is met then, update cycle count, cycle begin date and cycle end date in machine. 
+Once we have cycle begining and end date make sure we have all the records with in the cycle. 

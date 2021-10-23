@@ -51,6 +51,10 @@ public class Machine {
 	
 	@DateTimeFormat(iso=ISO.DATE)
 	private LocalDate endDate;
+	
+	private LocalDate cycleBeginDate;
+	private LocalDate cycleEndDate;
+
 	public int getId() {
 		return id;
 	}
@@ -120,6 +124,20 @@ public class Machine {
 	}
 	public void setMachineType(String machineType) {
 		this.machineType = machineType;
+	}
+	
+	
+	public LocalDate getCycleBeginDate() {
+		return cycleBeginDate;
+	}
+	public void setCycleBeginDate(LocalDate cycleBeginDate) {
+		this.cycleBeginDate = cycleBeginDate;
+	}
+	public LocalDate getCycleEndDate() {
+		return cycleEndDate;
+	}
+	public void setCycleEndDate(LocalDate cycleEndDate) {
+		this.cycleEndDate = cycleEndDate;
 	}
 	public String toString() {
 		return "id"+id+" machineRate:"+machineRate+"fixedHours:"+fixedHours+"entryDate:"+entryDate+"lastUnitForFuel:"+lastUnitForFuel+"last24HrsUnit"+last24HrsUnit;

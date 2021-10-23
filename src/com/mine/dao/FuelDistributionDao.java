@@ -152,10 +152,12 @@ public class FuelDistributionDao {
 		for(Machine24HrsUnits machineUnit : unitList){
 			machineUnit.setUnitDate(date);
 			Machine machine = this.getMachine(machineUnit.getMachineId().getId());
-			if(date.equals(LocalDate.now()) && machineUnit.getCurrentUnit() != 0) {
+			/*if(date.equals(LocalDate.now()) && machineUnit.getCurrentUnit() != 0) {
 				machine.setLast24HrsUnit(machineUnit.getCurrentUnit());
 				session.update(machine);
-			}
+			}*/
+			machine.setLast24HrsUnit(machineUnit.getCurrentUnit());
+			session.update(machine);
 			machineUnit.setMachineId(machine);
 			session.saveOrUpdate(machineUnit);
 		}

@@ -35,6 +35,8 @@ public class FuelDistributionService {
 	}
 	
 	public void saveMachine(Machine machine) {
+		machine.setCycleBeginDate(machine.getEntryDate());
+		//machine.setCycleEndDate();
 		fuelDao.saveMachine(machine);
 	}
 	/*-------------------- End Machine Service -------------------------*/
