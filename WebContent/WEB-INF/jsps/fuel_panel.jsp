@@ -26,7 +26,7 @@
 			<div class="card bg-light my-1 py-1" id="add_fuel">
 			<article class="card-body mx-auto">
 				<h5 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Add<br/>Fuel</h5>
-				<p class="text-center mt-3"><i class="fa fa-line-chart fa-2x" aria-hidden="true"></i></i></p>	
+				<p class="text-center mt-3"><i class="fa fa-battery-half fa-2x" aria-hidden="true"></i></i></p>	
 			</article>
 			</div>
 		</div>
@@ -34,7 +34,7 @@
 			<div class="card bg-light my-1 py-1" id="add_machine">
 			<article class="card-body mx-auto">
 				<h5 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Add<br/> Machine</h5>
-				<p class="text-center mt-3"><i class="fa fa-user fa-2x" aria-hidden="true"></i></p>
+				<p class="text-center mt-3"><i class="fa fa-key fa-2x" aria-hidden="true"></i></p>
 			</article>
 			</div>
 		</div>
@@ -42,7 +42,7 @@
 			<div class="card bg-light my-1 py-1" id="distribute_fuel">
 			<article class="card-body mx-auto">
 				<h5 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Distribute<br/> Fuel</h5>
-				<p class="text-center mt-3"><i class="fa fa-user fa-2x" aria-hidden="true"></i></p>
+				<p class="text-center mt-3"><i class="fa fa-motorcycle fa-2x" aria-hidden="true"></i></p>
 			</article>
 			</div>
 		</div>
@@ -50,7 +50,15 @@
 			<div class="card bg-light my-1 py-1" id="24hrs_unit">
 			<article class="card-body mx-auto">
 				<h5 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Manage<br/>24 Hrs Unit</h5>
-				<p class="text-center mt-3"><i class="fa fa-user fa-2x" aria-hidden="true"></i></p>
+				<p class="text-center mt-3"><i class="fa fa-link fa-2x" aria-hidden="true"></i></p>
+			</article>
+			</div>
+		</div>
+		<div class=" col-sm-12 col-md-2">
+			<div class="card bg-light my-1 py-1" id="fuel_reports">
+			<article class="card-body mx-auto">
+				<h5 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Fuel<br/>Reports</h5>
+				<p class="text-center mt-3"><i class="fa fa-bar-chart fa-2x" aria-hidden="true"></i></p>
 			</article>
 			</div>
 		</div>
@@ -89,8 +97,8 @@
 			window.location.href ="distribute_fuel";
 		});
 
-		$("#rates").click( e=>{
-			window.location.href ="rate_report";
+		$("#fuel_reports").click( e=>{
+			window.location.href ="fuel_report_panel";
 		});
 		
 		$("#sales").click( e=>{

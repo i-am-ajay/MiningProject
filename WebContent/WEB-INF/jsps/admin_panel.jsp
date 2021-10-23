@@ -78,7 +78,7 @@
 			<div class="card bg-light my-1 py-1" id="fuel">
 			<article class="card-body mx-auto">
 				<h5 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Fuel<br/>Managment</h5>
-				<p class="text-center mt-3"><i class="fa fa-file-text-o fa-2x" aria-hidden="true"></i></p>
+				<p class="text-center mt-3"><i class="fa fa-tint fa-2x" aria-hidden="true"></i></p>
 			</article>
 			</div>
 		</div>
@@ -95,7 +95,7 @@
 			<div class="card bg-light my-1 py-1" id="params">
 			<article class="card-body mx-auto">
 				<h5 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Parameters<br/>&nbsp;</h5>
-				<p class="text-center mt-3"><i class="fa fa-plus fa-2x" aria-hidden="true"></i></p>
+				<p class="text-center mt-3"><i class="fa fa-cog fa-2x" aria-hidden="true"></i></p>
 			</article>
 			</div>
 		</div>
@@ -103,7 +103,7 @@
 			<div class="card bg-light my-1 py-1" id="register">
 			<article class="card-body mx-auto">
 				<h5 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Add<br/> User</h5>
-				<p class="text-center mt-3"><i class="fa fa-truck fa-2x" aria-hidden="true"></i></p>
+				<p class="text-center mt-3"><i class="fa fa-user-o fa-2x" aria-hidden="true"></i></p>
 			</article>
 			</div>
 		</div>

@@ -1,13 +1,16 @@
 package com.mine.dao;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
@@ -15,6 +18,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.MergedAnnotationPredicates;
 import org.springframework.stereotype.Repository;
 
 import com.mine.component.master.Fuel;
@@ -62,6 +66,36 @@ public class FuelDistributionDao {
 			session.save(fuel);
 		}
 		return fuel;
+	}
+	
+	@Transactional
+	public List<FuelDistribution> getFuleDistributionReport(int machineId, LocalDate fromDate,LocalDate toDate){
+		Session session = factory.getCurrentSession();
+		CriteriaBuilder builder = session.getCriteriaBuilder();
+		CriteriaQuery<FuelDistribution> criteriaQuery = builder.createQuery(FuelDistribution.class);
+		Root<FuelDistribution> from = criteriaQuery.from(FuelDistribution.class);
+		List<Predicate> predicateList = new ArrayList<>();
+		if(machineId >0){
+			predicateList.add(builder.equal(from.get("machineName").get("id"),machineId));
+		}
+		else if(machineId == 0) {
+			predicateList.add(builder.isNull(from.get("machineName")));
+		}
+		
+		if(fromDate != null && toDate != null) {
+			predicateList.add(builder.between(from.get("entryDate"), fromDate, toDate));
+		}
+		else if(fromDate != null){
+			predicateList.add(builder.greaterThanOrEqualTo(from.get("entryDate"), fromDate));
+		}
+		else if(toDate != null) {
+			predicateList.add(builder.lessThanOrEqualTo(from.get("entryDate"), toDate));
+		}
+		criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
+		
+		TypedQuery<FuelDistribution> typedQuery = session.createQuery(criteriaQuery);
+		
+		return typedQuery.getResultList();
 	}
 	//--------------------------------------- End Fuel Related Methods -------------------------------------------------
 	
@@ -118,10 +152,11 @@ public class FuelDistributionDao {
 		for(Machine24HrsUnits machineUnit : unitList){
 			machineUnit.setUnitDate(date);
 			Machine machine = this.getMachine(machineUnit.getMachineId().getId());
-			machine.setLast24HrsUnit(machineUnit.getCurrentUnit());
-			session.update(machine);
+			if(date.equals(LocalDate.now()) && machineUnit.getCurrentUnit() != 0) {
+				machine.setLast24HrsUnit(machineUnit.getCurrentUnit());
+				session.update(machine);
+			}
 			machineUnit.setMachineId(machine);
-			System.out.println("DAO machine ID"+machineUnit.getId());
 			session.saveOrUpdate(machineUnit);
 		}
 	}

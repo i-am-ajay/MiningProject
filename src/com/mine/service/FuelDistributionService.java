@@ -30,6 +30,10 @@ public class FuelDistributionService {
 		return fuelDao.getMachine(name);
 	}
 	
+	public List<Machine> getMachines(LocalDate date){
+		return fuelDao.machineList(date);
+	}
+	
 	public void saveMachine(Machine machine) {
 		fuelDao.saveMachine(machine);
 	}
@@ -50,6 +54,10 @@ public class FuelDistributionService {
 			});
 		}
 		return machineMap;
+	}
+	
+	public List<FuelDistribution> getFuelDistributionReport(int machineId, LocalDate fromDate, LocalDate toDate){
+		return fuelDao.getFuleDistributionReport(machineId, fromDate, toDate);
 	}
 	
 	

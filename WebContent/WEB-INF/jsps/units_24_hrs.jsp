@@ -185,7 +185,7 @@
 			});
 
 			$("#home_icon").click( e =>{
-				window.location.href = "admin_panel";
+				window.location.href = "fuel_panel";
 			});
 			$("#logout").hide();
 			}
