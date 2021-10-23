@@ -78,7 +78,6 @@ public class FuleDistributionController {
 		if (result.hasErrors()) {
 			System.out.println(result.toString());
 		}
-		System.out.println("Hello");
 		this.machineCreationStatus = "fail";
 		service.saveMachine(machine);
 		this.machineCreationStatus = "success";
