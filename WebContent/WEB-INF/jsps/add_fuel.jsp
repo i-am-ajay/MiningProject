@@ -76,6 +76,14 @@
 					      		<f:input type="number" class="form-control form-control-sm not_eligible" id="fuel_qty" path="fuelQty" />
 					    	</div>
 					    	<div class="form-group">
+					    		<label class="font-weight-bold">Rate</label>
+					    		<f:input type="number" class="form-control form-control-sm" id="fuel_rate" path="rate"/>
+					    	</div>
+					    	<div class="form-group">
+					    		<label class="font-weight-bold">Amount</label>
+					    		<f:input type="number" class="form-control form-control-sm" id="fuel_amount" path="amount" readonly="true"/>
+					    	</div>
+					    	<div class="form-group">
 					      		<label class="font-weight-bold">Remarks (If Any)</label>
 					      		<f:input class="form-control form-control-sm not_eligible" placeholder="Remarks If Any" id="entry_remark" path="remarks" />
 					    	</div>
@@ -113,6 +121,16 @@
 		$(document).ready(e =>{
 			$("#entry_type").find('option[value="Fuel Received"]').attr("selected",true);
 		});
+
+		$(document).ready(e =>{
+			$("#fuel_rate").focusout(e => {
+				let amount = 0.0;
+				let rate = $("#fuel_rate").val();
+				let qty = $("#fuel_qty").val();
+				amount = rate * qty;
+				$("#fuel_amount").val(amount);
+			});
+		})
 	</script>
 </body>
 </html>

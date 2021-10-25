@@ -48,6 +48,10 @@ public class FuelDistributionService {
 		fuelDao.insertFuelRecord(dist);
 	}
 	
+	public FuelDistribution getLastMachineDistribution(Machine machine, LocalDate entryDate) {
+		return fuelDao.lastUnitOfMachine(machine, entryDate);
+	}
+	
 	public Map<Integer,Object> getMachineMap(LocalDate date, boolean machineDes){
 		Map<Integer,Object> machineMap = new HashMap<>();
 		List<Machine> list = fuelDao.machineList(date);

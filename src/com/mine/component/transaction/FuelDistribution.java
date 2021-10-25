@@ -36,6 +36,12 @@ public class FuelDistribution {
 	@Column(name="hrs")
 	private double hrs;
 	
+	@Column(name="rate")
+	private double rate;
+	
+	@Column(name="amount")
+	private double amount;
+	
 	@OneToOne()
 	@JoinColumn(name="machine_id")
 	private Machine machineName;
@@ -117,5 +123,21 @@ public class FuelDistribution {
 
 	public void setHrs(double hrs) {
 		this.hrs = hrs;
+	}
+
+	public double getRate() {
+		return rate;
+	}
+
+	public void setRate(double rate) {
+		this.rate = rate;
+	}
+
+	public double getAmount() {
+		return amount;
+	}
+
+	public void setAmount(double amount) {
+		this.amount = amount;
 	}
 }

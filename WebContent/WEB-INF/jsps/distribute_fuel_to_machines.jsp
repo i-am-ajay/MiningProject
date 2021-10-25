@@ -143,10 +143,11 @@
 	/*----------------------------------- Ajax method calls -----------------------------*/
 	// Return last unit of selected machine
 		$("#machine_id").change(e=>{
+			console.log($("#entry_date").val());
 			$.ajax({
 				type:'POST',
 				url:"${home}last_unit",
-				data:{"machine_id":$("#machine_id").val()},
+				data:{"machine_id":$("#machine_id").val(),"entry_date":$("#entry_date").val()},
 				success:function(result,status,xhr){
 					if(result){
 						console.log(result);
@@ -155,7 +156,8 @@
 					}
 				},
 				error:function(result,status,xhr){
-					
+					console.log(result);
+					console.log(status);	
 				}
 			})
 		})

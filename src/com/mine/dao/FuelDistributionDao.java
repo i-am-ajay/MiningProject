@@ -44,11 +44,39 @@ public class FuelDistributionDao {
 		fuel.setQty(fuel.getQty()+distribution.getFuelQty());
 		session.update(fuel);
 		Machine machine = distribution.getMachineName();
-		if(machine != null) {
-			machine.setLastUnitForFuel(distribution.getCurrentUnits());
-			session.update(machine);
-		}
+		/*if(machine != null) {
+			FuelDistribution lastDistribution = this.lastUnitOfMachine(machine, distribution.getEntryDate());
+			LocalDate lastEntryDate = lastEntryDateMachine(machine);
+			if((machine.getEntryDate().equals(lastEntryDate) ||
+					machine.getEntryDate().isAfter(lastEntryDate)
+					&& distribution.getCurrentUnits()>0)) {
+				machine.setLastUnitForFuel(distribution.getCurrentUnits());
+				session.update(machine);
+			}
+		}*/
 		session.save(distribution);
+	}
+	
+	@Transactional
+	public FuelDistribution lastUnitOfMachine(Machine machine, LocalDate entryDate) {
+		Session session = factory.getCurrentSession();
+		List<FuelDistribution> lastUnit = null;
+		
+		TypedQuery<FuelDistribution> lastUnitQuery = session.createQuery("FROM FuelDistribution fd "
+				+ "WHERE fd.entryDate <= :entryDate AND fd.machineName = :machine ORDER BY fd.id DESC",FuelDistribution.class);
+		lastUnitQuery.setParameter("entryDate", entryDate);
+		lastUnitQuery.setParameter("machine", machine);
+		FuelDistribution lastUnitDistribution = null;
+		try {
+			lastUnit = lastUnitQuery.getResultList();
+			if(lastUnit != null && lastUnit.size() > 0) {
+				lastUnitDistribution = lastUnit.get(0);
+			}
+		}
+		catch(HibernateException ex) {
+			ex.printStackTrace();
+		}
+		return lastUnitDistribution;
 	}
 	
 	@Transactional
@@ -175,7 +203,7 @@ public class FuelDistributionDao {
 	@Transactional
 	public LocalDate lastEnrtyDate24HrsUnit() {
 		Session session = factory.getCurrentSession();
-		TypedQuery<LocalDate> dateQuery = session.createQuery("SELECT max(mu.unitDate) FROM Machine24HrsUnits mu",LocalDate.class);
+		TypedQuery<LocalDate> dateQuery = session.createQuery("SELECT max(mu.unitDate) FROM Machine24HrsUnits mu WHERE mu.machineId IS NOT NULL",LocalDate.class);
 		LocalDate date = null; 
 		try{
 			date = dateQuery.getSingleResult();

@@ -123,12 +123,18 @@ public class FuleDistributionController {
 	// ------------------------------- Machine Ajax Control
 	// -----------------------------------------
 	@RequestMapping("last_unit")
-	public @ResponseBody String lastUnit(@RequestParam("machine_id") int id) {
+	public @ResponseBody String lastUnit(@RequestParam("machine_id") int id, 
+			@RequestParam("entry_date")String entryDate) {
+		LocalDate date = LocalDate.parse(entryDate,DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		System.out.println("Hello From last unit");
 		Machine machine = service.getMachine(id);
+		System.out.println(entryDate);
+		FuelDistribution distribution = service.getLastMachineDistribution(machine, date);
+		System.out.println(distribution.getCurrentUnits());
 		JSONObject obj = null;
 		if (machine != null) {
 			obj = new JSONObject();
-			obj.put("lastUnit", machine.getLastUnitForFuel());
+			obj.put("lastUnit", distribution.getCurrentUnits());
 		}
 		return obj.toString();
 	}
@@ -163,7 +169,6 @@ public class FuleDistributionController {
 		if (session.getAttribute("user") == null) {
 			return "login";
 		}
-		LocalDate lastEntryDate = service.getLastEntryDate24HrsUnit();
 		User user = (User) session.getAttribute("user");
 		model.addAttribute("status", addFuelStatus);
 		model.addAttribute("fuel_dist_obj", dist);
