@@ -15,6 +15,7 @@ import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
 import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -169,6 +170,20 @@ public class FuelDistributionDao {
 		TypedQuery<Machine24HrsUnits> query = session.createQuery("FROM Machine24HrsUnits WHERE unitDate =: unitDate",Machine24HrsUnits.class);
 		query.setParameter("unitDate",date);
 		return query.getResultList();
+	}
+	
+	@Transactional
+	public LocalDate lastEnrtyDate24HrsUnit() {
+		Session session = factory.getCurrentSession();
+		TypedQuery<LocalDate> dateQuery = session.createQuery("SELECT max(mu.unitDate) FROM Machine24HrsUnits mu",LocalDate.class);
+		LocalDate date = null; 
+		try{
+			date = dateQuery.getSingleResult();
+		}
+		catch(HibernateException ex) {
+			
+		}
+		return date;
 	}
 	
 	// ------------------------------------------ End 24 hrs unit list -------------------------------------------------------

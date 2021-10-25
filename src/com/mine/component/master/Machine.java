@@ -39,6 +39,9 @@ public class Machine {
 	@DateTimeFormat(iso=ISO.DATE)
 	private LocalDate entryDate;
 	
+	@Column(name="opening_unit")
+	private double openingUnit;
+	
 	@Column(name="last_unit_for_fuel")
 	private double lastUnitForFuel;
 	
@@ -138,6 +141,13 @@ public class Machine {
 	}
 	public void setCycleEndDate(LocalDate cycleEndDate) {
 		this.cycleEndDate = cycleEndDate;
+	}
+	
+	public double getOpeningUnit() {
+		return openingUnit;
+	}
+	public void setOpeningUnit(double openingUnit) {
+		this.openingUnit = openingUnit;
 	}
 	public String toString() {
 		return "id"+id+" machineRate:"+machineRate+"fixedHours:"+fixedHours+"entryDate:"+entryDate+"lastUnitForFuel:"+lastUnitForFuel+"last24HrsUnit"+last24HrsUnit;

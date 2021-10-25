@@ -78,6 +78,10 @@
 					      		<f:input type="number" class="form-control form-control-sm" id="machine_rate" placeholder="Enter Machine Rate" path="machineRate"/>
 					    	</div>
 					    	<div class="form-group">
+					      		<label class="font-weight-bold">Opening Unit</label>
+					      		<f:input type="number" class="form-control form-control-sm" id="opening_unit" placeholder="Enter Machine Rate" path="openingUnit"/>
+					    	</div>
+					    	<div class="form-group">
 					      		<label class="font-weight-bold">Fixed Hours</label>
 					      		<f:input type="number" class="form-control form-control-sm" id="fixed_hours" placeholder="Enter Fixed Hourse" path="fixedHours"/>
 					    	</div>

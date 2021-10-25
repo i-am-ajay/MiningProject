@@ -1,6 +1,7 @@
 package com.mine.service;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +36,8 @@ public class FuelDistributionService {
 	}
 	
 	public void saveMachine(Machine machine) {
-		machine.setCycleBeginDate(machine.getEntryDate());
+		this.startNewCycle(machine, machine.getEntryDate());
+		
 		//machine.setCycleEndDate();
 		fuelDao.saveMachine(machine);
 	}
@@ -82,5 +84,17 @@ public class FuelDistributionService {
 		}
 		return map24HrsUnits;
 	}
+	
+	public LocalDate getLastEntryDate24HrsUnit() {
+		return fuelDao.lastEnrtyDate24HrsUnit();
+	}
 	/*-------------------------- End Capture 24 hrs unit ---------------------*/
+	
+	/*-------------------------- Machine Cycle Methods -----------------------*/
+	public void startNewCycle(Machine machine, LocalDate cycleStartDate) {
+		machine.setCycleBeginDate(cycleStartDate);
+		machine.setCycleEndDate(cycleStartDate.plusDays(30));
+		machine.setCycle(machine.getCycle()+1);
+	}
+	/*------------------------- End Machine Cycle Methods --------------------*/
 }

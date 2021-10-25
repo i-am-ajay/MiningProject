@@ -163,6 +163,7 @@ public class FuleDistributionController {
 		if (session.getAttribute("user") == null) {
 			return "login";
 		}
+		LocalDate lastEntryDate = service.getLastEntryDate24HrsUnit();
 		User user = (User) session.getAttribute("user");
 		model.addAttribute("status", addFuelStatus);
 		model.addAttribute("fuel_dist_obj", dist);
