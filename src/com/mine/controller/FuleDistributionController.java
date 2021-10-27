@@ -118,10 +118,9 @@ public class FuleDistributionController {
 		return jsonString;
 	}
 
-	// ------------------------------- End Machine DAO
-	// -----------------------------------------------
-	// ------------------------------- Machine Ajax Control
-	// -----------------------------------------
+	// ------------------------------- End Machine DAO -----------------------------------------------
+	
+	// ------------------------------- Machine Ajax Control -----------------------------------------
 	@RequestMapping("last_unit")
 	public @ResponseBody String lastUnit(@RequestParam("machine_id") int id, 
 			@RequestParam("entry_date")String entryDate) {
@@ -138,11 +137,9 @@ public class FuleDistributionController {
 		}
 		return obj.toString();
 	}
-	// ------------------------------- End Machine Ajax Control
-	// ----------------------------------------
+	// ------------------------------- End Machine Ajax Control ----------------------------------------
 
-	// -------------------------------- End Machine Controls
-	// -------------------------------------------
+	// -------------------------------- End Machine Controls -------------------------------------------
 	/*
 	 * @RequestMapping("distribute_fuel") public String distribute_fuel(Model model)
 	 * { showFuelDistributionPage(model); return "distribute_fuel_to_machines"; }
@@ -278,32 +275,32 @@ public class FuleDistributionController {
 	// ---------------------------------------------
 	@RequestMapping("units_24_hrs")
 	public String unit24hrs(Model model, @RequestParam(name = "unit_date", required = false) String strDate) {
-		container.getMachineList().clear();
+		container.setMachineList(new ArrayList<Machine24HrsUnits>());
+		
 		LocalDate date = service.getLastEntryDate24HrsUnit();
+		System.out.println("Last Entry Date"+date);
 		LocalDate projectBeginDate = LocalDate.of(2021, 10, 1);
+		LocalDate unitDate = null;
 		if (date == null) {
-			date = projectBeginDate;
+			unitDate = projectBeginDate;
 		} 
 		else {
-			date = date.plusDays(1);
+			unitDate = date.plusDays(1);
 		}
-		Map<Integer, Object> activeMachine = service.getMachineMap(date, false);
-		Map<Integer, Machine24HrsUnits> existingUnitMap = service.get24hrsUnitMap(date);
-		Machine24HrsUnits machineUnits = null;
+		Map<Integer, Machine> activeMachine = service.getMachineMap(unitDate, false);
+		//Map<Integer, Machine24HrsUnits> existingUnitMap = service.get24hrsUnitMap(date);
 		for (int key : activeMachine.keySet()) {
-			if (existingUnitMap != null && existingUnitMap.get(key) != null) {
-				machineUnits = existingUnitMap.get(key);
-				System.out.println(machineUnits.getMachineId().getId());
-			} else {
-				machineUnits = new Machine24HrsUnits();
-				Machine machine = (Machine) activeMachine.get(key);
-				machineUnits.setLastUnit(machine.getLast24HrsUnit());
-				machineUnits.setMachineId(machine);
-			}
-			container.getMachineList().add(machineUnits);
+			Machine24HrsUnits mu = new Machine24HrsUnits();
+			Machine machine = activeMachine.get(key);
+			Machine24HrsUnits lastUnit = service.getLast24HrsUnitMachine(machine, date);
+			double lastUnitValue = lastUnit.getCurrentUnit();
+			mu.setLastUnit(lastUnitValue);
+			mu.setMachineId(machine);
+			container.getMachineList().add(mu);
 		}
+		System.out.println("Machine list size"+container.getMachineList().size());
 		model.addAttribute("candidate_machines", container);
-		model.addAttribute("unit_date", date);
+		model.addAttribute("unit_date", unitDate);
 		return "units_24_hrs";
 	}
 

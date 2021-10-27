@@ -64,7 +64,7 @@ public class FuelDistributionDao {
 		
 		TypedQuery<FuelDistribution> lastUnitQuery = session.createQuery("FROM FuelDistribution fd "
 				+ "WHERE fd.entryDate <= :entryDate AND fd.machineName = :machine AND fd.currentUnits <> 0"
-				+ "ORDER BY fd.id DESC",FuelDistribution.class);
+				+ "ORDER BY fd.id DESC",FuelDistribution.class).setMaxResults(1);
 		lastUnitQuery.setParameter("entryDate", entryDate);
 		lastUnitQuery.setParameter("machine", machine);
 		FuelDistribution lastUnitDistribution = null;
@@ -186,11 +186,34 @@ public class FuelDistributionDao {
 				machine.setLast24HrsUnit(machineUnit.getCurrentUnit());
 				session.update(machine);
 			}*/
-			machine.setLast24HrsUnit(machineUnit.getCurrentUnit());
-			session.update(machine);
+			//machine.setLast24HrsUnit(machineUnit.getCurrentUnit());
+			//session.update(machine);
 			machineUnit.setMachineId(machine);
 			session.saveOrUpdate(machineUnit);
 		}
+	}
+	
+	@Transactional
+	public Machine24HrsUnits getLast24HrsUnitForMachine(Machine machine, LocalDate lastUnitDate) {
+		Session session = factory.getCurrentSession();
+		List<Machine24HrsUnits> lastUnit = null;
+		
+		TypedQuery<Machine24HrsUnits> lastUnitQuery = session.createQuery("FROM Machine24HrsUnits mu "
+				+ "WHERE mu.unitDate <= :lastUnitDate AND mu.machineId = :machine AND mu.currentUnit <> 0"
+				+ "ORDER BY mu.id DESC",Machine24HrsUnits.class).setMaxResults(1);
+		lastUnitQuery.setParameter("lastUnitDate", lastUnitDate);
+		lastUnitQuery.setParameter("machine", machine);
+		Machine24HrsUnits last24HrsUnitDistribution = null;
+		try {
+			lastUnit = lastUnitQuery.getResultList();
+			if(lastUnit != null && lastUnit.size() > 0) {
+				last24HrsUnitDistribution = lastUnit.get(0);
+			}
+		}
+		catch(HibernateException ex) {
+			ex.printStackTrace();
+		}
+		return last24HrsUnitDistribution;
 	}
 	
 	@Transactional

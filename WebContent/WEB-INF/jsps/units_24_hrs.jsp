@@ -130,7 +130,7 @@
 								</div>
 								<div class="col-3">
 									<div class="form-group">
-										<f:input id="previous_unit" class="form-control form-control-sm" path="machineList[${i.index}].lastUnit" readonly="true"/>
+									<f:input id="previous_unit" class="form-control form-control-sm" path="machineList[${i.index}].lastUnit" readonly="true"/>
 									</div>
 								</div>
 								<div class="col-3">

@@ -52,13 +52,12 @@ public class FuelDistributionService {
 		return fuelDao.lastUnitOfMachine(machine, entryDate);
 	}
 	
-	public Map<Integer,Object> getMachineMap(LocalDate date, boolean machineDes){
-		Map<Integer,Object> machineMap = new HashMap<>();
+	public Map<Integer,Machine> getMachineMap(LocalDate date, boolean machineDes){
+		Map<Integer,Machine> machineMap = new HashMap<>();
 		List<Machine> list = fuelDao.machineList(date);
-		System.out.println("Service Map Size "+list.size());
 		if(list != null && list.size() > 0) {
 			list.forEach(machine ->{
-				machineMap.put(machine.getId(), machineDes== true? machine.getName(): machine);
+				machineMap.put(machine.getId(), machine);
 			});
 		}
 		return machineMap;
@@ -91,6 +90,10 @@ public class FuelDistributionService {
 	
 	public LocalDate getLastEntryDate24HrsUnit() {
 		return fuelDao.lastEnrtyDate24HrsUnit();
+	}
+	
+	public Machine24HrsUnits getLast24HrsUnitMachine(Machine machine, LocalDate lastUnitDate) {
+		return fuelDao.getLast24HrsUnitForMachine(machine, lastUnitDate);
 	}
 	/*-------------------------- End Capture 24 hrs unit ---------------------*/
 	
