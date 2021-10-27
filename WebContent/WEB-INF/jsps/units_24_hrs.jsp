@@ -77,11 +77,10 @@
 					<div class="form-group row">
 					      		<label class="font-weight-bold col-sm-3 col-form-label">Date</label>
 					      		<div class="col-sm-9">
-					      			<input type="date" id="date" name="unit_date" class="form-control form-control-sm" value="${unit_date}"/>
+					      			<input type="date" id="date" name="unit_date" class="form-control form-control-sm" value="${unit_date}" readonly="true"/>
 					    		</div>
 					    	</div>
 				</div>
-				<div class="col-2"><input type="submit" value="Submit"></div>
 			</div>
 			</form>
 		<f:form method="POST" modelAttribute="candidate_machines"

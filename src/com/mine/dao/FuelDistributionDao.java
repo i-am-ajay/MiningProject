@@ -63,7 +63,8 @@ public class FuelDistributionDao {
 		List<FuelDistribution> lastUnit = null;
 		
 		TypedQuery<FuelDistribution> lastUnitQuery = session.createQuery("FROM FuelDistribution fd "
-				+ "WHERE fd.entryDate <= :entryDate AND fd.machineName = :machine ORDER BY fd.id DESC",FuelDistribution.class);
+				+ "WHERE fd.entryDate <= :entryDate AND fd.machineName = :machine AND fd.currentUnits <> 0"
+				+ "ORDER BY fd.id DESC",FuelDistribution.class);
 		lastUnitQuery.setParameter("entryDate", entryDate);
 		lastUnitQuery.setParameter("machine", machine);
 		FuelDistribution lastUnitDistribution = null;
@@ -209,7 +210,7 @@ public class FuelDistributionDao {
 			date = dateQuery.getSingleResult();
 		}
 		catch(HibernateException ex) {
-			
+			ex.printStackTrace();
 		}
 		return date;
 	}

@@ -279,14 +279,14 @@ public class FuleDistributionController {
 	@RequestMapping("units_24_hrs")
 	public String unit24hrs(Model model, @RequestParam(name = "unit_date", required = false) String strDate) {
 		container.getMachineList().clear();
-		LocalDate date = null;
-		System.out.println("Date" + strDate);
-		if (strDate == null) {
-			date = LocalDate.now();
-		} else {
-			date = LocalDate.parse(strDate, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+		LocalDate date = service.getLastEntryDate24HrsUnit();
+		LocalDate projectBeginDate = LocalDate.of(2021, 10, 1);
+		if (date == null) {
+			date = projectBeginDate;
+		} 
+		else {
+			date = date.plusDays(1);
 		}
-		System.out.println("Parsed Date" + date);
 		Map<Integer, Object> activeMachine = service.getMachineMap(date, false);
 		Map<Integer, Machine24HrsUnits> existingUnitMap = service.get24hrsUnitMap(date);
 		Machine24HrsUnits machineUnits = null;
