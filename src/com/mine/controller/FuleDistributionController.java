@@ -199,6 +199,7 @@ public class FuleDistributionController {
 		if (result.hasErrors()) {
 			page = "distribute_fuel";
 		} else {
+			System.out.println(dis.getEntryType());
 			if (dis.getEntryType().equals("Fuel Gven")) {
 				dis.setFuelQty(dis.getFuelQty() * -1);
 			}

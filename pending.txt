@@ -1,3 +1,13 @@
-* Cancellation Remarks
-* Discount Limit
-* Sanchalan enable or diable option
+* Add Fuel Page - On adding fuel total fuel should update on screen.
+* Machine drop down list should populate on choosing date, other wise a new machine is showing on 
+previous day.
+* On distribute fuel screen fuel add up on giving fuel to machine.
+* On Add 24 hrs unit hours are not calculate on screen.
+
+* Check and correct update screens. 
+
+New this to do
+
+* provide a purchase type option in add fuel. 
+* If type is credit the provide an option to choose vendor.
+* post fuel cost in vendor ledger or deduct cash fuel cost from cash book.

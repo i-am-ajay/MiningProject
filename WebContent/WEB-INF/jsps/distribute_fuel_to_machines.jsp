@@ -75,7 +75,7 @@
 					      		<f:select class="form-control form-control-sm" id="machine_id" placeholder="Enter Material Type" path="machineName" >
 					      			<f:option value=""></f:option>
 					      			<c:forEach var="item" items="${machine_map}">
-					      				<f:option value="${item.key}">${item.value}</f:option>
+					      				<f:option value="${item.key}">${item.value.name}</f:option>
 					      			</c:forEach>
 					      		</f:select>
 					    	</div>
@@ -143,7 +143,7 @@
 	/*----------------------------------- Ajax method calls -----------------------------*/
 	// Return last unit of selected machine
 		$("#machine_id").change(e=>{
-			console.log($("#entry_date").val());
+			$("#last_unit").val(0.0);
 			$.ajax({
 				type:'POST',
 				url:"${home}last_unit",
