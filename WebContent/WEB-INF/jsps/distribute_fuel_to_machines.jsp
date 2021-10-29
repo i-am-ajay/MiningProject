@@ -57,10 +57,11 @@
   							<div class="form-group">
 					      		<label class="font-weight-bold">Fuel On Hand</label>
 					      		<input class="form-control form-control-sm not_eligible" id="total_qty" value="${total_qty}" readonly/>
+					      		<input type="hidden" id="original_qty" value="${total_qty}" />
 					    	</div>
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Choose Date</label>
-					      		<f:input type="date" class="form-control form-control-sm not_eligible" id="entry_date" path="entryDate" />
+					      		<f:input type="datetime-local" class="form-control form-control-sm not_eligible" id="entry_date" path="entryDate" />
 					    	</div>
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Entry Type</label>
@@ -72,7 +73,7 @@
 					    	</div>
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Machine Name</label>
-					      		<f:select class="form-control form-control-sm" id="machine_id" placeholder="Enter Material Type" path="machineName" >
+					      		<f:select class="form-control form-control-sm" id="machine_id" placeholder="Enter Material Type" path="machineName" required="true">
 					      			<f:option value=""></f:option>
 					      			<c:forEach var="item" items="${machine_map}">
 					      				<f:option value="${item.key}">${item.value.name}</f:option>
@@ -81,15 +82,15 @@
 					    	</div>
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Fuel Quantity (Ltrs)</label>
-					      		<f:input type="number" class="form-control form-control-sm not_eligible" id="fuel_qty" path="fuelQty"/>
+					      		<f:input type="number" class="form-control form-control-sm not_eligible" id="fuel_qty" path="fuelQty" required="true"/>
 					    	</div>
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Last Unit</label>
-					      		<f:input type="number" class="form-control form-control-sm not_eligible" id="last_unit" path="lastUnits" readonly="true"/>
+					      		<f:input type="number" class="form-control form-control-sm not_eligible" id="last_unit" path="lastUnits"/>
 					    	</div>
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Current Unit</label>
-					      		<f:input type="number" class="form-control form-control-sm not_eligible" id="current_unit" path="currentUnits" />
+					      		<f:input type="number" class="form-control form-control-sm not_eligible" id="current_unit" path="currentUnits" required="true"/>
 					    	</div>
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">No of Hours</label>
@@ -129,6 +130,48 @@
 			$("#logout").hide();
 			}
 		);
+
+		$(document).ready(e =>{
+			$("#fuel_rate").focusout(e => {
+				let amount = 0.0;
+				let rate = $("#fuel_rate").val();
+				let qty = $("#fuel_qty").val();
+				amount = rate * qty;
+				$("#fuel_amount").val(amount);
+			});
+			let now = new Date();
+			now.setMinutes(now.getMinutes()-now.getTimezoneOffset())
+			console.log(now.toISOString());
+			now = now.toISOString().substring(0,16);
+			console.log(now);
+			$("#entry_date").val(now);
+
+			$("#fuel_qty").focusout(e =>{
+				
+				let fuelQty = parseInt($("#fuel_qty").val());
+				let totalFuel = parseInt($("#total_qty").val());
+				let entryType = $("#entry_type").val();
+				alert(entryType);
+				if(entryType == 'Fuel Given'){
+					fuelQty = fuelQty * -1;
+					alert(fuelQty);
+				}
+				totalFuel = parseInt(totalFuel);
+				totalFuel = totalFuel + fuelQty;
+				alert(totalFuel);
+				$("#total_qty").val(totalFuel);
+			})
+		})
+		
+		$("#entry_type").change(e =>{
+			$("#fuel_rate").val(0.0);
+			$("#fuel_qty").val(0.0);
+			$("#last_unit").val();
+			$("#machine_id option[value='']").attr("selected",true);
+			$("#total_qty").val($("#original_qty").val());
+			$("#hrs").val(0.0);
+			$("#entry_remark").val(0.0);
+		});
 
 	// ---------------------------------- Page methods -----------------------------------
 	$("#current_unit").focusout(e=>{

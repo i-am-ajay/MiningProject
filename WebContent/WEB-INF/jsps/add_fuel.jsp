@@ -58,10 +58,11 @@
 					      		<label class="font-weight-bold">Fuel On Hand</label>
 					      		<input class="form-control form-control-sm not_eligible" id="total_qty" value="${total_qty}" readonly/>
 					      		<input type="hidden" name="page" value="add_fuel" />
+					      		<input type="hidden" id="original_qty" value="${total_qty}" />
 					    	</div>
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Choose Date</label>
-					      		<f:input type="date" class="form-control form-control-sm not_eligible" id="entry_date" path="entryDate" />
+					      		<f:input type="datetime-local" class="form-control form-control-sm not_eligible" id="entry_date" path="entryDate" required="true"/>
 					    	</div>
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Entry Type</label>
@@ -74,6 +75,14 @@
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Fuel Quantity (Ltrs)</label>
 					      		<f:input type="number" class="form-control form-control-sm not_eligible" id="fuel_qty" path="fuelQty" />
+					    	</div>
+					    	<div class="form-group">
+					      		<label class="font-weight-bold">Purchase Type</label>
+					      		<f:select class="form-control form-control-sm" id="purchase_type" placeholder="Enter Purchase Type" path="purchaseType" required="true">
+					      			<f:option value=""></f:option>
+					      			<f:option value="Cash">Cash</f:option>
+					      			<f:option value="Credit">Credit</f:option>
+					      		</f:select>
 					    	</div>
 					    	<div class="form-group">
 					    		<label class="font-weight-bold">Rate</label>
@@ -94,7 +103,7 @@
 		</div>
 	</div>
 			    
-	<input type="submit" class="btn btn-small btn-secondary btn-block w-50 mx-auto" value="Update"/>
+	<input type="submit" class="btn btn-small btn-secondary btn-block w-50 mx-auto" id="submit_btn" value="Update"/>
 	<input type="hidden" id="role" value="${role}" />
 	</f:form>
 	</div>
@@ -127,10 +136,45 @@
 				let amount = 0.0;
 				let rate = $("#fuel_rate").val();
 				let qty = $("#fuel_qty").val();
+				let entryType = $("#entry_type").val();
 				amount = rate * qty;
+				if(entryType == 'Fuel Given'){
+					amount = amount * -1;
+				}
 				$("#fuel_amount").val(amount);
 			});
+			let now = new Date();
+			now.setMinutes(now.getMinutes()-now.getTimezoneOffset())
+			console.log(now.toISOString());
+			now = now.toISOString().substring(0,16);
+			console.log(now);
+			$("#entry_date").val(now);
+
+			$("#fuel_qty").focusout(e =>{
+				let fuelQty = parseInt($("#fuel_qty").val());
+				let totalFuel = parseInt($("#total_qty").val());
+				let entryType = $("#entry_type").val();
+				alert(entryType);
+				if(entryType == 'Fuel Given'){
+					fuelQty = fuelQty * -1;
+					alert(fuelQty);
+				}
+				totalFuel = parseInt(totalFuel);
+				totalFuel = totalFuel + fuelQty;
+				alert(totalFuel);
+				$("#total_qty").val(totalFuel);
+			})
 		})
+		
+		$("#entry_type").change(e =>{
+			$("#fuel_rate").val(0.0);
+			$("#fuel_qty").val(0.0);
+			$("#fuel_amount").val();
+			$("#purchase_type option[value='']").attr("selected",true);
+			$("#total_qty").val($("#original_qty").val());
+			$("#fuel_amount").val(0.0);
+		});
+		
 	</script>
 </body>
 </html>

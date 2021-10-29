@@ -1,6 +1,7 @@
 package com.mine.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,7 +24,6 @@ public class FuelDistributionService {
 	
 	/*------------------- Machine Service ------------------------------*/
 	public Machine getMachine(int id) {
-		System.out.println("Machine Id "+id);
 		return fuelDao.getMachine(id);
 	}
 	
@@ -48,7 +48,7 @@ public class FuelDistributionService {
 		fuelDao.insertFuelRecord(dist);
 	}
 	
-	public FuelDistribution getLastMachineDistribution(Machine machine, LocalDate entryDate) {
+	public double getLastMachineDistribution(Machine machine, LocalDateTime entryDate) {
 		return fuelDao.lastUnitOfMachine(machine, entryDate);
 	}
 	

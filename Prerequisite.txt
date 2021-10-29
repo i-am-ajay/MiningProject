@@ -9,3 +9,16 @@ Amount we pay in application it will be credit amount at database level it will 
 
 4) Journal entry Debitor account entry will go in credit table of database and Creditor entry will go in debit
 table of database.
+
+---- Purchases ----
+* For fuel :
+	When fuel is purchased in cash, we received fuel so in fuel account we'll have xxx amount in our debit(recieve this amount worth) in fuel account.
+	In cash account xxx amount will be credited in account of fule purchase ( amount will be deducted from cash).
+	
+* For fuel purchase in credit:
+	We have Fuel Purchase xxx amount in our debit ( received this amount worth fuel ). 
+	We'll have xxx amount credit in Fuel Vendor account, this is amount we'll have to pay for purchase of fuel.
+	
+* For vehcile's 
+	We'll debit purchase xxx amount worth against Vehicle service / purchase.
+	We'll credit same xxx amount worth against vendor of the vehicle. ( from vendor this amount of worth services provided to us ).

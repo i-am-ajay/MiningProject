@@ -13,9 +13,11 @@ import javax.persistence.ManyToOne;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.RequestScope;
 
 @Component
 @Entity
+@RequestScope
 public class Machine {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)

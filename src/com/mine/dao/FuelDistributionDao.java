@@ -1,6 +1,7 @@
 package com.mine.dao;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -58,7 +59,7 @@ public class FuelDistributionDao {
 	}
 	
 	@Transactional
-	public FuelDistribution lastUnitOfMachine(Machine machine, LocalDate entryDate) {
+	public double lastUnitOfMachine(Machine machine, LocalDateTime entryDate) {
 		Session session = factory.getCurrentSession();
 		List<FuelDistribution> lastUnit = null;
 		
@@ -67,17 +68,21 @@ public class FuelDistributionDao {
 				+ "ORDER BY fd.id DESC",FuelDistribution.class).setMaxResults(1);
 		lastUnitQuery.setParameter("entryDate", entryDate);
 		lastUnitQuery.setParameter("machine", machine);
-		FuelDistribution lastUnitDistribution = null;
+		double lastUnitValue = 0.0;
 		try {
 			lastUnit = lastUnitQuery.getResultList();
 			if(lastUnit != null && lastUnit.size() > 0) {
-				lastUnitDistribution = lastUnit.get(0);
+				lastUnitValue = lastUnit.get(0).getCurrentUnits();
+			}
+			else {
+				Machine machineObj = this.getMachine(machine.getId());
+				lastUnitValue = machineObj.getOpeningUnit();
 			}
 		}
 		catch(HibernateException ex) {
 			ex.printStackTrace();
 		}
-		return lastUnitDistribution;
+		return lastUnitValue;
 	}
 	
 	@Transactional

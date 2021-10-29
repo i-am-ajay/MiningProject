@@ -1,6 +1,7 @@
 package com.mine.controller;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,6 +67,7 @@ public class FuleDistributionController {
 			return "login";
 		}
 		User user = (User) session.getAttribute("user");
+		machine.setEntryDate(LocalDate.now());
 		model.addAttribute("machine", machine);
 		model.addAttribute("status", machineCreationStatus);
 		model.addAttribute("vendor_list", miningService.getClientList(1, 46));
@@ -110,9 +112,11 @@ public class FuleDistributionController {
 			obj.put("rate", machine.getMachineRate());
 			obj.put("fixed_hours", machine.getFixedHours());
 			obj.put("cycle", machine.getCycle());
-			obj.put("vendorId", machine.getVendorId());
+			obj.put("vendorId", machine.getVendorId().getClientId());
 			obj.put("24hrs_unit", machine.getLast24HrsUnit());
 			obj.put("fuel_unit", machine.getLastUnitForFuel());
+			obj.put("machine_type", machine.getMachineType());
+			obj.put("opening_unit", machine.getOpeningUnit());
 			jsonString = obj.toString();
 		}
 		return jsonString;
@@ -123,17 +127,16 @@ public class FuleDistributionController {
 	// ------------------------------- Machine Ajax Control -----------------------------------------
 	@RequestMapping("last_unit")
 	public @ResponseBody String lastUnit(@RequestParam("machine_id") int id, 
-			@RequestParam("entry_date")String entryDate) {
-		LocalDate date = LocalDate.parse(entryDate,DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-		System.out.println("Hello From last unit");
+			@RequestParam("entry_date")String entryDateTime) {
+		LocalDateTime date = LocalDateTime.parse(entryDateTime,DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
+		System.out.println(date);
 		Machine machine = service.getMachine(id);
-		System.out.println(entryDate);
-		FuelDistribution distribution = service.getLastMachineDistribution(machine, date);
-		System.out.println(distribution.getCurrentUnits());
+		double lastUnit = service.getLastMachineDistribution(machine, date);
+		
 		JSONObject obj = null;
 		if (machine != null) {
 			obj = new JSONObject();
-			obj.put("lastUnit", distribution.getCurrentUnits());
+			obj.put("lastUnit", lastUnit);
 		}
 		return obj.toString();
 	}
@@ -151,6 +154,7 @@ public class FuleDistributionController {
 		if (session.getAttribute("user") == null) {
 			return "login";
 		}
+		dist.setEntryDate(LocalDateTime.now());
 		User user = (User) session.getAttribute("user");
 		model.addAttribute("status", addFuelStatus);
 		model.addAttribute("fuel_dist_obj", dist);

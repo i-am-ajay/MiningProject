@@ -1,6 +1,7 @@
 package com.mine.component.transaction;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,11 +13,13 @@ import javax.persistence.OneToOne;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.RequestScope;
 
 import com.mine.component.master.Machine;
 
 @Entity
 @Component
+@RequestScope
 public class FuelDistribution {
 	@Id
 	@GeneratedValue
@@ -47,11 +50,14 @@ public class FuelDistribution {
 	private Machine machineName;
 	
 	@Column(name="entry_date")
-	@DateTimeFormat(iso=ISO.DATE)
-	private LocalDate entryDate;
+	@DateTimeFormat(iso=ISO.DATE_TIME)
+	private LocalDateTime entryDate;
 	
 	@Column
 	private String remarks;
+	
+	@Column(name="purchase_type")
+	private String purchaseType;
 
 	public int getId() {
 		return id;
@@ -85,11 +91,11 @@ public class FuelDistribution {
 		this.machineName = machineName;
 	}
 
-	public LocalDate getEntryDate() {
+	public LocalDateTime getEntryDate() {
 		return entryDate;
 	}
 
-	public void setEntryDate(LocalDate entryDate) {
+	public void setEntryDate(LocalDateTime entryDate) {
 		this.entryDate = entryDate;
 	}
 
@@ -139,5 +145,13 @@ public class FuelDistribution {
 
 	public void setAmount(double amount) {
 		this.amount = amount;
+	}
+
+	public String getPurchaseType() {
+		return purchaseType;
+	}
+
+	public void setPurchaseType(String purchaseType) {
+		this.purchaseType = purchaseType;
 	}
 }

@@ -66,7 +66,7 @@
   						<div class="col">
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Machine Name</label>
-					      		<f:input class="form-control form-control-sm" id="name" placeholder="Enter Name" path="name"/>
+					      		<f:input class="form-control form-control-sm" id="name" placeholder="Enter Name" path="name" required="true"/>
 					      		<f:input type="hidden" id="machine_id" path="id" />
 					    	</div>
 					    	<div class="form-group">
@@ -75,19 +75,19 @@
 					    	</div>
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Machine Rate</label>
-					      		<f:input type="number" class="form-control form-control-sm" id="machine_rate" placeholder="Enter Machine Rate" path="machineRate"/>
+					      		<f:input type="number" class="form-control form-control-sm" id="machine_rate" placeholder="Enter Machine Rate" path="machineRate" required="true"/>
 					    	</div>
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Opening Unit</label>
-					      		<f:input type="number" class="form-control form-control-sm" id="opening_unit" placeholder="Enter Machine Rate" path="openingUnit"/>
+					      		<f:input type="number" class="form-control form-control-sm" id="opening_unit" placeholder="Enter Opening Unit" path="openingUnit" required="true"/>
 					    	</div>
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Fixed Hours</label>
-					      		<f:input type="number" class="form-control form-control-sm" id="fixed_hours" placeholder="Enter Fixed Hourse" path="fixedHours"/>
+					      		<f:input type="number" class="form-control form-control-sm" id="fixed_hours" placeholder="Enter Fixed Hourse" path="fixedHours" required="true"/>
 					    	</div>
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Vendor</label>
-					      		<f:select class="form-control form-control-sm" id="vendor_id" placeholder="Enter Material Type" path="vendorId" >
+					      		<f:select class="form-control form-control-sm" id="vendor_id" path="vendorId" required="true">
 					      			<f:option value=""></f:option>
 					      			<c:forEach var="item" items="${vendor_list}">
 					      				<f:option value="${item.key}">${item.value}</f:option>
@@ -96,7 +96,7 @@
 					    	</div>
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Machine Type</label>
-					      		<f:select class="form-control form-control-sm" id="vendor_id" placeholder="Enter Material Type" path="machineType" >
+					      		<f:select class="form-control form-control-sm" id="machine_type" placeholder="Enter Machine Type" path="machineType" required="true">
 					      			<f:option value=""></f:option>
 					      			<f:option value="Fixed Cost">Fixed Cost</f:option>
 					      			<f:option value="Variable Cost">Variable Cost</f:option>
@@ -149,6 +149,12 @@
 			}
 		);
 
+		$(document).ready(e =>{
+			$("#machine_rate").val(null);
+			$("#opening_unit").val(null);
+			$("#fixed_hours").val(null);
+		})
+
 		// get machine details if it's already exists.
 		$("#name").focusout( e =>{
 			$.ajax({
@@ -164,9 +170,12 @@
 						$("#name").attr("readonly","true");
 						$("#machine_id").val(json.machine_id);
 						$("#entry_date").val(json.entry_date);
-						$("#rate").val(json.rate);
+						$("#machine_rate").val(json.rate);
 						$("#fixed_hours").val(json.fixed_hours);
-						$("#vendor_id").val(json.vendorId);
+						$("#vendor_id option[value='"+json.vendorId+"']").attr("selected",true);
+						$("#machine_type option[value='"+json.machine_type+"']").attr("selected",true);
+						$("#opening_unit").val(json.opening_unit);
+						
 						//$("#end_date").val(json.end_date);
 						//$("end_date").val(json.)
 					}

@@ -13,10 +13,12 @@ import javax.persistence.Table;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
+import org.springframework.web.context.annotation.RequestScope;
 
 import com.mine.component.master.Machine;
 @Entity
 @Table(name="machine_24hrs_unit")
+@RequestScope
 public class Machine24HrsUnits {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
