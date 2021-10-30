@@ -2,6 +2,7 @@ package com.mine.dao;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,6 +56,7 @@ public class FuelDistributionDao {
 				session.update(machine);
 			}
 		}*/
+		//distribution.setHrs(distribution.getCurrentUnits() - distribution.getLastUnits());
 		session.save(distribution);
 	}
 	
@@ -199,7 +201,7 @@ public class FuelDistributionDao {
 	}
 	
 	@Transactional
-	public Machine24HrsUnits getLast24HrsUnitForMachine(Machine machine, LocalDate lastUnitDate) {
+	public double getLast24HrsUnitForMachine(Machine machine, LocalDate lastUnitDate) {
 		Session session = factory.getCurrentSession();
 		List<Machine24HrsUnits> lastUnit = null;
 		
@@ -208,17 +210,18 @@ public class FuelDistributionDao {
 				+ "ORDER BY mu.id DESC",Machine24HrsUnits.class).setMaxResults(1);
 		lastUnitQuery.setParameter("lastUnitDate", lastUnitDate);
 		lastUnitQuery.setParameter("machine", machine);
-		Machine24HrsUnits last24HrsUnitDistribution = null;
+		double last24HrsUnitValue = machine.getOpeningUnit();
 		try {
 			lastUnit = lastUnitQuery.getResultList();
 			if(lastUnit != null && lastUnit.size() > 0) {
-				last24HrsUnitDistribution = lastUnit.get(0);
+				last24HrsUnitValue = lastUnit.get(0).getCurrentUnit();
 			}
+			
 		}
 		catch(HibernateException ex) {
 			ex.printStackTrace();
 		}
-		return last24HrsUnitDistribution;
+		return last24HrsUnitValue;
 	}
 	
 	@Transactional
@@ -244,4 +247,111 @@ public class FuelDistributionDao {
 	}
 	
 	// ------------------------------------------ End 24 hrs unit list -------------------------------------------------------
+	
+	// ------------------------------------------ Unit update logic ----------------------------------------------------------
+	@Transactional
+	public List<FuelDistribution> getFuelUnits(Machine machine, LocalDate date) {
+		LocalDate updateDate = LocalDate.now();
+		LocalDateTime startDate = LocalDateTime.of(date, LocalTime.of(0, 0));
+		LocalDateTime endDate = LocalDateTime.of(date, LocalTime.of(23, 59));
+		Session session = factory.getCurrentSession();
+/*		TypedQuery<FuelDistribution> unitQuery = session.createQuery("FROM FuelDistribution fd WHERE fd.machineName = :machine AND (fd.entryDate BETWEEN :startDate AND :endDate) AND (fd.machineName.cycleBeginDate >= :updateDate AND fd.machineName.cycleEndDate <= :updateDate)"
+				+ " ORDER BY fd.entryDate ASC",FuelDistribution.class);*/
+		System.out.println("FuelDao Machine Id"+machine.getId());
+		TypedQuery<FuelDistribution> unitQuery = session.createQuery("FROM FuelDistribution fd WHERE fd.machineName = :machine AND (fd.entryDate BETWEEN :startDate AND :endDate)"
+				+ " ORDER BY fd.entryDate ASC",FuelDistribution.class);
+		unitQuery.setParameter("machine", machine);
+		unitQuery.setParameter("startDate", startDate);
+		unitQuery.setParameter("endDate", endDate);
+		//unitQuery.setParameter("updateDate", updateDate);
+		List<FuelDistribution> fuelDistributionList = unitQuery.getResultList();
+		return fuelDistributionList;
+	}
+	
+	// update fule entry.
+	@Transactional
+	public boolean updateUnit(int id, double unitValue) {
+		boolean status = false;
+		Session session = factory.getCurrentSession();
+		FuelDistribution dis = session.get(FuelDistribution.class, id);
+		Machine machine = dis.getMachineName();
+		dis.setCurrentUnits(unitValue);
+		dis.setHrs(unitValue - dis.getLastUnits());
+		FuelDistribution nextEntry = getNextFuelRecord(id, dis.getEntryDate(),machine);
+		session.update(dis);
+		if(nextEntry != null) {
+			nextEntry.setLastUnits(unitValue);
+			session.update(nextEntry);
+		}
+		status = true;
+		return status;
+	}
+	
+	@Transactional
+	public FuelDistribution getNextFuelRecord(int id, LocalDateTime date, Machine machine) {
+		Session session = factory.getCurrentSession();
+		FuelDistribution distribution = null;
+		TypedQuery<FuelDistribution> typedQuery = session.createQuery("From FuelDistribution fd WHERE fd.entryDate > :date AND fd.id <> :id"
+				+ " AND fd.machineName = :machine AND fd.currentUnits > 0 ORDER BY fd.entryDate ASC",FuelDistribution.class);
+		typedQuery.setParameter("date", date);
+		typedQuery.setParameter("id", id);
+		typedQuery.setParameter("machine", machine);
+		typedQuery.setMaxResults(1);
+		List<FuelDistribution> fuelUnitsList = typedQuery.getResultList();
+		if(fuelUnitsList != null && fuelUnitsList.size() > 0) {
+			distribution = fuelUnitsList.get(0);
+		}
+		return distribution;
+	}
+	
+	// update 24 hrs fuel entry
+	@Transactional
+	public boolean update24HrsUnit(int id, double unitValue) {
+		boolean status = false;
+		Session session = factory.getCurrentSession();
+		Machine24HrsUnits _24HrsUnit = session.get(Machine24HrsUnits.class, id);
+		Machine machine = _24HrsUnit.getMachineId();
+		_24HrsUnit.setCurrentUnit(unitValue);
+		_24HrsUnit.setHours(unitValue - _24HrsUnit.getLastUnit());
+		Machine24HrsUnits nextEntry = getNext24hrsRecord(id, _24HrsUnit.getUnitDate(), machine);
+		session.update(_24HrsUnit);
+		if(nextEntry != null) {
+			nextEntry.setLastUnit(unitValue);
+			nextEntry.setHours(nextEntry.getCurrentUnit() - unitValue);
+			session.update(nextEntry);
+		}
+		status = true;
+		return status;
+	}
+	
+	@Transactional
+	public Machine24HrsUnits getNext24hrsRecord(int id, LocalDate date, Machine machine) {
+		Session session = factory.getCurrentSession();
+		Machine24HrsUnits m24HrsUnits = null;
+		TypedQuery<Machine24HrsUnits> typedQuery = session.createQuery("From Machine24HrsUnits mu WHERE mu.unitDate > :date "
+				+ " AND mu.machineId= :machine AND mu.currentUnit > 0 ORDER BY mu.unitDate ASC",Machine24HrsUnits.class);
+		typedQuery.setParameter("date", date);
+		typedQuery.setParameter("machine", machine);
+		typedQuery.setMaxResults(1);
+		List<Machine24HrsUnits> m24HrsUnitsList = typedQuery.getResultList();
+		if(m24HrsUnitsList != null && m24HrsUnitsList.size() > 0) {
+			m24HrsUnits = m24HrsUnitsList.get(0);
+		}
+		return m24HrsUnits;
+	}
+	
+	@Transactional
+	public List<Machine24HrsUnits> getMachine24HrsUnits(Machine machine, LocalDate date){
+		LocalDate nextUnitdate = date.plusDays(1);
+		LocalDate updateDate = LocalDate.now();
+		Session session = factory.getCurrentSession();
+		TypedQuery<Machine24HrsUnits> unitQuery = session.createQuery("FROM Machine24HrsUnits mu "
+				+ "WHERE mu.machineId = :machine AND mu.unitDate = :date"
+				+ " ORDER BY mu.unitDate ASC",Machine24HrsUnits.class);
+		unitQuery.setParameter("machine", machine);
+		unitQuery.setParameter("date", date);
+		List<Machine24HrsUnits> machine24HrsUnitsList = unitQuery.getResultList();
+		return machine24HrsUnitsList;
+	}
+	// ----------------------------------------- End of Unit update Logic -----------------------------------------------------
 }

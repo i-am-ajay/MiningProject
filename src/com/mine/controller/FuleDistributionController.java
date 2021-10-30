@@ -12,6 +12,8 @@ import javax.servlet.http.HttpSession;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -297,9 +299,8 @@ public class FuleDistributionController {
 		for (int key : activeMachine.keySet()) {
 			Machine24HrsUnits mu = new Machine24HrsUnits();
 			Machine machine = activeMachine.get(key);
-			Machine24HrsUnits lastUnit = service.getLast24HrsUnitMachine(machine, date);
-			double lastUnitValue = lastUnit.getCurrentUnit();
-			mu.setLastUnit(lastUnitValue);
+			double lastUnit = service.getLast24HrsUnitMachine(machine, date);
+			mu.setLastUnit(lastUnit);
 			mu.setMachineId(machine);
 			container.getMachineList().add(mu);
 		}
@@ -330,7 +331,61 @@ public class FuleDistributionController {
 		return page;
 	}
 
-	// -------------------------- End 24 hrs unit managment
-	// -------------------------------------------
+	// -------------------------- End 24 hrs unit managment -------------------------------------------
+	
+	// -------------------------- Update unit controller ----------------------------------------------
+		@RequestMapping("update_units")
+		public String updateUnits(Model model,
+			@RequestParam(name="machine", required=false,defaultValue="0")Machine machine,
+			@RequestParam(name="date", required=false)@DateTimeFormat(iso=ISO.DATE) LocalDate date) {
+			System.out.println(date);
+			List<FuelDistribution> fuelList = null;
+			List<Machine24HrsUnits> machine24HrsUnitList = null;
+			String status = null;
+			if(machine != null && date != null) {
+				if(isActiveCycle(machine,date)) {
+					fuelList = service.getFuelUnitsService(machine, date);
+					machine24HrsUnitList = service.getMachine24HrsUnitsService(machine, date);
+				}
+				else {
+					status = "error";
+				}
+			}
+			if(date == null) {
+				date = LocalDate.now();
+			}
+			model.addAttribute("machineList", service.getMachines(date));
+			model.addAttribute("fuel_unit_list",fuelList);
+			model.addAttribute("machine_24Hrs_Unit_list",machine24HrsUnitList);
+			model.addAttribute("status",status);
+			return "update_units";
+		}
+		
+		@RequestMapping("save_fuel_unit")
+		public @ResponseBody String updateFuelUnitController(@RequestParam("id")int machineId, @RequestParam("unitValue") double unitValue) {
+			boolean status = service.updateUnitService(machineId, unitValue);
+			JSONObject json = new JSONObject();
+			json.put("success", status);
+			return json.toString();
+		}
+		
+		@RequestMapping("save_update_24hrs_unit")
+		public @ResponseBody String update24HrsUnitController(@RequestParam("id")int machineId, @RequestParam("unitValue") double unitValue) {
+			boolean status = service.update24HrsUnitService(machineId, unitValue);
+			JSONObject json = new JSONObject();
+			json.put("success", status);
+			return json.toString();
+		}
+		
+	public boolean isActiveCycle(Machine machine, LocalDate date) {
+		boolean isActiveCycle = false;
+		LocalDate cycleStart = machine.getCycleBeginDate().minusDays(1);
+		LocalDate cycleEnd = machine.getCycleEndDate().plusDays(1);
+		if(date.isAfter(cycleStart) && date.isBefore(cycleEnd)) {
+			isActiveCycle = true;
+		}
+		return isActiveCycle;
+	}
+	// -------------------------- End updte unit controller -------------------------------------------
 
 }

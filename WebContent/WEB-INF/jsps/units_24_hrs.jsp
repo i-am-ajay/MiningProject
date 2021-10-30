@@ -72,7 +72,7 @@
 		</c:if>
 		<form method="POST" action="units_24_hrs">
 			<div class="row">
-				<div class="col-7"></div>
+				<div class="col-9"></div>
 				<div class="col-3">
 					<div class="form-group row">
 					      		<label class="font-weight-bold col-sm-3 col-form-label">Date</label>
@@ -94,7 +94,7 @@
 			<div class="row pt-1">
 				<div class="col">
 					<div class="text-dark bg-light px-3 mb-3 mx-auto"
-						style="transform: scale(0.8);">
+						style="transform: scale(1);">
 						<div class="card-body">
 							<div class="row">
 								<div class="col-3">
@@ -125,22 +125,22 @@
 									<div class="form-group">
 										<f:hidden path="machineList[${i.index}].machineId.id" />
 										<f:hidden path="machineList[${i.index}].id" />
-										<f:input id="machine" class="form-control form-control-sm" path="machineList[${i.index}].machineId.name" readonly="true"/>
+										<f:input id="machine${i.index}" class="form-control form-control-sm" path="machineList[${i.index}].machineId.name" readonly="true"/>
 									</div>
 								</div>
 								<div class="col-3">
 									<div class="form-group">
-									<f:input id="previous_unit" class="form-control form-control-sm" path="machineList[${i.index}].lastUnit" readonly="true"/>
+									<f:input id="previous_unit${i.index}" class="form-control form-control-sm" path="machineList[${i.index}].lastUnit" readonly="true"/>
 									</div>
 								</div>
 								<div class="col-3">
 									<div class="form-group">
-										<f:input id="current_unit" class="form-control form-control-sm" path="machineList[${i.index}].currentUnit"/>
+										<f:input id="${i.index}" class="form-control form-control-sm current_unit_class" path="machineList[${i.index}].currentUnit"/>
 									</div>
 								</div>
 								<div class="col-3">
 									<div class="form-group">
-										<f:input id="hours" class="form-control form-control-sm" path="machineList[${i.index}].hours" readonly="true"/>
+										<f:input id="hours${i.index}" class="form-control form-control-sm" path="machineList[${i.index}].hours" readonly="true"/>
 									</div>
 								</div>
 							</div>		
@@ -190,17 +190,17 @@
 			}
 		);
 
-		// bucket, ton or foot selection will result in disabling fields with not_eligible class.
-		$("#quantity_type").change(e =>{
-			let quantityVal = $("#quantity_type").val();
-			quantityVal = quantityVal.toLowerCase();
-			if(quantityVal == 'bucket' || quantityVal == 'ton' || quantityVal == 'foot'){
-				$(".not_eligible").attr("disabled",true);
+		// on change of current unit find the hours and update hrs field
+		$(".current_unit_class").focusout(e =>{
+			let currentUnitId = e.currentTarget.id;
+			let previousUnitId = "previous_unit"+currentUnitId;
+			let hrsId = "hours"+currentUnitId;
+			let currentUnitValue = parseInt($("#"+currentUnitId).val());
+			let previousUnitValue = parseInt($("#"+previousUnitId).val());
+			if(currentUnitValue > 0){
+				$("#"+hrsId).val(currentUnitValue - previousUnitValue);
 			}
-			else{
-				$(".not_eligible").attr("disabled",false);
-			}
-		});
+		})
 	</script>
 </body>
 </html>

@@ -62,6 +62,14 @@
 			</article>
 			</div>
 		</div>
+		<div class=" col-sm-12 col-md-2">
+			<div class="card bg-light my-1 py-1" id="update_units">
+			<article class="card-body mx-auto">
+				<h5 class="card-title text-center display-5 border-bottom border-danger py-2 my-2">Update<br/>Units</h5>
+				<p class="text-center mt-3"><i class="fa fa-pencil fa-2x" aria-hidden="true"></i></p>
+			</article>
+			</div>
+		</div>
 	</div>
 	<form id="hidden_form" action="home" method="POST">
 		<input type="hidden" name="page" value="admin" />
@@ -101,8 +109,8 @@
 			window.location.href ="fuel_report_panel";
 		});
 		
-		$("#sales").click( e=>{
-			window.location.href ="display_sales_page";
+		$("#update_units").click( e=>{
+			window.location.href ="update_units";
 		});
 
 		$("#ledger").click( e=>{

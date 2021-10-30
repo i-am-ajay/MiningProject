@@ -92,7 +92,7 @@ public class FuelDistributionService {
 		return fuelDao.lastEnrtyDate24HrsUnit();
 	}
 	
-	public Machine24HrsUnits getLast24HrsUnitMachine(Machine machine, LocalDate lastUnitDate) {
+	public double getLast24HrsUnitMachine(Machine machine, LocalDate lastUnitDate) {
 		return fuelDao.getLast24HrsUnitForMachine(machine, lastUnitDate);
 	}
 	/*-------------------------- End Capture 24 hrs unit ---------------------*/
@@ -104,4 +104,22 @@ public class FuelDistributionService {
 		machine.setCycle(machine.getCycle()+1);
 	}
 	/*------------------------- End Machine Cycle Methods --------------------*/
+	
+	/* ------------------------ Update Unit service --------------------------*/
+	public List<FuelDistribution> getFuelUnitsService(Machine machine, LocalDate date) {
+		return fuelDao.getFuelUnits(machine, date);
+	}
+	
+	public List<Machine24HrsUnits> getMachine24HrsUnitsService(Machine machine, LocalDate date){
+		return fuelDao.getMachine24HrsUnits(machine, date);
+	}
+	
+	public boolean updateUnitService(int machineId, Double unitValue) {
+		return fuelDao.updateUnit(machineId, unitValue);
+	}
+	
+	public boolean update24HrsUnitService(int machineId, Double unitValue) {
+		return fuelDao.update24HrsUnit(machineId, unitValue);
+	}
+	/*------------------------- End Update Unit Service ---------------------- */
 }
