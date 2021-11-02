@@ -39,6 +39,7 @@ import com.mine.component.master.User;
 import com.mine.component.master.Vehicle;
 import com.mine.component.transaction.CashBookRecord;
 import com.mine.component.transaction.CreditRecord;
+import com.mine.component.transaction.FuelDistribution;
 import com.mine.component.transaction.Ledger;
 import com.mine.component.transaction.SupplyDetails;
 import com.mine.utilities.DefineTypesAndCategories;
@@ -838,4 +839,81 @@ public class MineDAO {
 		Session session = factory.getCurrentSession();
 		session.save(ledger);
 	}
+	
+	// ----------------------------- Fuel Posting methods In ledger ---------------------------
+	// Post fuel pruchase to ledger each time fuel is purchased.
+	@Transactional
+	public void addFuelToCashAndLedger(FuelDistribution details, User user){
+		Session session = factory.getCurrentSession();
+		LocalDateTime currentDateTime = LocalDateTime.now();
+		Ledger ledgerDebit = null;
+		Ledger ledgerCredit = null;
+		if(details.getEntryType().equals("Fuel Received")) {
+			// Ledger of Fuel
+			ledgerDebit = new Ledger();
+			ledgerDebit.setDebitAmount(Math.abs(details.getAmount()));
+			ledgerDebit.setCreatedBy(user);
+			ledgerDebit.setStatus(true);
+			ledgerDebit.setEntryDate(currentDateTime);
+			ledgerDebit.setAccount("Fuel Purchase");
+			
+			// Ledger record for payment
+			ledgerCredit = new Ledger();
+			ledgerCredit.setCreditAmount(Math.abs(details.getAmount()));
+			ledgerCredit.setCreatedBy(user);
+			ledgerCredit.setStatus(true);
+			ledgerCredit.setEntryDate(currentDateTime);
+					
+			if(details.getPurchaseType().equalsIgnoreCase("cash")){
+					ledgerCredit.setAccount("Cash");
+					ledgerCredit.setDescription("Cash To Fuel Purchase");
+					ledgerDebit.setDescription("Fuel Purchase In Cash");
+				
+			}
+			else {
+				// ledger record
+				ledgerCredit.setAccount("Fuel Vendor");
+				ledgerCredit.setDescription("Credit Fuel Purchase");
+				ledgerDebit.setDescription("Fuel Vendor".concat(" To Fuel Purchase"));
+			}
+		}
+		else if(details.getEntryType().equals("Fuel Given")) {
+			// Ledger of Fuel
+						ledgerCredit = new Ledger();
+						ledgerCredit.setCreditAmount(Math.abs(details.getAmount()));
+						ledgerCredit.setCreatedBy(user);
+						ledgerCredit.setStatus(true);
+						ledgerCredit.setEntryDate(currentDateTime);
+						ledgerCredit.setAccount("Fuel Purchase");
+						
+						// Ledger record for payment
+						ledgerDebit = new Ledger();
+						ledgerDebit.setDebitAmount(Math.abs(details.getAmount()));
+						ledgerDebit.setCreatedBy(user);
+						ledgerDebit.setStatus(true);
+						ledgerDebit.setEntryDate(currentDateTime);
+								
+						if(details.getPurchaseType().equalsIgnoreCase("cash")){
+								ledgerDebit.setAccount("Cash");
+								ledgerDebit.setDescription("Cash From Fuel Return");
+								ledgerCredit.setDescription("Fuel Return In Cash");
+							
+						}
+						else {
+							// ledger record
+							ledgerDebit.setAccount("Fuel Vendor");
+							ledgerDebit.setDescription("Credit Fuel Purchase Returned");
+							ledgerCredit.setDescription("Fuel Vendor Return".concat(" From Fuel Purchase"));
+						}
+		}
+		ledgerCredit.setParentEntryLink(ledgerDebit);
+		ledgerDebit.setParentEntryLink(ledgerCredit);
+		
+		//session.save(details);
+		session.save(ledgerCredit);
+		session.save(ledgerDebit);
+		session.setHibernateFlushMode(FlushMode.COMMIT);
+	}
+	
+	// ----------------------------- End Fuel Posting methods ---------------------------------
 }

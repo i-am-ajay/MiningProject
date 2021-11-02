@@ -12,15 +12,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mine.component.master.Machine;
+import com.mine.component.master.User;
 import com.mine.component.transaction.FuelDistribution;
 import com.mine.component.transaction.Machine24HrsUnits;
 import com.mine.component.transaction.UnitContainer;
 import com.mine.dao.FuelDistributionDao;
+import com.mine.dao.MineDAO;
 
 @Service("fuel-dist")
 public class FuelDistributionService {
 	@Autowired
 	FuelDistributionDao fuelDao;
+	
+	@Autowired
+	MineDAO mineDao;
 	
 	/*------------------- Machine Service ------------------------------*/
 	public Machine getMachine(int id) {
@@ -41,17 +46,6 @@ public class FuelDistributionService {
 		//machine.setCycleEndDate();
 		fuelDao.saveMachine(machine);
 	}
-	/*-------------------- End Machine Service -------------------------*/
-	
-	/*-------------------- Fuel Service --------------------------------*/
-	public void insertFuelRecord(FuelDistribution dist) {
-		fuelDao.insertFuelRecord(dist);
-	}
-	
-	public double getLastMachineDistribution(Machine machine, LocalDateTime entryDate) {
-		return fuelDao.lastUnitOfMachine(machine, entryDate);
-	}
-	
 	public Map<Integer,Machine> getMachineMap(LocalDate date, boolean machineDes){
 		Map<Integer,Machine> machineMap = new HashMap<>();
 		List<Machine> list = fuelDao.machineList(date);
@@ -62,6 +56,21 @@ public class FuelDistributionService {
 		}
 		return machineMap;
 	}
+	/*-------------------- End Machine Service -------------------------*/
+	
+	/*-------------------- Fuel Service --------------------------------*/
+	public void insertFuelRecord(FuelDistribution dist) {
+		fuelDao.insertFuelRecord(dist);
+	}
+	
+	public void postFuelAmountInLedger(FuelDistribution details, User user) {
+		mineDao.addFuelToCashAndLedger(details, user);
+	}
+	
+	public double getLastMachineDistribution(Machine machine, LocalDateTime entryDate) {
+		return fuelDao.lastUnitOfMachine(machine, entryDate);
+	}
+	
 	
 	public List<FuelDistribution> getFuelDistributionReport(int machineId, LocalDate fromDate, LocalDate toDate){
 		return fuelDao.getFuleDistributionReport(machineId, fromDate, toDate);

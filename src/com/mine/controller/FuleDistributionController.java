@@ -168,7 +168,7 @@ public class FuleDistributionController {
 	}
 
 	@RequestMapping("distribute_fuel")
-	public String distribute_fuel(Model model, HttpSession session) {
+	public String distributeFuel(Model model, HttpSession session) {
 		if (session.getAttribute("user") == null) {
 			return "login";
 		}
@@ -184,8 +184,9 @@ public class FuleDistributionController {
 
 	@RequestMapping(value = "save_fuel_record")
 	public String saveFuelRecord(@ModelAttribute FuelDistribution dist, @RequestParam String page,
-			BindingResult result) {
+			BindingResult result, HttpSession session) {
 		addFuelStatus = "fails";
+		User user = (User)session.getAttribute("user");
 		if (result.hasErrors()) {
 			page = "add_fuel";
 		} else {
@@ -193,7 +194,9 @@ public class FuleDistributionController {
 			if (dist.getEntryType().equals("Fuel Given")) {
 				dist.setFuelQty(dist.getFuelQty() * -1);
 			}
+			
 			service.insertFuelRecord(dist);
+			service.postFuelAmountInLedger(dist, user);
 			page = "redirect:add_fuel";
 		}
 		return page;
@@ -295,7 +298,6 @@ public class FuleDistributionController {
 			unitDate = date.plusDays(1);
 		}
 		Map<Integer, Machine> activeMachine = service.getMachineMap(unitDate, false);
-		//Map<Integer, Machine24HrsUnits> existingUnitMap = service.get24hrsUnitMap(date);
 		for (int key : activeMachine.keySet()) {
 			Machine24HrsUnits mu = new Machine24HrsUnits();
 			Machine machine = activeMachine.get(key);

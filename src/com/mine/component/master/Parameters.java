@@ -12,6 +12,8 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.GenerationTime;
 import org.hibernate.envers.Audited;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
 
 @Entity
 @Audited
@@ -43,6 +45,10 @@ public class Parameters {
 	protected double sanchalanNormal;
 	
 	protected double sanchalanTrolly;
+	
+	@Column(name="project_start_date")
+	@DateTimeFormat(iso=ISO.DATE)
+	protected LocalDate projectStartDate;
 	
 	@Generated(GenerationTime.ALWAYS)
 	@Column(name="creation_date", insertable=false, updatable=false)
@@ -137,5 +143,13 @@ public class Parameters {
 
 	public void setDisableSanchalan(boolean disableSanchalan) {
 		this.disableSanchalan = disableSanchalan;
+	}
+
+	public LocalDate getProjectStartDate() {
+		return projectStartDate;
+	}
+
+	public void setProjectStartDate(LocalDate projectStartDate) {
+		this.projectStartDate = projectStartDate;
 	}	
 }

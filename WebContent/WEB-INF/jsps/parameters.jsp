@@ -110,6 +110,14 @@
 					    	</div>
 					    </div>
 					    <div class="col-3">	
+					    	<div class="form-group">
+					    		<div>
+					      			<label class="font-weight-bold">Site Start Date&nbsp;<sup></sup></label>
+					      		</div>
+					      		<f:input type="date" class="form-control form-control-sm" id="project_date" path="projectStartDate"/>
+					    	</div>
+					    </div>
+					    <div class="col-3">	
 					    	<div class="form-group form-group-check">
 					    		<div>
 					      			<label class="font-weight-bold">Disable Sanchalan</label>

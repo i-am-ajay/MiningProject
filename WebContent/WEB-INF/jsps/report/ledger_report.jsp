@@ -63,6 +63,8 @@
 					      		<option>Cash</option>
 					      		<option>Credit</option>
 					      		<option>Bank</option>
+					      		<option>Fuel Purchase</option>
+					      		<option>Fuel Vendor</option>
 					      		<c:forEach var="party" items="${party_list}"> 
 					      			<option>${party.value}</option>
 					      		</c:forEach>

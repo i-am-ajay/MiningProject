@@ -79,7 +79,7 @@
 					    	</div>
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Opening Unit</label>
-					      		<f:input type="number" class="form-control form-control-sm" id="opening_unit" placeholder="Enter Opening Unit" path="openingUnit" required="true"/>
+					      		<f:input type="number" step=".1" class="form-control form-control-sm" id="opening_unit" placeholder="Enter Opening Unit" path="openingUnit" required="true"/>
 					    	</div>
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Fixed Hours</label>

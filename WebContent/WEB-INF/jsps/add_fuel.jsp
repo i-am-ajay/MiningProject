@@ -74,7 +74,7 @@
 					    	</div>
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Fuel Quantity (Ltrs)</label>
-					      		<f:input type="number" class="form-control form-control-sm not_eligible" id="fuel_qty" path="fuelQty" />
+					      		<f:input type="number" step=".01" class="form-control form-control-sm not_eligible" id="fuel_qty" path="fuelQty" />
 					    	</div>
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Purchase Type</label>
@@ -86,11 +86,11 @@
 					    	</div>
 					    	<div class="form-group">
 					    		<label class="font-weight-bold">Rate</label>
-					    		<f:input type="number" class="form-control form-control-sm" id="fuel_rate" path="rate"/>
+					    		<f:input type="number" step=".01" class="form-control form-control-sm" id="fuel_rate" path="rate"/>
 					    	</div>
 					    	<div class="form-group">
 					    		<label class="font-weight-bold">Amount</label>
-					    		<f:input type="number" class="form-control form-control-sm" id="fuel_amount" path="amount" readonly="true"/>
+					    		<f:input type="number" step=".01" class="form-control form-control-sm" id="fuel_amount" path="amount" readonly="true"/>
 					    	</div>
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Remarks (If Any)</label>
@@ -154,14 +154,11 @@
 				let fuelQty = parseInt($("#fuel_qty").val());
 				let totalFuel = parseInt($("#total_qty").val());
 				let entryType = $("#entry_type").val();
-				alert(entryType);
 				if(entryType == 'Fuel Given'){
 					fuelQty = fuelQty * -1;
-					alert(fuelQty);
 				}
 				totalFuel = parseInt(totalFuel);
 				totalFuel = totalFuel + fuelQty;
-				alert(totalFuel);
 				$("#total_qty").val(totalFuel);
 			})
 		})

@@ -82,19 +82,19 @@
 					    	</div>
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Fuel Quantity (Ltrs)</label>
-					      		<f:input type="number" class="form-control form-control-sm not_eligible" id="fuel_qty" path="fuelQty" required="true"/>
+					      		<f:input type="number" step=".01" class="form-control form-control-sm not_eligible" id="fuel_qty" path="fuelQty" required="true"/>
 					    	</div>
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Last Unit</label>
-					      		<f:input type="number" class="form-control form-control-sm not_eligible" id="last_unit" path="lastUnits"/>
+					      		<f:input type="number" step=".1" class="form-control form-control-sm not_eligible" id="last_unit" path="lastUnits"/>
 					    	</div>
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Current Unit</label>
-					      		<f:input type="number" class="form-control form-control-sm not_eligible" id="current_unit" path="currentUnits" required="true"/>
+					      		<f:input type="number" step=".1" class="form-control form-control-sm not_eligible" id="current_unit" path="currentUnits" required="true"/>
 					    	</div>
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">No of Hours</label>
-					      		<f:input type="number" class="form-control form-control-sm not_eligible" id="hrs" path="hrs" readonly="true"/>
+					      		<f:input type="number" step=".1" class="form-control form-control-sm not_eligible" id="hrs" path="hrs" readonly="true"/>
 					    	</div>
 					    	<div class="form-group">
 					      		<label class="font-weight-bold">Remarks (If Any)</label>

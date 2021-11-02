@@ -43,20 +43,14 @@ public class FuelDistributionDao {
 	public void insertFuelRecord(FuelDistribution distribution) {
 		Session session = factory.getCurrentSession();
 		Fuel fuel = getTotalFuel();
-		fuel.setQty(fuel.getQty()+distribution.getFuelQty());
+		if(distribution.getEntryType().equals("Fuel Given")) {
+			fuel.setQty(fuel.getQty() - Math.abs(distribution.getFuelQty()));
+		}
+		else {
+			fuel.setQty(fuel.getQty()+Math.abs(distribution.getFuelQty()));
+		}
 		session.update(fuel);
-		Machine machine = distribution.getMachineName();
-		/*if(machine != null) {
-			FuelDistribution lastDistribution = this.lastUnitOfMachine(machine, distribution.getEntryDate());
-			LocalDate lastEntryDate = lastEntryDateMachine(machine);
-			if((machine.getEntryDate().equals(lastEntryDate) ||
-					machine.getEntryDate().isAfter(lastEntryDate)
-					&& distribution.getCurrentUnits()>0)) {
-				machine.setLastUnitForFuel(distribution.getCurrentUnits());
-				session.update(machine);
-			}
-		}*/
-		//distribution.setHrs(distribution.getCurrentUnits() - distribution.getLastUnits());
+		//Machine machine = distribution.getMachineName();
 		session.save(distribution);
 	}
 	
