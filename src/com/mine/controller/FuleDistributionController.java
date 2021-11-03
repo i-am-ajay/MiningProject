@@ -2,6 +2,7 @@ package com.mine.controller;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,6 +29,7 @@ import com.ajay.customeditor.MachinePropertyEditor;
 import com.ajay.customeditor.VendorIdPropertyEditor;
 import com.mine.component.master.Client;
 import com.mine.component.master.Machine;
+import com.mine.component.master.Parameters;
 import com.mine.component.master.User;
 import com.mine.component.transaction.FuelDistribution;
 import com.mine.component.transaction.Machine24HrsUnits;
@@ -226,8 +228,8 @@ public class FuleDistributionController {
 			@RequestParam(name = "t_date", required = false) String toDate,
 			@RequestParam(name = "submitted", required = false) boolean submitted,
 			HttpSession session) {
-		LocalDate fDate = null;
-		LocalDate tDate = null;
+		LocalDateTime fDate = null;
+		LocalDateTime tDate = null;
 		
 		if (session.getAttribute("user") == null) {
 			return "login";
@@ -235,10 +237,11 @@ public class FuleDistributionController {
 		User user = (User) session.getAttribute("user");
 		
 		if(fromDate != null && fromDate.length()>0) {
-			fDate = LocalDate.parse(fromDate,DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+			fDate = LocalDateTime.of(LocalDate.parse(fromDate,DateTimeFormatter.ofPattern("yyyy-MM-dd")), LocalTime.of(0,0));
+			
 		}
 		if(toDate != null && toDate.length()>0) {
-			tDate = LocalDate.parse(toDate,DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+			tDate = LocalDateTime.of(LocalDate.parse(toDate,DateTimeFormatter.ofPattern("yyyy-MM-dd")),LocalTime.of(23, 59));
 		}
 		
 		if (submitted) { model.addAttribute("fuel_distribution_list",
@@ -289,9 +292,10 @@ public class FuleDistributionController {
 		
 		LocalDate date = service.getLastEntryDate24HrsUnit();
 		System.out.println("Last Entry Date"+date);
-		LocalDate projectBeginDate = LocalDate.of(2021, 10, 1);
+		Parameters parameter = service.getParameters();
+		LocalDate projectBeginDate = parameter.getProjectStartDate();
 		LocalDate unitDate = null;
-		if (date == null) {
+		if (date == null || date.isBefore(projectBeginDate)) {
 			unitDate = projectBeginDate;
 		} 
 		else {

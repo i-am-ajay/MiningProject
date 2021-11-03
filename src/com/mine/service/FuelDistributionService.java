@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mine.component.master.Machine;
+import com.mine.component.master.Parameters;
 import com.mine.component.master.User;
 import com.mine.component.transaction.FuelDistribution;
 import com.mine.component.transaction.Machine24HrsUnits;
@@ -72,7 +73,7 @@ public class FuelDistributionService {
 	}
 	
 	
-	public List<FuelDistribution> getFuelDistributionReport(int machineId, LocalDate fromDate, LocalDate toDate){
+	public List<FuelDistribution> getFuelDistributionReport(int machineId, LocalDateTime fromDate, LocalDateTime toDate){
 		return fuelDao.getFuleDistributionReport(machineId, fromDate, toDate);
 	}
 	
@@ -131,4 +132,10 @@ public class FuelDistributionService {
 		return fuelDao.update24HrsUnit(machineId, unitValue);
 	}
 	/*------------------------- End Update Unit Service ---------------------- */
+	
+	/* ------------------------ Get Parameter Details ------------------------ */
+	public Parameters getParameters() {
+		return mineDao.getParameters();
+	}
+	/*------------------------- End Parameter Details ------------------------ */
 }

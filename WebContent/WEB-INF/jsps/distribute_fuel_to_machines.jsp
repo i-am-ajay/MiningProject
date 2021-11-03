@@ -21,7 +21,7 @@
 
 		<div class="container p-2 m-auto">
 		<div class="row">
-			<h4 class="border-bottom border-danger m-3 pb-2 display-4 col-8" id="form_title">Add Fuel</h4>
+			<h4 class="border-bottom border-danger m-3 pb-2 display-4 col-8" id="form_title">Distribute Fuel To Machine</h4>
 			<div class="col-2 align-right ml-auto pl-5 mt-4 mr-5"><i id="home_icon" class="fa fa-home fa-2x" aria-hidden="true"></i></div>
 			<div class="col-1"><a class="btn btn-danger btn-sm mt-4" style="font-size: .6em;" href="${pageContext.request.contextPath}/logout">Logout</a></div>
 		</div>
@@ -151,14 +151,11 @@
 				let fuelQty = parseInt($("#fuel_qty").val());
 				let totalFuel = parseInt($("#total_qty").val());
 				let entryType = $("#entry_type").val();
-				alert(entryType);
 				if(entryType == 'Fuel Given'){
 					fuelQty = fuelQty * -1;
-					alert(fuelQty);
 				}
 				totalFuel = parseInt(totalFuel);
 				totalFuel = totalFuel + fuelQty;
-				alert(totalFuel);
 				$("#total_qty").val(totalFuel);
 			})
 		})
@@ -177,8 +174,14 @@
 	$("#current_unit").focusout(e=>{
 		let lastUnit = $("#last_unit").val();
 		let currentUnit = $("#current_unit").val();
-		let hrs = (currentUnit - lastUnit);
-		$("#hrs").val(hrs);
+		if(currentUnit < lastUnit && currentUnit != 0.0){
+			alert("Current Unit can not be less than last unit");
+			$("#current_unit").val(0);
+		}
+		else{
+			let hrs = (currentUnit - lastUnit);
+			$("#hrs").val(hrs);
+		}
 	})
 	
 	// ---------------------------------- End Page methods -------------------------------

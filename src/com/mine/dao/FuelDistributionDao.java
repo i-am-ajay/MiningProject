@@ -100,7 +100,7 @@ public class FuelDistributionDao {
 	}
 	
 	@Transactional
-	public List<FuelDistribution> getFuleDistributionReport(int machineId, LocalDate fromDate,LocalDate toDate){
+	public List<FuelDistribution> getFuleDistributionReport(int machineId, LocalDateTime fromDate,LocalDateTime toDate){
 		Session session = factory.getCurrentSession();
 		CriteriaBuilder builder = session.getCriteriaBuilder();
 		CriteriaQuery<FuelDistribution> criteriaQuery = builder.createQuery(FuelDistribution.class);
