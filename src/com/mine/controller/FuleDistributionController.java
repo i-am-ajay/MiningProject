@@ -213,7 +213,7 @@ public class FuleDistributionController {
 			System.out.println(dis.getEntryType());
 			if (dis.getEntryType().equals("Fuel Gven")) {
 				dis.setFuelQty(dis.getFuelQty() * -1);
-			}
+			}												
 			addFuelStatus = "success";
 			service.insertFuelRecord(dis);
 			page = "redirect:distribute_fuel";
